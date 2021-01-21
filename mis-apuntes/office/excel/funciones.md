@@ -33,7 +33,44 @@
 | `UNICAR` | `UNICHAR` | Devuelve el carácter Unicode al que hace referencia el valor numérico dado. |
 | `UNICODE ` | `UNICODE` | Devuelve el número (punto de código) que corresponde al primer carácter del texto. |
 
+### Ejemplos
 
+| Función | Resultado |
+| --- | --- |
+| `=CONCATENAR("HO";"LA")` | HOLA |
+| `=TEXTJOIN(", ";TRUE;1;2;3;4;5;6;7;8;9;10)` | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 |
+| `=MAYUSC("hola")` | HOLA |
+| `=MINUSC("HOLA")` | hola |
+| `=NOMPROPIO("HOLA")` | Hola |
+| `=DECIMAL(1234567,8901;2;FALSO)` | 1.234.567,89 |
+| `=VALOR("1234,56")` | 1234,56 |
+| `=VALOR.NUMERO("2.573,23";",";".")` | 2573,23 |
+| `=TEXTO(AHORA();"dd-mm-yyyy")` | 21-01-2021 |
+| `=LARGO("HOLA")` | 4 |
+| `=ENCONTRAR("O";"HOLA";1)` | 2 |
+| `=HALLAR("l";"HOLA";1)` | 3 |
+| `=DERECHA("HOLA";2)` | LA |
+| `=EXTRAE("HOLA";2;2)` | OL |
+| `=IGUAL("HOLA";"hola")` | FALSE |
+| `=IZQUIERDA("HOLA";2)` | HO |
+| `=REEMPLAZAR("HOLA";2;1;"UU")` | HUULA |
+| `=REPETIR("HOLA";2)` | HOLAHOLA |
+| `=SUSTITUIR("HOLA";"L";"J")` | HOJA |
+| `=T("HOLA")` | HOLA |
+| `=CARACTER(80)` | P |
+| `=CODIGO("P")` | 80 |
+| `=LIMPIAR(CARACTER(12))` |  |
+| `=MONEDA(1234,5678;2)` | $ 1.234,57 |
+| `=TEXTOBAHT(1)` | หนึ่งบาทถ้วน |
+| `=UNICAR(256)` | Ā |
+| `=UNICODE("HOLA")` | 72 |
+
+
+
+### Ejercicio práctico
+
+
+### Ejercicio en VBA
 
 
 
@@ -68,7 +105,33 @@
 | `SEGUNDO` | `SECOND` | Convierte un número de serie en un valor de segundo. |
 | `SIFECHA` | `DATEDIF` | Calcula el número de días, meses o años entre dos fechas. |
 
+### Ejemplos
 
+| Función | Resultado |
+| --- | --- |
+| `=AHORA()` | 44217,6340665509 |
+| `=AÑO(FECHA(2017;10;18))` | 2017 |
+| `=DIA(FECHA(2017;10;18))` | 18 |
+| `=DIA.LAB(FECHA(2017;10;18);60;FECHA(2017;10;24))` | 43111 |
+| `=DIA.LAB.INTL(FECHA(2017;10;18);60;1)` | 43110 |
+| `=DIAS(FECHA(2017;11;25);FECHA(2017;10;18))` | 38 |
+| `=DIAS.LAB(FECHA(2017;10;18);FECHA(2017;11;25))` | 28 |
+| `=DIAS.LAB.INTL(FECHA(2017;10;18);FECHA(2017;11;25);1)` | 28 |
+| `=DIAS(FECHA(2018;11;25);FECHA(2017;11;25))` | 365 |
+| `=DIASEM(AHORA();2)` | 4 |
+| `=FECHA(2017;10;18)` | 43026 |
+| `=FECHA.MES(FECHA(2017;10;18);3)` | 43118 |
+| `=DATEVALUE("2017-10-18")` | 43026 |
+| `=FIN.MES(FECHA(2017;10;18);0)` | 43039 |
+| `=FRAC.AÑO(FECHA(2017;10;18);FECHA(2017;10;24);1)` | 0,0164383561643836 |
+| `=HORA(AHORA())` | 15 |
+| `=HORANUMERO("11:32")` | 0,480555555555556 |
+| `=HOY()` | 44217 |
+| `=ISO.NUM.DE.SEMANA(AHORA())` | 3 |
+| `=MES(FECHA(2017;10;18))` | 10 |
+| `=MINUTO(AHORA())` | 13 |
+| `=NUM.DE.SEMANA(FECHA(2017;10;18);1)` | 42 |
+| `=SEGUNDO(AHORA())` | 3 |
 
 
 
