@@ -1,13 +1,13 @@
-Linux Fedora
+# Linux Fedora
 
-Package management system
+## Package management system
 
 Fedora is a distribution that uses a package management system. This system is based on rpm , the RPM Package Manager, with several higher level tools built on top of it, most notably PackageKit (default gui) and yum (command line tool). As of Fedora 22, yum has been replaced by dnf. The Gnome Package Manager is another GUI package manager.
 
 https://fedoraproject.org/wiki/Package_management_system
 
 
-yum – Yellowdog Updater Modified
+### yum – Yellowdog Updater Modified
 
 yum is a software package manager that installs, updates, and removes packages on RPM-based systems. It automatically computes dependencies and figures out what things should occur to install packages. yum makes it easier to maintain groups of machines without having to manually update each one using rpm.
 
@@ -19,7 +19,7 @@ https://fedoraproject.org/wiki/Yum
 http://yum.baseurl.org/wiki/YumCommands.html
 
 
-dnf – Dandified yum
+### dnf – Dandified yum
 
 DNF is a software package manager that installs, updates, and removes packages on RPM-based Linux distributions. It automatically computes dependencies and determines the actions required to install packages. DNF also makes it easier to maintain groups of machines, eliminating the need to manually update each one using rpm. Introduced in Fedora 18, it has been the default package manager since Fedora 22.
 
@@ -28,81 +28,55 @@ DNF or Dandified yum is the next generation version of yum. It roughly maintains
 https://fedoraproject.org/wiki/DNF
 
 
-rpm – RPM package manager
+### rpm – RPM package manager
 
 The RPM Package Manager (RPM) is a powerful command line driven package management system capable of installing, uninstalling, verifying, querying, and updating computer software packages. Each software package consists of an archive of files along with information about the package like its version, a description, dependencies and other metadata.
 
 RPM is a low level utility and end users generally use dnf or yum or a graphical utility that interfaces with dnf|yum instead of using RPM directly.
 
-Running rpm commands
+#### Running rpm commands
 
 The main rpm operators
-Operation
-Short Option
-Long Option
 
-install
--I
---install
-Install a package, rpm -i allows you to install multiple instances of the same (identical) package.
-upgrade/install
--U
---upgrade
-Install or update a package. The rpm –U command works for both installation of new packages and for upgrading.
-remove
--e
---erase
-Removes a package. To remove a package, use the -e option to the rpm command, short for erase.
-hence
-(feedback during -U)
--h
+| Operation | Short Option | Long Option |     |
+| --------- | ------------ | ----------- | --- |
+| install | -I | --install | Install a package, rpm -i allows you to install multiple instances of the same (identical) package. |
+| upgrade/install | -U | --upgrade | Install or update a package. The rpm –U command works for both installation of new packages and for upgrading. |
+| remove | -e | --erase | Removes a package. To remove a package, use the -e option to the rpm command, short for erase. |
+| hence (feedback during -U) | -h | | The -h option to the rpm command prints out # signs, also called hash marks (hence the -h). These hash marks provide some confirmation that the rpm command is still running. This is important, since large packages may take a long time to install or upgrade. |
+| verbose (feedback during -U) | -v | --verbose | In addition to hash marks, you can get more verbose output from the tight-lipped rpm command. The -v option to the rpm command tells the command to print out verbose information as the command runs. |
+| query | -q | --query | The -q option tells the rpm command to query the RPM database. Use the rpm –q command to quickly verify a package has been installed. To verify, you need to use the name of the installed package, not the name of the RPM file. |
+|all | -a | --all | The –a option tells the rpm command to query for all packages. |
 
-The -h option to the rpm command prints out # signs, also called hash marks (hence the -h). These hash marks provide some confirmation that the rpm command is still running. This is important, since large packages may take a long time to install or upgrade.
-verbose
-(feedback during -U)
--v
---verbose
-In addition to hash marks, you can get more verbose output from the tight-lipped rpm command. The -v option to the rpm command tells the command to print out verbose information as the command runs.
-query
--q
---query
-The -q option tells the rpm command to query the RPM database.
-Use the rpm –q command to quickly verify a package has been installed. To verify, you need to use the name of the installed package, not the name of the RPM file.
-all
--a
---all
-The –a option tells the rpm command to query for all packages.
-
-Some rpm commands
+#### Some rpm commands
 
 To install or upgrade a package
 
-rpm -U path/filename.rpm
+    rpm -U path/filename.rpm
 
 To get extra feedback, you can use a command like the following, with the -h and -v options in conjunction with the –U option (When you run this command you will see more output than the default, which is no output unless there are errors.)
 
-rpm -Uvh path/filename.rpm
+    rpm -Uvh path/filename.rpm
 
 To remove a package (called erase in RPM terminology)
 
-rpm –e package_name
+    rpm –e package_name
 
 To list every RPM package installed on your system
 
-rpm –qa
+    rpm –qa
 
 To verify if a package is installed
 
-rpm -q package_name
+    rpm -q package_name
 
 The Linux (and Unix) grep command provides a powerful tool for filtering through textual data. If you pipe the output of the rpm –qa command into the grep command, you have a powerful search engine at your fingertips.
 
-rpm -qa | grep part_of_package_name
+    rpm -qa | grep part_of_package_name
 
-
-https://fedoraproject.org/wiki/Rpm
-http://rpm.org/
-https://docs.fedoraproject.org/ro/Fedora_Draft_Documentation/0.1/html/RPM_Guide/ch02s03.html
+https://fedoraproject.org/wiki/Rpm  
+http://rpm.org/  
+https://docs.fedoraproject.org/ro/Fedora_Draft_Documentation/0.1/html/RPM_Guide/ch02s03.html  
 https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html-single/RPM_Guide/index.html#ch-using-rpm
 
 
