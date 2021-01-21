@@ -51,14 +51,16 @@ UEFI-based systems require an EFI System Partition at least 50 MB in size (recom
 
 >**Important:** If your system requires an EFI System Partition, this partition must be created as a standard physical partition. It can not reside on an LVM volume or a Btrfs subvolume.
 
-https://docs.fedoraproject.org/en-US/fedora/f33/install-guide/install/Installing_Using_Anaconda/#sect-installation-gui-manual-partitioning-recommended
+###### Reference:
+* https://docs.fedoraproject.org/en-US/fedora/f33/install-guide/install/Installing_Using_Anaconda/#sect-installation-gui-manual-partitioning-recommended
 
 
 ## Package management system
 
 Fedora is a distribution that uses a package management system. This system is based on rpm , the RPM Package Manager, with several higher level tools built on top of it, most notably PackageKit (default gui) and yum (command line tool). As of Fedora 22, yum has been replaced by dnf. The Gnome Package Manager is another GUI package manager.
 
-https://fedoraproject.org/wiki/Package_management_system
+###### Reference:
+* https://fedoraproject.org/wiki/Package_management_system
 
 ### yum – Yellowdog Updater Modified
 
@@ -68,8 +70,9 @@ yum uses an online repository by default, but you can also configure it to use a
 
 Important: As of Fedora 22, yum has been replaced with DNF.
 
-https://fedoraproject.org/wiki/Yum  
-http://yum.baseurl.org/wiki/YumCommands.html
+###### Reference:
+* https://fedoraproject.org/wiki/Yum  
+* http://yum.baseurl.org/wiki/YumCommands.html
 
 ### dnf – Dandified yum
 
@@ -77,7 +80,8 @@ DNF is a software package manager that installs, updates, and removes packages o
 
 DNF or Dandified yum is the next generation version of yum. It roughly maintains CLI compatibility with yum and defines a strict API for extensions and plugins. Plugins can modify or extend features of DNF or provide additional CLI commands on top of those mentioned below. If you know the name of such a command (including commands mentioned bellow), you may find/install the package which provides it using the appropriate virtual provide in the form of dnf-command(<alias>) where <alias> is the name of the command; e.g. dnf-command(repoquery) for a repoquery command (the same applies to specifying dependencies of packages that require a particular command).
 
-https://fedoraproject.org/wiki/DNF
+###### Reference:
+* https://fedoraproject.org/wiki/DNF
 
 ### rpm – RPM package manager
 
@@ -125,46 +129,16 @@ The Linux (and Unix) grep command provides a powerful tool for filtering through
 
     rpm -qa | grep part_of_package_name
 
-https://fedoraproject.org/wiki/Rpm  
-http://rpm.org/  
-https://docs.fedoraproject.org/ro/Fedora_Draft_Documentation/0.1/html/RPM_Guide/ch02s03.html  
-https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html-single/RPM_Guide/index.html#ch-using-rpm
+###### Reference:
+* https://fedoraproject.org/wiki/Rpm  
+* http://rpm.org/  
+* https://docs.fedoraproject.org/ro/Fedora_Draft_Documentation/0.1/html/RPM_Guide/ch02s03.html  
+* https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html-single/RPM_Guide/index.html#ch-using-rpm
 
 
 ## Terminal
 
 ### Basic Commands
-
-Certain things in Linux can only be done in the shell, and other things are just faster if you know the right commands. When shell commands become second nature they can be combined into a text file known as a scripts. Shell Scripting can be very useful for automating some task that are done on a regular basis. Learning the basic shell commands are a good way to start learning how to take full control of your Linux system. Most of these commands can also be used in many UNIX systems as well. You may find that a lot of basic commands are short hand for what you want to do.
-
-To get the manual of a command
-
-    man <program name>
-
-To get information about a program
-
-    info <program name>
-
-Show current directory
-
-    pwd
-
-Show the contents of a file
-
-    cat <[ path ] file name>
-
-Run a command as root
-
-    sudo
-
-or
-
-    su
-
-
-su se usa para iniciar sesión como root, el principal problema al intentar iniciar sesión como root, es que no sirva ninguna contraseña dado que no se ha asignado al usuario root. Para asignar una contraseña a root se usa el comando sudo passwd root.
-
-https://fedora.fandom.com/wiki/Basic_Commands
 
 | &nbsp;&nbsp;Command&nbsp;&nbsp; | Meaning | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Examples&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 | ------- | ------- | -------- |
@@ -185,7 +159,11 @@ https://fedora.fandom.com/wiki/Basic_Commands
 | `less` | is a reader of files | `cat <file_name> \| less` |
 | `sort` | sort the contents of a file alphabetically | |
 
-https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal
+`su` se usa para iniciar sesión como `root`, el principal problema al intentar iniciar sesión como `root`, es que no sirva ninguna contraseña dado que no se ha asignado al usuario `root`. Para asignar una contraseña a root se usa el comando `sudo passwd root`.
+
+###### Reference:
+* https://fedora.fandom.com/wiki/Basic_Commands
+* https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal
 
 
 ## Install .tar.gz, .sh and .rpm packages
@@ -198,9 +176,10 @@ cd <archive>
 sudo make
 ```
 
-https://forums.fedoraforum.org/showthread.php?262523-How-do-I-install-a-tar-gz-file  
-http://www.linuxandubuntu.com/home/how-to-install-targz-or-tgz-packages-in-linux  
-https://askubuntu.com/questions/25961/how-do-i-install-a-tar-gz-or-tar-bz2-file
+###### Reference:
+* https://forums.fedoraforum.org/showthread.php?262523-How-do-I-install-a-tar-gz-file  
+* http://www.linuxandubuntu.com/home/how-to-install-targz-or-tgz-packages-in-linux  
+* https://askubuntu.com/questions/25961/how-do-i-install-a-tar-gz-or-tar-bz2-file
 
 ### Install .sh program
 
@@ -231,8 +210,9 @@ sudo dnf install \
 
 The first time you attempt to install packages from these repositories, the dnf utility prompts you to confirm the signature of the repositories. Confirm it.
 
-https://rpmfusion.org/  
-https://docs.fedoraproject.org/en-US/quick-docs/setup_rpmfusion/
+###### Reference:
+* https://rpmfusion.org/  
+* https://docs.fedoraproject.org/en-US/quick-docs/setup_rpmfusion/
 
 
 ## Install some programs
@@ -248,21 +228,24 @@ sudo dnf install gnome-tweak-tool
 
     sudo dnf install @kde-desktop
 
-https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
-https://fedoraproject.org/wiki/KDE
+###### Reference:
+* https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
+* https://fedoraproject.org/wiki/KDE
 
 ### unrar (requires RPM Fusion)
 
     sudo dnf install unrar
 
-https://fedora.pkgs.org/33/rpmfusion-nonfree-x86_64/unrar-5.9.4-3.fc33.x86_64.rpm.html
+###### Reference:
+* https://fedora.pkgs.org/33/rpmfusion-nonfree-x86_64/unrar-5.9.4-3.fc33.x86_64.rpm.html
 
 Para descomprimir un archivo con WinRar use
 
     unrar x archive.rar
 
-https://www.tecmint.com/how-to-open-extract-and-create-rar-files-in-linux/  
-https://unix.stackexchange.com/questions/246535/how-to-open-rar-file-in-linux
+###### Reference:
+* https://www.tecmint.com/how-to-open-extract-and-create-rar-files-in-linux/  
+* https://unix.stackexchange.com/questions/246535/how-to-open-rar-file-in-linux
 
 ### AnyDesk
 
@@ -297,42 +280,47 @@ Install pangox-compat and try to install AnyDesk again
 
     [root@localhost ~]# dnf --releasever=32 install pangox-compat.x86_64
 
-http://rpm.anydesk.com/howto.html  
-https://www.reddit.com/r/AnyDesk/comments/jojdq1/fedora_33_install_anydesk_through_dnf/
+###### Reference:
+* http://rpm.anydesk.com/howto.html  
+* https://www.reddit.com/r/AnyDesk/comments/jojdq1/fedora_33_install_anydesk_through_dnf/
 
 ### GIT (Don't require RPM Fusion)
 
     sudo dnf install git
 
-https://git-scm.com/download/linux
+###### Reference:
+* https://git-scm.com/download/linux
 
 ### Node.js (Don't require RPM Fusion)
 
     sudo dnf install nodejs
 
-https://nodejs.org/en/download/package-manager/#centos-fedora-and-red-hat-enterprise-linux
+###### Reference:
+* https://nodejs.org/en/download/package-manager/#centos-fedora-and-red-hat-enterprise-linux
 
 #### TypeScript (requires Node.js)
 
     sudo npm install --global typescript
 
-https://www.typescriptlang.org/#installation
+###### Reference:
+* https://www.typescriptlang.org/#installation
 
 #### Angular CLI (requires Node.js and TypeScript)
 
     sudo npm install --global @angular/cli
 
-https://cli.angular.io/
+###### Reference:
+* https://cli.angular.io/
 
 ### MySQL Community Server
 
-https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/  
-https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/#repo-qg-yum-fresh-install
+* https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/  
+* https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/#repo-qg-yum-fresh-install
 
 ### MySQL Workbench
 
-https://dev.mysql.com/downloads/workbench/  
-https://github.com/mleandrojr/mysql-workbench-dark-theme
+* https://dev.mysql.com/downloads/workbench/  
+* https://github.com/mleandrojr/mysql-workbench-dark-theme
 
 ### PostgreSQL
 
@@ -424,11 +412,12 @@ Add New Server
     - username: postgres
     - password: <password>
 
-https://www.postgresql.org/download/linux/redhat/  
-https://fedoraproject.org/wiki/PostgreSQL#User_Creation_and_Database_Creation  
-https://fedoraproject.org/wiki/PostgreSQL#Configuration  
-https://www.pgadmin.org/download/pgadmin-4-rpm/  
-https://www.youtube.com/watch?v=uPqX3hKUaFQ
+###### Reference:
+* https://www.postgresql.org/download/linux/redhat/  
+* https://fedoraproject.org/wiki/PostgreSQL#User_Creation_and_Database_Creation  
+* https://fedoraproject.org/wiki/PostgreSQL#Configuration  
+* https://www.pgadmin.org/download/pgadmin-4-rpm/  
+* https://www.youtube.com/watch?v=uPqX3hKUaFQ
 
 ### Transmission (Don't require RPM Fusion)
 
@@ -448,13 +437,15 @@ Transmission is used to download from torrent
 
     sudo dnf install java-1.8.0-openjdk
 
-https://docs.fedoraproject.org/en-US/quick-docs/installing-java/
+###### Reference:
+* https://docs.fedoraproject.org/en-US/quick-docs/installing-java/
 
 ### VLC (requires RPM Fusion)
 
     sudo dnf install vlc
 
-https://docs.fedoraproject.org/en-US/quick-docs/installing-and-running-vlc/
+###### Reference:
+* https://docs.fedoraproject.org/en-US/quick-docs/installing-and-running-vlc/
 
 ### Adobe Flash (It is not free and open source software)
 
@@ -466,7 +457,8 @@ Install Adobe Flash
 
     sudo dnf install flash-plugin alsa-plugins-pulseaudio libcurl
 
-https://docs.fedoraproject.org/en-US/quick-docs/using-adobe-flash/
+###### Reference:
+* https://docs.fedoraproject.org/en-US/quick-docs/using-adobe-flash/
 
 
 ### Interesting programs
@@ -503,8 +495,9 @@ then restart pulseaudio by executing
     pulseaudio -k
     pulseaudio --start
 
-https://fedoraproject.org/wiki/How_to_debug_PulseAudio_problems  
-https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Pops_when_starting_and_stopping_playback
+###### Reference:
+* https://fedoraproject.org/wiki/How_to_debug_PulseAudio_problems  
+* https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Pops_when_starting_and_stopping_playback
 
 ### Display frozen
 
@@ -548,9 +541,10 @@ Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el
 
 Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca systemd-journal
 
-https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Troubleshooting  
-https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp  
-https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_the_GRUB_2_Boot_Loader/
+###### Reference:
+* https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Troubleshooting  
+* https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp  
+* https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_the_GRUB_2_Boot_Loader/
 
 
 
