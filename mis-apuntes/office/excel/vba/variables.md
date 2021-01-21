@@ -107,5 +107,6 @@ Si se desea que VBA no haga declaraciones implícitas, se debe colocar la instru
 * https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-basic-6/aa240858(v=vs.60)?redirectedfrom=MSDN
 * https://docs.microsoft.com/en-us/dotnet/visual-basic/programming-guide/language-features/declared-elements/declared-element-names
 * https://docs.microsoft.com/en-us/office/vba/Language/Concepts/Getting-Started/declaring-variables
+* https://docs.microsoft.com/en-us/office/vba/Language/Concepts/Getting-Started/creating-object-variables
 
 
