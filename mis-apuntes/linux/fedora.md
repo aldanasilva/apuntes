@@ -474,6 +474,39 @@ Las siguientes aplicaciones se descargan de la página web en .tar.gz, .sh o .rp
 * OpenJDK (https://jdk.java.net/)
 
 
+## Creating shortcuts to non installed programs
+
+To create a shortcut to a non-installed application, you must create a `<shortcut-name>.desktop` document in `/usr/share/applications/`.
+
+The basic structure of `<shortcut-name>.desktop` is:
+
+```
+[Desktop Entry]
+Name=Name of Application
+Exec=/path/to/executable
+Icon=/path/to/icon
+Terminal=false
+Type=Application
+Categories=Development;IDE;
+```
+
+### Example for Spring Tool Suite 4
+
+    sudo nano /usr/share/application/sts.desktop
+
+The content of `sts.desktop` is:
+
+```
+[Desktop Entry]
+Name=Spring Tool Suite 4
+Exec=/home/aldanasilva/programs/sts-4.8.1.RELEASE/SpringToolSuite4
+Icon=/home/aldanasilva/programs/sts-4.8.1.RELEASE/icon.xpm
+Terminal=false
+Type=Application
+Categories=Development;IDE;
+```
+
+
 ## Troubleshooting
 
 ### Sound - Pops when starting and stopping playback
@@ -574,9 +607,6 @@ Validar instaladores en páginas oficiales
 
 
 
-Pending to put in this document
-
-Create shortcuts to applications not installed
 
 
 
