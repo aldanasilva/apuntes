@@ -45,3 +45,13 @@ Se puede cambiar el tamaño de varios arreglos en la misma instrucción `ReDim` 
 En cada entrada en la lista de límites puede especificar el límite inferior y superior de cada dimensión. El límite inferior es siempre 0 (cero). El límite superior es el valor superior posible para este índice para cada dimensión, no la longitud de la dimensión (que es el límite superior más uno). El índice de cada dimensión puede variar desde 0 hasta el valor del límite superior.
 
 >**Nota:** La instrucción `ReDim` no puede cambiar el tipo de dato de un arreglo o sus elementos.
+
+###### Referencias:
+* https://docs.microsoft.com/en-us/previous-versions/visualstudio/foxpro/awcwf6ee(v=vs.71)?redirectedfrom=MSDN
+* https://docs.microsoft.com/en-us/office/vba/Language/Concepts/Getting-Started/declaring-arrays
+* https://docs.microsoft.com/en-us/office/vba/Language/Reference/User-Interface-Help/redim-statement
+* https://docs.microsoft.com/en-us/dotnet/visual-basic/language-reference/statements/redim-statement
+
+
+
+
