@@ -15,7 +15,7 @@ yum uses an online repository by default, but you can also configure it to use a
 
 Important: As of Fedora 22, yum has been replaced with DNF.
 
-https://fedoraproject.org/wiki/Yum
+https://fedoraproject.org/wiki/Yum  
 http://yum.baseurl.org/wiki/YumCommands.html
 
 
@@ -144,41 +144,89 @@ https://fedora.fandom.com/wiki/Basic_Commands
 
 https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal
 
+## Install .tar.gz, .rpm and .sh packages
 
+### Install .tar.gz program
 
-
-
-Install .tar.gz program
-
-tar xvf archive.tar.gz
-cd archive
+```
+tar xvf <archive>.tar.gz
+cd <archive>
 sudo make
+```
 
-https://forums.fedoraforum.org/showthread.php?262523-How-do-I-install-a-tar-gz-file
-http://www.linuxandubuntu.com/home/how-to-install-targz-or-tgz-packages-in-linux
+https://forums.fedoraforum.org/showthread.php?262523-How-do-I-install-a-tar-gz-file  
+http://www.linuxandubuntu.com/home/how-to-install-targz-or-tgz-packages-in-linux  
 https://askubuntu.com/questions/25961/how-do-i-install-a-tar-gz-or-tar-bz2-file
 
+### Install .sh program
 
-dnf search unrar
+    $ sh <program>.sh
+
+### Install .rpm programas
+
+    $ sudo dnf install <program>.rpm
+
+## RPM Fusion
+
+RPM Fusion provides software that the Fedora Project or Red Hat doesn't want to ship. That software is provided as precompiled RPMs for all current Fedora versions and current Red Hat Enterprise Linux or clones versions; you can use the RPM Fusion repositories with tools like yum and PackageKit.
+
+To enable the Free repository, use:
+
+```
+sudo dnf install \
+  https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+```
+
+Optionally, enable the Nonfree repository:
+
+```
+sudo dnf install \
+  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+```
+
+The first time you attempt to install packages from these repositories, the dnf utility prompts you to confirm the signature of the repositories. Confirm it.
+
+https://rpmfusion.org/  
+https://docs.fedoraproject.org/en-US/quick-docs/setup_rpmfusion/
+
+## Install some programs
+
+### GNOME Tweaks (Don't require RPM Fusion)
+
+    sudo dnf install gnome-tweaks
+
+Con la herramienta Tweaks, se puede modificar la interfaz de linux, adicionando botones de minimizar y maximizar en las ventanas, etc. Tweaks se descarga en la termina con el siguiente comando
+sudo dnf install gnome-tweak-tool
+
+### KDE
+
+    sudo dnf install @kde-desktop
+
+
+https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
+https://fedoraproject.org/wiki/KDE
+
+### unrar (requires RPM Fusion)
+
+    sudo dnf install unrar
 
 https://fedora.pkgs.org/33/rpmfusion-nonfree-x86_64/unrar-5.9.4-3.fc33.x86_64.rpm.html
 
 Para descomprimir un archivo con WinRar use
 
-unrar x archive.rar
+    unrar x archive.rar
 
-
-https://www.tecmint.com/how-to-open-extract-and-create-rar-files-in-linux/
+https://www.tecmint.com/how-to-open-extract-and-create-rar-files-in-linux/  
 https://unix.stackexchange.com/questions/246535/how-to-open-rar-file-in-linux
 
+### AnyDesk
 
-Installing AnyDesk
-
-Run commands as root (su or sudo -i)
+Run commands as root (`su` or `sudo -i`)
 
 Add the repository
 
-cat > /etc/yum.repos.d/AnyDesk-Fedora.repo << "EOF" 
+```
+[root@localhost ~]# cat > /etc/yum.repos.d/AnyDesk-Fedora.repo << "EOF" 
 [anydesk]
 name=AnyDesk Fedora - stable
 baseurl=http://rpm.anydesk.com/fedora/$basearch/
@@ -186,170 +234,64 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY
 EOF
+```
 
-Install AnyDesk (as root user)
+Install AnyDesk
 
-dnf install anydesk
+    [root@localhost ~]# dnf install anydesk
 
 If you have the next error
 
+```
 Error: 
  Problem: conflicting requests
-- nothing provides libpangox-1.0.so.0()(64bit) needed by anydesk-6.0.1-1.x86_64
+  - nothing provides libpangox-1.0.so.0()(64bit) needed by anydesk-6.0.1-1.x86_64
+```
 
 Install pangox-compat and try to install AnyDesk again
 
-dnf --releasever=32 install pangox-compat.x86_64
+    [root@localhost ~]# dnf --releasever=32 install pangox-compat.x86_64
 
-http://rpm.anydesk.com/howto.html
+http://rpm.anydesk.com/howto.html  
 https://www.reddit.com/r/AnyDesk/comments/jojdq1/fedora_33_install_anydesk_through_dnf/
 
+### GIT (Don't require RPM Fusion)
 
-
-Install GIT
-
-sudo dnf install git
+    sudo dnf install git
 
 https://git-scm.com/download/linux
 
+### Node.js (Don't require RPM Fusion)
 
-
-De GNOME a KDE
-
-dnf swap @gnome-desktop @kde-desktop
-
-https://unix.stackexchange.com/questions/483692/safely-uninstalling-gnome-desktop-environment-on-fedora-29
-
-
-
-Validar instaladores en páginas oficiales
-
-dnf install
- - chrome-remote-desktop
- - blender
- - stellarium
- - gnome-tweaks (la versión del instalado en rpm coincide con la búsqueda en dnf)
- -
-
-
-Las siguientes aplicaciones se descargan de la página web en rpm y se instalan con dnf install ./<package_name>
-
-Google chrome (https://www.google.com/chrome/)
-Skype (https://www.skype.com/en/get-skype/)
-NodeJs (https://nodejs.org/en/)
-
-
-
-
-Instalación de paquetes sh
-
-    $ sh program.sh
-
-
-Sound troubleshooting
-
-Pops when starting and stopping playback
-
-PulseAudio can suspend sinks after a period of inactivity. This can make an audible noise (like a crack/pop/scratch). Sometimes even when move the slider volume, or open and close windows (KDE4). This behavior is enabled in default configuration files:
-
-/etc/pulse/default.pa
-load-module module-suspend-on-idle
-
-/etc/pulse/system.pa
-load-module module-suspend-on-idle
-
-Commenting that line in relevant file fixes that issue. Next you must to restart the PulseAudio service
-
-then restart pulseaudio by executing
-
-pulseaudio -k
-pulseaudio --start
-
-
-https://fedoraproject.org/wiki/How_to_debug_PulseAudio_problems
-
-https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Pops_when_starting_and_stopping_playback
-
-
-
-Pending to put in this document
-
-Installing tweaks
-Installing KDE in fedora
-Create shortcuts to applications not installed
-
-
-
-
-
-
-
-# To download from torrent
-dnf install transmission
-
-
-
-
-
-PackageKit – PackageKit gui tool (‘add/remove software’ in your menu)
-yumex – Yum Extender
-
-
-
-
-Con la herramienta Tweaks, se puede modificar la interfaz de linux, adicionando botones de minimizar y maximizar en las ventanas, etc. Tweaks se descarga en la termina con el siguiente comando
-sudo dnf install gnome-tweak-tool
-
-
-
-
-To install Node.js
-
-sudo dnf install nodejs
+    sudo dnf install nodejs
 
 https://nodejs.org/en/download/package-manager/#centos-fedora-and-red-hat-enterprise-linux
 
+#### TypeScript (requires Node.js)
 
-To install TypeScript
-
-sudo npm install --global typescript
+    sudo npm install --global typescript
 
 https://www.typescriptlang.org/#installation
 
+#### Angular CLI (requires Node.js and TypeScript)
 
-To install Angular CLI
-
-sudo npm install --global @angular/cli
+    sudo npm install --global @angular/cli
 
 https://cli.angular.io/
 
+### MySQL Community Server
 
-To install MySQL Community Server
-
-https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/
+https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/  
 https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/#repo-qg-yum-fresh-install
 
+### MySQL Workbench
 
-To install MySQL Workbench
-
-https://dev.mysql.com/downloads/workbench/
+https://dev.mysql.com/downloads/workbench/  
 https://github.com/mleandrojr/mysql-workbench-dark-theme
 
+### PostgreSQL
 
-
-
-Angular
-
-
-
-ng serve
-ng serve -o
-ng serve --port 4201
-
-
-To install PostgreSQL
-
-Log as root to do this
+Log as `root` to do this
 
 Install the repository RPM:
 
@@ -437,11 +379,172 @@ Add New Server
     - username: postgres
     - password: <password>
 
-https://www.postgresql.org/download/linux/redhat/
-https://fedoraproject.org/wiki/PostgreSQL#User_Creation_and_Database_Creation
-https://fedoraproject.org/wiki/PostgreSQL#Configuration
-https://www.pgadmin.org/download/pgadmin-4-rpm/
+https://www.postgresql.org/download/linux/redhat/  
+https://fedoraproject.org/wiki/PostgreSQL#User_Creation_and_Database_Creation  
+https://fedoraproject.org/wiki/PostgreSQL#Configuration  
+https://www.pgadmin.org/download/pgadmin-4-rpm/  
 https://www.youtube.com/watch?v=uPqX3hKUaFQ
+
+### Transmission (Don't require RPM Fusion)
+
+    sudo dnf install transmission
+
+Transmission is used to download from torrent
+
+### Stellarium
+
+    sudo dnf install stellarium
+
+### Blender
+
+    sudo dnf install blender
+
+
+## Troubleshooting
+
+### Sound - Pops when starting and stopping playback
+
+PulseAudio can suspend sinks after a period of inactivity. This can make an audible noise (like a crack/pop/scratch). Sometimes even when move the slider volume, or open and close windows (KDE4). This behavior is enabled in default configuration files:
+
+/etc/pulse/default.pa
+
+    load-module module-suspend-on-idle
+
+/etc/pulse/system.pa
+
+    load-module module-suspend-on-idle
+
+Commenting that line in relevant file fixes that issue. Next you must to restart the PulseAudio service
+
+then restart pulseaudio by executing
+
+    pulseaudio -k
+    pulseaudio --start
+
+https://fedoraproject.org/wiki/How_to_debug_PulseAudio_problems  
+https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Pops_when_starting_and_stopping_playback
+
+### Display frozen
+
+Si la pantalla se queda congelada en cualquier momento, y el pc no responde en nada, reiniciarlo y tan pronto inicie sesión, abra la consola de comandos
+
+Abra el monitor del sistema con el comando `top -i`
+
+Si ve un proceso llamado `systemd-journal` ejecutándose y ocupando casi el 100% del CPU, vea el log de `journal` ejecutando el comando `journalctl`
+
+Cuando haya abierto el log de journal, presione la tecla END para ir al final del log.
+
+Si ve el siguiente error
+
+```
+Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0: AER: Corrected error received: 0000:00:1d.0
+Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
+Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:   device [8086:a29e] error status/mask=00000001/00002000
+Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:    [ 0] RxErr
+```
+
+Agregue la opción `pci=nommconf` al kernel, esta opción se ediciona en el archivo `/etc/default/grub`, se agrega al final de la línea `GRUB_CMDLINE_LINUX`
+
+```
+[andresaldana@localhost ~]$ sudo cat /etc/default/grub
+[sudo] password for andresaldana: 
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="resume=UUID=7a096366-bfc0-4ebd-a592-ba72625eebc6 rhgb quiet pci=nommconf"
+GRUB_DISABLE_RECOVERY="true"
+GRUB_ENABLE_BLSCFG=true
+```
+
+Luego se reinicia el pc.
+
+Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el comando
+
+    sudo grub2-mkconfig
+
+Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca systemd-journal
+
+https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Troubleshooting
+https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
+https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_the_GRUB_2_Boot_Loader/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Validar instaladores en páginas oficiales
+
+dnf install
+ - chrome-remote-desktop
+
+
+Las siguientes aplicaciones se descargan de la página web en rpm y se instalan con dnf install ./<package_name>
+
+Google chrome (https://www.google.com/chrome/)
+Skype (https://www.skype.com/en/get-skype/)
+
+
+
+
+
+
+
+
+Pending to put in this document
+
+Create shortcuts to applications not installed
+
+
+
+
+
+
+
+
+
+
+
+
+PackageKit – PackageKit gui tool (‘add/remove software’ in your menu)
+yumex – Yum Extender
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Angular
+
+
+
+ng serve
+ng serve -o
+ng serve --port 4201
+
+
 
 
 
@@ -471,25 +574,7 @@ https://www.postgresql.org/docs/13/creating-cluster.html
 
 
 
-RPM Fusion
 
-RPM Fusion provides software that the Fedora Project or Red Hat doesn't want to ship. That software is provided as precompiled RPMs for all current Fedora versions and current Red Hat Enterprise Linux or clones versions; you can use the RPM Fusion repositories with tools like yum and PackageKit.
-
-To enable the Free repository, use:
-
-sudo dnf install \
-  https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-
-Optionally, enable the Nonfree repository:
-
-sudo dnf install \
-  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-
-The first time you attempt to install packages from these repositories, the dnf utility prompts you to confirm the signature of the repositories. Confirm it.
-
-
-https://rpmfusion.org/
-https://docs.fedoraproject.org/en-US/quick-docs/setup_rpmfusion/
 
 
 
@@ -550,45 +635,6 @@ systemctl
 
 
 
-Si la pantalla se queda congelada en cualquier momento, y el pc no responde en nada, reiniciarlo y tan pronto inicie sesión, abra la consola de comandos
-
-Abra el monitor del sistema con el comando top -i
-
-Si ve un proceso llamado systemd-journal ejecutándose y ocupando casi el 100% del CPU, vea el log de journal ejecutando el comando journalctl
-
-Cuando haya abierto el log de journal, presione la techa END para ir al final del log.
-
-Si ve el siguiente error
-
-Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0: AER: Corrected error received: 0000:00:1d.0
-Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
-Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:   device [8086:a29e] error status/mask=00000001/00002000
-Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:    [ 0] RxErr
-
-Agregue la opción pci=nommconf al kernel, esta opción se ediciona en el archivo /etc/default/grub, se agrega al final de la línea GRUB_CMDLINE_LINUX
-
-[andresaldana@localhost ~]$ sudo cat /etc/default/grub
-[sudo] password for andresaldana: 
-GRUB_TIMEOUT=5
-GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
-GRUB_DEFAULT=saved
-GRUB_DISABLE_SUBMENU=true
-GRUB_TERMINAL_OUTPUT="console"
-GRUB_CMDLINE_LINUX="resume=UUID=7a096366-bfc0-4ebd-a592-ba72625eebc6 rhgb quiet pci=nommconf"
-GRUB_DISABLE_RECOVERY="true"
-GRUB_ENABLE_BLSCFG=true
-
-Luego se reinicia el pc.
-
-Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el comando
-
-sudo grub2-mkconfig
-
-Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca systemd-journal
-
-https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Troubleshooting
-https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
-https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_the_GRUB_2_Boot_Loader/
 
 
 
