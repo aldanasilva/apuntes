@@ -1,11 +1,64 @@
 # Linux Fedora
 
+## Installation
+
+
+### Recommended Partitioning Scheme
+
+In most cases, at least the following mount points should always be created:
+
+#### /boot - 1 GB
+
+This partition contains the operating system kernel, which allows Fedora to boot. It also contains other files used during the bootstrap process. Due to the limitations of most firmware, creating a separate, small standard partition for this directory is recommended. In most scenarios, a 1 GB `/boot` partition is adequate.
+
+Important: note that the `/boot` directory can not be placed on a LVM logical volume. Use a standard partition.
+
+#### / (root) - 25 GB
+
+This is where the root directory is located. The root directory is the top level of the directory structure. By default, all files are written to this partition unless a different partition is mounted in the path being written to (for example, `/boot` or `/home`). If you follow the recommended scheme described in this section, this will be the partition where most software packages will be installed.
+
+Note: The `/` mount point is the top of the Linux Filesystem Hierarchy, and is referred to as the root file system, or root. The `/root` directory, sometimes pronounced "slash-root", is the home directory for the `root` user.
+
+#### /home - at least 10 GB
+
+To store user data separately from system data, create a dedicated mount point for the `/home` directory. This partition should be sized based on the amount of data that will be stored locally, number of users, and so on. This will allow you to upgrade or reinstall Fedora without erasing user data files. During the installation, a separate `/home` partition will be created if there are 50 GB or more free space for your Fedora installation.
+
+When using Fedora as a workstation for normal use with a graphical environment, this mount point should have the most disk space assigned to it, as it will likely hold the most data (user settings, images, videos, etc).
+
+#### swap - based on your system parameters
+
+Swap partitions support virtual memory; data is written to them when there is not enough RAM to store the data your system is processing. This partition’s size is a function of system memory workload, not total system memory, and therefore is not equal to the total system memory size. Therefore, it is important to analyze what applications a system will be running and the load those applications will serve in order to determine the system memory workload. Application providers and developers should be able to provide some guidance.
+
+When the system runs out of swap space, the kernel terminates processes as the system RAM memory is exhausted. Configuring too much swap space results in storage devices being allocated but idle and is a poor use of resources. Too much swap space can also hide memory leaks. The maximum size for a swap partition and other additional information can be found in the mkswap(8) man page.
+
+The table below provides the recommended size of a swap partition depending on the amount of RAM in your system and whether you want sufficient memory for your system to hibernate. If you let the installation program partition your system automatically, the swap partition size will be established using these guidelines. Automatic partitioning setup assumes hibernation is not in use, and the maximum size of the swap partition is limited to 10% of the total size of the hard drive. If you want to set up enough swap space to allow for hibernation, or if you want to set the swap partition size to more than 10% of the system’s storage space, you must edit the partitioning layout manually.
+
+**Recommended System Swap Space**
+| Amount of RAM in the system | Recommended swap space | Recommended swap space if allowing for hibernation |
+| --------------------------- | ---------------------- | -------------------------------------------------- |
+| less than 2 GB | 2 times the amount of RAM | 3 times the amount of RAM |
+| 2 GB - 8 GB | Equal to the amount of RAM | 2 times the amount of RAM |
+| 8 GB - 64 GB | 0.5 times the amount of RAM | 1.5 times the amount of RAM |
+| more than 64 GB | workload dependent | hibernation not recommended |
+
+At the border between each range listed above (for example, a system with 2 GB, 8 GB, or 64 GB of system RAM), discretion can be exercised with regard to chosen swap space and hibernation support. If your system resources allow for it, increasing the swap space may lead to better performance.
+
+Distributing swap space over multiple storage devices - particularly on systems with fast drives, controllers and interfaces - also improves swap space performance.
+
+#### EFI System Partition (200 MB)
+
+UEFI-based systems require an EFI System Partition at least 50 MB in size (recommended size is 200 MB), regardless of the partitioning scheme.
+
+>**Important:** If your system requires an EFI System Partition, this partition must be created as a standard physical partition. It can not reside on an LVM volume or a Btrfs subvolume.
+
+https://docs.fedoraproject.org/en-US/fedora/f33/install-guide/install/Installing_Using_Anaconda/#sect-installation-gui-manual-partitioning-recommended
+
+
 ## Package management system
 
 Fedora is a distribution that uses a package management system. This system is based on rpm , the RPM Package Manager, with several higher level tools built on top of it, most notably PackageKit (default gui) and yum (command line tool). As of Fedora 22, yum has been replaced by dnf. The Gnome Package Manager is another GUI package manager.
 
 https://fedoraproject.org/wiki/Package_management_system
-
 
 ### yum – Yellowdog Updater Modified
 
@@ -18,7 +71,6 @@ Important: As of Fedora 22, yum has been replaced with DNF.
 https://fedoraproject.org/wiki/Yum  
 http://yum.baseurl.org/wiki/YumCommands.html
 
-
 ### dnf – Dandified yum
 
 DNF is a software package manager that installs, updates, and removes packages on RPM-based Linux distributions. It automatically computes dependencies and determines the actions required to install packages. DNF also makes it easier to maintain groups of machines, eliminating the need to manually update each one using rpm. Introduced in Fedora 18, it has been the default package manager since Fedora 22.
@@ -26,7 +78,6 @@ DNF is a software package manager that installs, updates, and removes packages o
 DNF or Dandified yum is the next generation version of yum. It roughly maintains CLI compatibility with yum and defines a strict API for extensions and plugins. Plugins can modify or extend features of DNF or provide additional CLI commands on top of those mentioned below. If you know the name of such a command (including commands mentioned bellow), you may find/install the package which provides it using the appropriate virtual provide in the form of dnf-command(<alias>) where <alias> is the name of the command; e.g. dnf-command(repoquery) for a repoquery command (the same applies to specifying dependencies of packages that require a particular command).
 
 https://fedoraproject.org/wiki/DNF
-
 
 ### rpm – RPM package manager
 
@@ -40,13 +91,13 @@ The main rpm operators
 
 | Operation | Short Option | Long Option |     |
 | --------- | ------------ | ----------- | --- |
-| install | -I | --install | Install a package, rpm -i allows you to install multiple instances of the same (identical) package. |
-| upgrade/install | -U | --upgrade | Install or update a package. The rpm –U command works for both installation of new packages and for upgrading. |
-| remove | -e | --erase | Removes a package. To remove a package, use the -e option to the rpm command, short for erase. |
-| hence (feedback during -U) | -h | | The -h option to the rpm command prints out # signs, also called hash marks (hence the -h). These hash marks provide some confirmation that the rpm command is still running. This is important, since large packages may take a long time to install or upgrade. |
-| verbose (feedback during -U) | -v | --verbose | In addition to hash marks, you can get more verbose output from the tight-lipped rpm command. The -v option to the rpm command tells the command to print out verbose information as the command runs. |
-| query | -q | --query | The -q option tells the rpm command to query the RPM database. Use the rpm –q command to quickly verify a package has been installed. To verify, you need to use the name of the installed package, not the name of the RPM file. |
-|all | -a | --all | The –a option tells the rpm command to query for all packages. |
+| install | `-I` | `--install` | The –i option tells the rpm command to run an installation operation, which, as you’d suspect, installs packages. You should normally install packages with rpm -U, not rpm -i. One of the main reasons is that rpm -i allows you to install multiple instances of the same (identical) package. This is usually not what you want. |
+| upgrade/install | `-U` | `--upgrade` | The rpm –U command works for both installation of new packages and for upgrading. |
+| remove | `-e` | `--erase` | To remove a package, use the -e option to the rpm command, short for erase. |
+| hence (feedback during -U) | `-h` | | The -h option to the rpm command prints out # signs, also called hash marks (hence the -h). These hash marks provide some confirmation that the rpm command is still running. This is important, since large packages may take a long time to install or upgrade. |
+| verbose (feedback during -U) | `-v` | `--verbose` | In addition to hash marks, you can get more verbose output from the tight-lipped rpm command. The -v option to the rpm command tells the command to print out verbose information as the command runs. |
+| query | `-q` | `--query` | The -q option tells the rpm command to query the RPM database. Use the rpm –q command to quickly verify a package has been installed. To verify, you need to use the name of the installed package, not the name of the RPM file. |
+|all | `-a` | `--all` | The –a option tells the rpm command to query for all packages. |
 
 #### Some rpm commands
 
@@ -78,7 +129,6 @@ https://fedoraproject.org/wiki/Rpm
 http://rpm.org/  
 https://docs.fedoraproject.org/ro/Fedora_Draft_Documentation/0.1/html/RPM_Guide/ch02s03.html  
 https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html-single/RPM_Guide/index.html#ch-using-rpm
-
 
 
 ## Terminal
@@ -114,13 +164,6 @@ or
 
 su se usa para iniciar sesión como root, el principal problema al intentar iniciar sesión como root, es que no sirva ninguna contraseña dado que no se ha asignado al usuario root. Para asignar una contraseña a root se usa el comando sudo passwd root.
 
-
-
-
-
-
-
-
 https://fedora.fandom.com/wiki/Basic_Commands
 
 | &nbsp;&nbsp;Command&nbsp;&nbsp; | Meaning | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Examples&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
@@ -144,7 +187,8 @@ https://fedora.fandom.com/wiki/Basic_Commands
 
 https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal
 
-## Install .tar.gz, .rpm and .sh packages
+
+## Install .tar.gz, .sh and .rpm packages
 
 ### Install .tar.gz program
 
@@ -165,6 +209,7 @@ https://askubuntu.com/questions/25961/how-do-i-install-a-tar-gz-or-tar-bz2-file
 ### Install .rpm programas
 
     $ sudo dnf install <program>.rpm
+
 
 ## RPM Fusion
 
@@ -189,6 +234,7 @@ The first time you attempt to install packages from these repositories, the dnf 
 https://rpmfusion.org/  
 https://docs.fedoraproject.org/en-US/quick-docs/setup_rpmfusion/
 
+
 ## Install some programs
 
 ### GNOME Tweaks (Don't require RPM Fusion)
@@ -201,7 +247,6 @@ sudo dnf install gnome-tweak-tool
 ### KDE
 
     sudo dnf install @kde-desktop
-
 
 https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
 https://fedoraproject.org/wiki/KDE
@@ -399,6 +444,43 @@ Transmission is used to download from torrent
 
     sudo dnf install blender
 
+### Java 8 (OpenJDK)
+
+    sudo dnf install java-1.8.0-openjdk
+
+https://docs.fedoraproject.org/en-US/quick-docs/installing-java/
+
+### VLC (requires RPM Fusion)
+
+    sudo dnf install vlc
+
+https://docs.fedoraproject.org/en-US/quick-docs/installing-and-running-vlc/
+
+### Adobe Flash (It is not free and open source software)
+
+Install the Adobe DNF repository
+
+    sudo dnf install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
+
+Install Adobe Flash
+
+    sudo dnf install flash-plugin alsa-plugins-pulseaudio libcurl
+
+https://docs.fedoraproject.org/en-US/quick-docs/using-adobe-flash/
+
+
+### Interesting programs
+
+Las siguientes aplicaciones se descargan de la página web en .tar.gz, .sh o .rpm, y se instalan manualmente.
+
+* JDownloader (https://jdownloader.org/download/index)
+* Google chrome (https://www.google.com/chrome/)
+* Skype (https://www.skype.com/en/get-skype/)
+* Spring Tool Suite (https://spring.io/tools)
+* Chrome Remote Desktop (https://remotedesktop.google.com/access)
+* Postman (https://www.postman.com/downloads/)
+* OpenJDK (https://jdk.java.net/)
+
 
 ## Troubleshooting
 
@@ -466,11 +548,9 @@ Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el
 
 Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca systemd-journal
 
-https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Troubleshooting
-https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
+https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Troubleshooting  
+https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp  
 https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_the_GRUB_2_Boot_Loader/
-
-
 
 
 
@@ -489,14 +569,9 @@ https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/
 
 Validar instaladores en páginas oficiales
 
-dnf install
- - chrome-remote-desktop
 
 
-Las siguientes aplicaciones se descargan de la página web en rpm y se instalan con dnf install ./<package_name>
 
-Google chrome (https://www.google.com/chrome/)
-Skype (https://www.skype.com/en/get-skype/)
 
 
 
@@ -652,6 +727,10 @@ https://docs.fedoraproject.org/en-US/Fedora/23/html/System_Administrators_Guide/
 
 
 Ubuntu
+
+
+
+
 
 
 
