@@ -81,35 +81,35 @@ https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html-single/
 
 
 
-Terminal
+## Terminal
 
-Basic Commands
+### Basic Commands
 
 Certain things in Linux can only be done in the shell, and other things are just faster if you know the right commands. When shell commands become second nature they can be combined into a text file known as a scripts. Shell Scripting can be very useful for automating some task that are done on a regular basis. Learning the basic shell commands are a good way to start learning how to take full control of your Linux system. Most of these commands can also be used in many UNIX systems as well. You may find that a lot of basic commands are short hand for what you want to do.
 
 To get the manual of a command
 
-man <program name>
+    man <program name>
 
 To get information about a program
 
-info <program name>
+    info <program name>
 
 Show current directory
 
-pwd
+    pwd
 
 Show the contents of a file
 
-cat <[ path ] file name>
+    cat <[ path ] file name>
 
 Run a command as root
 
-sudo
+    sudo
 
 or
 
-su
+    su
 
 
 su se usa para iniciar sesión como root, el principal problema al intentar iniciar sesión como root, es que no sirva ninguna contraseña dado que no se ha asignado al usuario root. Para asignar una contraseña a root se usa el comando sudo passwd root.
@@ -123,27 +123,24 @@ su se usa para iniciar sesión como root, el principal problema al intentar inic
 
 https://fedora.fandom.com/wiki/Basic_Commands
 
-
-
-whoami → current username
-
-pwd → print working directory
-cd → change directory
-mkdir → make directory
-ls → list (using: -a, list all)
-mv → move
-cp → copy
-rm → remove (with -r removes recursively, with this option you can remove a folder)
-rmdir → remove directory
-wc → word count (using -l switch to tell we only want line count, -w is count of words and )
-man → manual
-su → superuser or switch user (When used with no arguments it assumes you want to change to the root user (hence the first interpretation of the name), but you can pass a username to it in order to switch to a specific user account (the second interpretation)). Logout using Ctrl-D shortcut.
-sudo → switch user and do this command
-
-cat → concatenate (is used to view the content of a file, like less)
-
-less → is a reader of files
-sort → sort the contents of a file alphabetically
+| &nbsp;&nbsp;Command&nbsp;&nbsp; | Meaning | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Examples&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| ------- | ------- | -------- |
+| `whoami` | current username | |
+| `pwd` | **p**rint **w**orking **d**irectory | |
+| `cd` | **c**hange **d**irectory | |
+| `mkdir` | **m**a**k**e **dir**ectory | |
+| `ls` | **l**i**s**t (using: -a, list all) | |
+| `mv` | **m**o**v**e | `mv origen destino` |
+| `cp` | **c**o**p**y | `cp origen destino` |
+| `rm` | **r**e**m**ove (with -r removes recursively, with this option you can remove a folder) | `rm <file_path>` |
+| `rmdir` | **r**e**m**ove **dir**ectory | |
+| `wc` | **w**ord **c**ount (using -l switch to tell we only want line count, -w is count of words and ) | |
+| `man` | **man**ual | `man dnf` |
+| `su` | **s**uper**u**ser or **s**witch **u**ser (When used with no arguments it assumes you want to change to the root user (hence the first interpretation of the name), but you can pass a username to it in order to switch to a specific user account (the second interpretation)). Logout using Ctrl-D shortcut. | |
+| `sudo` | **s**witch **u**ser and **do** this command | |
+| `cat` | concatenate (is used to view the content of a file, like less) | `cat <file_name>` |
+| `less` | is a reader of files | `cat <file_name> \| less` |
+| `sort` | sort the contents of a file alphabetically | |
 
 https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal
 
