@@ -4,32 +4,43 @@
 
 * [Installation](#installation)
   * [Recommended Partitioning Scheme](#recommended-partitioning-scheme)
+* [Terminal](#terminal)
 * [Package management system](#package-management-system)
   * [yum – Yellowdog Updater Modified](#yum--yellowdog-updater-modified)
   * [dnf – Dandified yum](#dnf--dandified-yum)
   * [rpm – RPM package manager](#rpm--rpm-package-manager)
-* [Terminal](#terminal)
 * [Install .tar.gz, .sh and .rpm packages](#install-targz-sh-and-rpm-packages)
-* [Install some programs](#install-some-programs)
+* [RPM Fusion](rpm-fusion)
+* [Customisation](customisation)
   * [GNOME Tweaks](#gnome-tweaks)
   * [KDE](#kde)
-  * [unrar](#unrar)
-  * [AnyDesk](#anydesk)
-  * [GIT](#git)
-  * [Node.js](#nodejs)
-    * [TypeScipt](#typescript)
-    * [Angular CLI](#angular-cli)
-  * [MySQL](#mysql)
-    * [MySQL Community Server](#mysql-community-server)
-    * [MySQL Workbench](#mysql-workbench)
-  * [PostgreSQL](#postgresql)
-  * [Transmission](#transmission)
-  * [Stellarium](#stellarium)
-  * [Blender](#blender)
-  * [Java 8 (OpenJDK)](#java-8-openjdk)
-  * [VLC](#vlc)
-  * [Adobe Flash](#adobe-flash)
-  * [Interesting programs](#interesting-programs)
+* [Install some programs](#install-some-programs)
+  * [Development](development)
+    * [Google Chrome](#google-chrome)
+    * [GIT](#git)
+    * [Java 8 (OpenJDK)](#java-8-openjdk)
+    * [Spring Tool Suite](#spring-tool-suite)
+    * [MySQL](#mysql)
+      * [MySQL Community Server](#mysql-community-server)
+      * [MySQL Workbench](#mysql-workbench)
+    * [PostgreSQL](#postgresql)
+    * [Postman](#postman)
+    * [Node.js](#nodejs)
+      * [TypeScipt](#typescript)
+      * [Angular CLI](#angular-cli)
+    * [Visual Studio Code](visual-studio-code)
+  * [Connectivity](#connectivity)
+    * [Skype](#skype)
+    * [Chrome Remote Desktop](#chrome-remote-desktop)
+    * [AnyDesk](#anydesk)
+  * [More](#more)
+    * [unrar](#unrar)
+    * [Transmission](#transmission)
+    * [JDownloader](#jdownloader)
+    * [Stellarium](#stellarium)
+    * [Blender](#blender)
+    * [VLC](#vlc)
+    * [Adobe Flash](#adobe-flash)
 * [Desktop entries](#desktop-entries)
 * [Troubleshooting](#troubleshooting)
   * [Sound - Pops when starting and stopping playback](#sound---pops-when-starting-and-stopping-playback)
@@ -91,6 +102,36 @@ UEFI-based systems require an EFI System Partition at least 50 MB in size (recom
 * https://docs.fedoraproject.org/en-US/fedora/f33/install-guide/install/Installing_Using_Anaconda/#sect-installation-gui-manual-partitioning-recommended
 
 
+## Terminal
+
+### Basic Commands
+
+| &nbsp;&nbsp;Command&nbsp;&nbsp; | Meaning | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Examples&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| ------- | ------- | -------- |
+| `whoami` | current username | |
+| `pwd` | **p**rint **w**orking **d**irectory | |
+| `cd` | **c**hange **d**irectory | |
+| `mkdir` | **m**a**k**e **dir**ectory | |
+| `ls` | **l**i**s**t (using: -a, list all) | |
+| `mv` | **m**o**v**e | `mv origen destino` |
+| `cp` | **c**o**p**y | `cp origen destino` |
+| `rm` | **r**e**m**ove (with -r removes recursively, with this option you can remove a folder) | `rm <file_path>` |
+| `rmdir` | **r**e**m**ove **dir**ectory | |
+| `wc` | **w**ord **c**ount (using -l switch to tell we only want line count, -w is count of words and ) | |
+| `man` | **man**ual | `man dnf` |
+| `su` | **s**uper**u**ser or **s**witch **u**ser (When used with no arguments it assumes you want to change to the root user (hence the first interpretation of the name), but you can pass a username to it in order to switch to a specific user account (the second interpretation)). Logout using Ctrl-D shortcut. | |
+| `sudo` | **s**witch **u**ser and **do** this command | |
+| `cat` | concatenate (is used to view the content of a file, like less) | `cat <file_name>` |
+| `less` | is a reader of files | `cat <file_name> \| less` |
+| `sort` | sort the contents of a file alphabetically | |
+
+`su` se usa para iniciar sesión como `root`, el principal problema al intentar iniciar sesión como `root`, es que no sirva ninguna contraseña dado que no se ha asignado al usuario `root`. Para asignar una contraseña a root se usa el comando `sudo passwd root`.
+
+###### Reference:
+* https://fedora.fandom.com/wiki/Basic_Commands
+* https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal
+
+
 ## Package management system
 
 Fedora is a distribution that uses a package management system. This system is based on rpm , the RPM Package Manager, with several higher level tools built on top of it, most notably PackageKit (default gui) and yum (command line tool). As of Fedora 22, yum has been replaced by dnf. The Gnome Package Manager is another GUI package manager.
@@ -143,11 +184,15 @@ The main rpm operators
 
 To install or upgrade a package
 
-    rpm -U path/filename.rpm
+```shell
+$ sudo rpm -U path/filename.rpm
+```
 
 To get extra feedback, you can use a command like the following, with the -h and -v options in conjunction with the –U option (When you run this command you will see more output than the default, which is no output unless there are errors.)
 
-    rpm -Uvh path/filename.rpm
+```shell
+$ sudo rpm -Uvh path/filename.rpm
+```
 
 To remove a package (called erase in RPM terminology)
 
@@ -170,36 +215,6 @@ The Linux (and Unix) grep command provides a powerful tool for filtering through
 * http://rpm.org/  
 * https://docs.fedoraproject.org/ro/Fedora_Draft_Documentation/0.1/html/RPM_Guide/ch02s03.html  
 * https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html-single/RPM_Guide/index.html#ch-using-rpm
-
-
-## Terminal
-
-### Basic Commands
-
-| &nbsp;&nbsp;Command&nbsp;&nbsp; | Meaning | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Examples&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
-| ------- | ------- | -------- |
-| `whoami` | current username | |
-| `pwd` | **p**rint **w**orking **d**irectory | |
-| `cd` | **c**hange **d**irectory | |
-| `mkdir` | **m**a**k**e **dir**ectory | |
-| `ls` | **l**i**s**t (using: -a, list all) | |
-| `mv` | **m**o**v**e | `mv origen destino` |
-| `cp` | **c**o**p**y | `cp origen destino` |
-| `rm` | **r**e**m**ove (with -r removes recursively, with this option you can remove a folder) | `rm <file_path>` |
-| `rmdir` | **r**e**m**ove **dir**ectory | |
-| `wc` | **w**ord **c**ount (using -l switch to tell we only want line count, -w is count of words and ) | |
-| `man` | **man**ual | `man dnf` |
-| `su` | **s**uper**u**ser or **s**witch **u**ser (When used with no arguments it assumes you want to change to the root user (hence the first interpretation of the name), but you can pass a username to it in order to switch to a specific user account (the second interpretation)). Logout using Ctrl-D shortcut. | |
-| `sudo` | **s**witch **u**ser and **do** this command | |
-| `cat` | concatenate (is used to view the content of a file, like less) | `cat <file_name>` |
-| `less` | is a reader of files | `cat <file_name> \| less` |
-| `sort` | sort the contents of a file alphabetically | |
-
-`su` se usa para iniciar sesión como `root`, el principal problema al intentar iniciar sesión como `root`, es que no sirva ninguna contraseña dado que no se ha asignado al usuario `root`. Para asignar una contraseña a root se usa el comando `sudo passwd root`.
-
-###### Reference:
-* https://fedora.fandom.com/wiki/Basic_Commands
-* https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal
 
 
 ## Install .tar.gz, .sh and .rpm packages
@@ -251,7 +266,7 @@ The first time you attempt to install packages from these repositories, the dnf 
 * https://docs.fedoraproject.org/en-US/quick-docs/setup_rpmfusion/
 
 
-## Install some programs
+## Customisation
 
 ### GNOME Tweaks
 
@@ -270,61 +285,15 @@ sudo dnf install gnome-tweak-tool
 * https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
 * https://fedoraproject.org/wiki/KDE
 
-### unrar
+## Install some programs
 
-Requires RPM Fusion
+### Development
 
-    sudo dnf install unrar
+#### Google Chrome
 
-###### Reference:
-* https://fedora.pkgs.org/33/rpmfusion-nonfree-x86_64/unrar-5.9.4-3.fc33.x86_64.rpm.html
+Download it from https://www.google.com/chrome/
 
-Para descomprimir un archivo con WinRar use
-
-    unrar x archive.rar
-
-###### Reference:
-* https://www.tecmint.com/how-to-open-extract-and-create-rar-files-in-linux/  
-* https://unix.stackexchange.com/questions/246535/how-to-open-rar-file-in-linux
-
-### AnyDesk
-
-Run commands as root (`su` or `sudo -i`)
-
-Add the repository
-
-```
-[root@localhost ~]# cat > /etc/yum.repos.d/AnyDesk-Fedora.repo << "EOF" 
-[anydesk]
-name=AnyDesk Fedora - stable
-baseurl=http://rpm.anydesk.com/fedora/$basearch/
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY
-EOF
-```
-
-Install AnyDesk
-
-    [root@localhost ~]# dnf install anydesk
-
-If you have the next error
-
-```
-Error: 
- Problem: conflicting requests
-  - nothing provides libpangox-1.0.so.0()(64bit) needed by anydesk-6.0.1-1.x86_64
-```
-
-Install pangox-compat and try to install AnyDesk again
-
-    [root@localhost ~]# dnf --releasever=32 install pangox-compat.x86_64
-
-###### Reference:
-* http://rpm.anydesk.com/howto.html  
-* https://www.reddit.com/r/AnyDesk/comments/jojdq1/fedora_33_install_anydesk_through_dnf/
-
-### GIT
+#### GIT
 
 Don't require RPM Fusion
 
@@ -333,46 +302,33 @@ Don't require RPM Fusion
 ###### Reference:
 * https://git-scm.com/download/linux
 
-### Node.js
+#### Java 8 (OpenJDK)
 
 Don't require RPM Fusion
 
-    sudo dnf install nodejs
+    sudo dnf install java-1.8.0-openjdk
 
 ###### Reference:
-* https://nodejs.org/en/download/package-manager/#centos-fedora-and-red-hat-enterprise-linux
+* https://docs.fedoraproject.org/en-US/quick-docs/installing-java/
+* https://jdk.java.net/
 
-#### TypeScript
+#### Spring Tool Suite
 
-Requires Node.js
+Download it from https://spring.io/tools
 
-    sudo npm install --global typescript
+#### MySQL
 
-###### Reference:
-* https://www.typescriptlang.org/#installation
-
-#### Angular CLI
-
-Requires Node.js and TypeScript
-
-    sudo npm install --global @angular/cli
-
-###### Reference:
-* https://cli.angular.io/
-
-### MySQL
-
-#### MySQL Community Server
+##### MySQL Community Server
 
 * https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/  
 * https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/#repo-qg-yum-fresh-install
 
-#### MySQL Workbench
+##### MySQL Workbench
 
 * https://dev.mysql.com/downloads/workbench/  
 * https://github.com/mleandrojr/mysql-workbench-dark-theme
 
-### PostgreSQL
+#### PostgreSQL
 
 Log as `root` to do this
 
@@ -469,7 +425,123 @@ Add New Server
 * https://www.pgadmin.org/download/pgadmin-4-rpm/  
 * https://www.youtube.com/watch?v=uPqX3hKUaFQ
 
-### Transmission
+#### Postman
+
+Download it from https://www.postman.com/downloads/
+
+#### Node.js
+
+Don't require RPM Fusion
+
+    sudo dnf install nodejs
+
+###### Reference:
+* https://nodejs.org/en/download/package-manager/#centos-fedora-and-red-hat-enterprise-linux
+
+##### TypeScript
+
+Requires Node.js
+
+    sudo npm install --global typescript
+
+###### Reference:
+* https://www.typescriptlang.org/#installation
+
+##### Angular CLI
+
+Requires Node.js and TypeScript
+
+    sudo npm install --global @angular/cli
+
+###### Reference:
+* https://cli.angular.io/
+
+#### Visual Studio Code
+
+Install the key and repository of VS Codey:
+
+```shell
+$ sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+$ sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+```
+
+Then update the package cache and install the package using dnf (Fedora 22 and above):
+
+```shell
+$ sudo dnf check-update
+$ sudo dnf install code
+```
+
+###### Reference:
+* https://code.visualstudio.com/docs/setup/linux#_rhel-fedora-and-centos-based-distributions
+
+### Connectivity
+
+#### Skype
+
+Download it from https://www.skype.com/en/get-skype/
+
+#### Chrome Remote Desktop
+
+Download it from https://remotedesktop.google.com/access
+
+#### AnyDesk
+
+Run commands as root (`su` or `sudo -i`)
+
+Add the repository
+
+```
+[root@localhost ~]# cat > /etc/yum.repos.d/AnyDesk-Fedora.repo << "EOF" 
+[anydesk]
+name=AnyDesk Fedora - stable
+baseurl=http://rpm.anydesk.com/fedora/$basearch/
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY
+EOF
+```
+
+Install AnyDesk
+
+    [root@localhost ~]# dnf install anydesk
+
+If you have the next error
+
+```
+Error: 
+ Problem: conflicting requests
+  - nothing provides libpangox-1.0.so.0()(64bit) needed by anydesk-6.0.1-1.x86_64
+```
+
+Install pangox-compat and try to install AnyDesk again
+
+    [root@localhost ~]# dnf --releasever=32 install pangox-compat.x86_64
+
+###### Reference:
+* http://rpm.anydesk.com/howto.html  
+* https://www.reddit.com/r/AnyDesk/comments/jojdq1/fedora_33_install_anydesk_through_dnf/
+
+### More
+
+#### unrar
+
+Requires RPM Fusion
+
+    sudo dnf install unrar
+
+###### Reference:
+* https://fedora.pkgs.org/33/rpmfusion-nonfree-x86_64/unrar-5.9.4-3.fc33.x86_64.rpm.html
+
+Para descomprimir un archivo con WinRar use
+
+    unrar x archive.rar
+
+###### Reference:
+* https://www.tecmint.com/how-to-open-extract-and-create-rar-files-in-linux/  
+* https://unix.stackexchange.com/questions/246535/how-to-open-rar-file-in-linux
+
+#### Transmission
 
 Don't require RPM Fusion
 
@@ -477,28 +549,23 @@ Don't require RPM Fusion
 
 Transmission is used to download from torrent
 
-### Stellarium
+#### JDownloader
+
+Douwnload it from https://jdownloader.org/download/index
+
+#### Stellarium
 
 Don't require RPM Fusion
 
     sudo dnf install stellarium
 
-### Blender
+#### Blender
 
 Don't require RPM Fusion
 
     sudo dnf install blender
 
-### Java 8 (OpenJDK)
-
-Don't require RPM Fusion
-
-    sudo dnf install java-1.8.0-openjdk
-
-###### Reference:
-* https://docs.fedoraproject.org/en-US/quick-docs/installing-java/
-
-### VLC
+#### VLC
 
 Requires RPM Fusion
 
@@ -507,7 +574,7 @@ Requires RPM Fusion
 ###### Reference:
 * https://docs.fedoraproject.org/en-US/quick-docs/installing-and-running-vlc/
 
-### Adobe Flash
+#### Adobe Flash
 
 It is not free and open source software.
 
@@ -521,19 +588,6 @@ Install Adobe Flash
 
 ###### Reference:
 * https://docs.fedoraproject.org/en-US/quick-docs/using-adobe-flash/
-
-
-### Interesting programs
-
-Las siguientes aplicaciones se descargan de la página web en .tar.gz, .sh o .rpm, y se instalan manualmente.
-
-* JDownloader (https://jdownloader.org/download/index)
-* Google chrome (https://www.google.com/chrome/)
-* Skype (https://www.skype.com/en/get-skype/)
-* Spring Tool Suite (https://spring.io/tools)
-* Chrome Remote Desktop (https://remotedesktop.google.com/access)
-* Postman (https://www.postman.com/downloads/)
-* OpenJDK (https://jdk.java.net/)
 
 
 ## Desktop entries
