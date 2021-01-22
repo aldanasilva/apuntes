@@ -10,25 +10,22 @@
   * [dnf – Dandified yum](#dnf--dandified-yum)
   * [rpm – RPM package manager](#rpm--rpm-package-manager)
 * [Install .tar.gz, .sh and .rpm packages](#install-targz-sh-and-rpm-packages)
-* [RPM Fusion](rpm-fusion)
-* [Customisation](customisation)
+* [RPM Fusion](#rpm-fusion)
+* [Customisation](#customisation)
   * [GNOME Tweaks](#gnome-tweaks)
   * [KDE](#kde)
 * [Install some programs](#install-some-programs)
-  * [Development](development)
+  * [Development](#development)
     * [Google Chrome](#google-chrome)
     * [GIT](#git)
     * [Java 8 (OpenJDK)](#java-8-openjdk)
     * [Spring Tool Suite](#spring-tool-suite)
-    * [MySQL](#mysql)
-      * [MySQL Community Server](#mysql-community-server)
-      * [MySQL Workbench](#mysql-workbench)
     * [PostgreSQL](#postgresql)
     * [Postman](#postman)
     * [Node.js](#nodejs)
       * [TypeScipt](#typescript)
       * [Angular CLI](#angular-cli)
-    * [Visual Studio Code](visual-studio-code)
+    * [Visual Studio Code](#visual-studio-code)
   * [Connectivity](#connectivity)
     * [Skype](#skype)
     * [Chrome Remote Desktop](#chrome-remote-desktop)
@@ -196,19 +193,27 @@ $ sudo rpm -Uvh path/filename.rpm
 
 To remove a package (called erase in RPM terminology)
 
-    rpm –e package_name
+```shell
+$ sudo rpm –e package_name
+```
 
 To list every RPM package installed on your system
 
-    rpm –qa
+```shell
+$ sudo rpm –qa
+```
 
 To verify if a package is installed
 
-    rpm -q package_name
+```shell
+$ sudo rpm -q package_name
+```
 
 The Linux (and Unix) grep command provides a powerful tool for filtering through textual data. If you pipe the output of the rpm –qa command into the grep command, you have a powerful search engine at your fingertips.
 
-    rpm -qa | grep part_of_package_name
+```shell
+$ sudo rpm -qa | grep part_of_package_name
+```
 
 ###### Reference:
 * https://fedoraproject.org/wiki/Rpm  
@@ -221,10 +226,10 @@ The Linux (and Unix) grep command provides a powerful tool for filtering through
 
 ### Install .tar.gz program
 
-```
-tar xvf <archive>.tar.gz
-cd <archive>
-sudo make
+```shell
+$ tar xvf <archive>.tar.gz
+$ cd <archive>
+$ sudo make
 ```
 
 ###### Reference:
@@ -234,11 +239,15 @@ sudo make
 
 ### Install .sh program
 
-    $ sh <program>.sh
+```shell
+$ sh <program>.sh
+```
 
 ### Install .rpm programas
 
-    $ sudo dnf install <program>.rpm
+```shell
+$ sudo dnf install <program>.rpm
+```
 
 
 ## RPM Fusion
@@ -247,15 +256,15 @@ RPM Fusion provides software that the Fedora Project or Red Hat doesn't want to 
 
 To enable the Free repository, use:
 
-```
-sudo dnf install \
+```shell
+$ sudo dnf install \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 ```
 
 Optionally, enable the Nonfree repository:
 
-```
-sudo dnf install \
+```shell
+$ sudo dnf install \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 ```
 
@@ -272,14 +281,18 @@ The first time you attempt to install packages from these repositories, the dnf 
 
 Don't require RPM Fusion
 
-    sudo dnf install gnome-tweaks
+```shell
+$ sudo dnf install gnome-tweaks
+```
 
 Con la herramienta Tweaks, se puede modificar la interfaz de linux, adicionando botones de minimizar y maximizar en las ventanas, etc. Tweaks se descarga en la termina con el siguiente comando
 sudo dnf install gnome-tweak-tool
 
 ### KDE
 
-    sudo dnf install @kde-desktop
+```shell
+$ sudo dnf install @kde-desktop
+```
 
 ###### Reference:
 * https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
@@ -297,7 +310,9 @@ Download it from https://www.google.com/chrome/
 
 Don't require RPM Fusion
 
-    sudo dnf install git
+```shell
+$ sudo dnf install git
+```
 
 ###### Reference:
 * https://git-scm.com/download/linux
@@ -306,7 +321,9 @@ Don't require RPM Fusion
 
 Don't require RPM Fusion
 
-    sudo dnf install java-1.8.0-openjdk
+```shell
+$ sudo dnf install java-1.8.0-openjdk
+```
 
 ###### Reference:
 * https://docs.fedoraproject.org/en-US/quick-docs/installing-java/
@@ -316,65 +333,70 @@ Don't require RPM Fusion
 
 Download it from https://spring.io/tools
 
-#### MySQL
-
-##### MySQL Community Server
-
-* https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/  
-* https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/#repo-qg-yum-fresh-install
-
-##### MySQL Workbench
-
-* https://dev.mysql.com/downloads/workbench/  
-* https://github.com/mleandrojr/mysql-workbench-dark-theme
-
 #### PostgreSQL
 
 Log as `root` to do this
 
 Install the repository RPM:
 
-    [root@localhost ~]# dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/F-33-x86_64/pgdg-fedora-repo-latest.noarch.rpm
+```shell
+[root@localhost ~]# dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/F-33-x86_64/pgdg-fedora-repo-latest.noarch.rpm
+```
 
 Install PostgreSQL:
 
-    [root@localhost ~]# dnf install -y postgresql13-server
+```shell
+[root@localhost ~]# dnf install -y postgresql13-server
+```
 
 Initialize the database and enable automatic start:
 
-    [root@localhost ~]# /usr/pgsql-13/bin/postgresql-13-setup initdb
-    [root@localhost ~]# systemctl enable postgresql-13
-    [root@localhost ~]# systemctl start postgresql-13
+```shell
+[root@localhost ~]# /usr/pgsql-13/bin/postgresql-13-setup initdb
+[root@localhost ~]# systemctl enable postgresql-13
+[root@localhost ~]# systemctl start postgresql-13
+```
 
 User Creation and Database Creation
 
 Switch user to interact with postgres:
 
-    [root@localhost ~]# su - postgres
+```shell
+[root@localhost ~]# su - postgres
+```
 
 Run postgre’s interactive shell:
 
-    [postgresql@localhost ~]$ psql
-    psql (13.1)
-    Type “help” for help
-    
-    postgres=#
+```shell
+[postgresql@localhost ~]$ psql
+psql (13.1)
+Type “help” for help
+
+postgres=#
+```
 
 Add password for postgres user:
 
-    postgres=# \password postgres
+```shell
+postgres=# \password postgres
+```
 
 (Optional) Create other users:
 
-    postgres=# CREATE USER lenny WITH PASSWORD ‘leonard’;
-    postgres=# CREATE DATABASE carl OWNER lenny;
+```shell
+postgres=# CREATE USER lenny WITH PASSWORD ‘leonard’;
+postgres=# CREATE DATABASE carl OWNER lenny;
+```
 
 Log out of postgre’s interactive shell and postgre@localhost user:
 
-    postgres=# exit
-    [postgres@localhost ~]$ exit
-    logout
-    [root@localhost ~]#
+```shell
+postgres=# exit
+[postgres@localhost ~]$ exit
+logout
+[root@localhost ~]#
+```
+
 
 Configuration
 Paso 7 en el video de youtube
@@ -389,23 +411,31 @@ Modificar las líneas 80, 82, 84, 87, 88 y 89 del archivo /var/lib/pgsql/13/data
 
 Cambiar los valores de METHOD a md5
 
-
 Paso 9: Reiniciar el servicio
 
-    [root@localhost ~]# systemctl stop postgresql-13
-    [root@localhost ~]# systemctl start postgresql-13
+```shell
+[root@localhost ~]# systemctl stop postgresql-13
+[root@localhost ~]# systemctl start postgresql-13
+```
+
 
 Install the repository of pgAdmin 4
 
-    [root@localhost ~]# rpm -i https://ftp.postgresql.org/pub/pgadmin/pgadmin4/yum/pgadmin4-fedora-repo-1-1.noarch.rpm
+```shell
+[root@localhost ~]# rpm -i https://ftp.postgresql.org/pub/pgadmin/pgadmin4/yum/pgadmin4-fedora-repo-1-1.noarch.rpm
+```
 
 Install pgAdmin 4 for both desktop and web modes.
 
-    [root@localhost ~]# dnf install -y pgadmin4
+```shell
+[root@localhost ~]# dnf install -y pgadmin4
+```
 
 Finally, if you have installed pgadmin4 or pgadmin4-web, run the web setup script to configure the system to run in web mode:
 
-    [root@localhost ~]# /usr/pgadmin4/bin/setup-web.sh
+```shell
+[root@localhost ~]# /usr/pgadmin4/bin/setup-web.sh
+```
 
 Then open pgAdmin 4 and add a new server:
 
@@ -433,7 +463,9 @@ Download it from https://www.postman.com/downloads/
 
 Don't require RPM Fusion
 
-    sudo dnf install nodejs
+```shell
+$ sudo dnf install nodejs
+```
 
 ###### Reference:
 * https://nodejs.org/en/download/package-manager/#centos-fedora-and-red-hat-enterprise-linux
@@ -442,7 +474,9 @@ Don't require RPM Fusion
 
 Requires Node.js
 
-    sudo npm install --global typescript
+```shell
+$ sudo npm install --global typescript
+```
 
 ###### Reference:
 * https://www.typescriptlang.org/#installation
@@ -451,7 +485,9 @@ Requires Node.js
 
 Requires Node.js and TypeScript
 
-    sudo npm install --global @angular/cli
+```shell
+$ sudo npm install --global @angular/cli
+```
 
 ###### Reference:
 * https://cli.angular.io/
@@ -491,7 +527,7 @@ Run commands as root (`su` or `sudo -i`)
 
 Add the repository
 
-```
+```shell
 [root@localhost ~]# cat > /etc/yum.repos.d/AnyDesk-Fedora.repo << "EOF" 
 [anydesk]
 name=AnyDesk Fedora - stable
@@ -504,11 +540,13 @@ EOF
 
 Install AnyDesk
 
-    [root@localhost ~]# dnf install anydesk
+```shell
+[root@localhost ~]# dnf install anydesk
+```
 
 If you have the next error
 
-```
+```shell
 Error: 
  Problem: conflicting requests
   - nothing provides libpangox-1.0.so.0()(64bit) needed by anydesk-6.0.1-1.x86_64
@@ -516,7 +554,9 @@ Error:
 
 Install pangox-compat and try to install AnyDesk again
 
-    [root@localhost ~]# dnf --releasever=32 install pangox-compat.x86_64
+```shell
+[root@localhost ~]# dnf --releasever=32 install pangox-compat.x86_64
+```
 
 ###### Reference:
 * http://rpm.anydesk.com/howto.html  
@@ -528,14 +568,18 @@ Install pangox-compat and try to install AnyDesk again
 
 Requires RPM Fusion
 
-    sudo dnf install unrar
+```shell
+$ sudo dnf install unrar
+```
 
 ###### Reference:
 * https://fedora.pkgs.org/33/rpmfusion-nonfree-x86_64/unrar-5.9.4-3.fc33.x86_64.rpm.html
 
 Para descomprimir un archivo con WinRar use
 
-    unrar x archive.rar
+```shell
+$ unrar x archive.rar
+```
 
 ###### Reference:
 * https://www.tecmint.com/how-to-open-extract-and-create-rar-files-in-linux/  
@@ -545,7 +589,9 @@ Para descomprimir un archivo con WinRar use
 
 Don't require RPM Fusion
 
-    sudo dnf install transmission
+```shell
+$ sudo dnf install transmission
+```
 
 Transmission is used to download from torrent
 
@@ -557,19 +603,25 @@ Douwnload it from https://jdownloader.org/download/index
 
 Don't require RPM Fusion
 
-    sudo dnf install stellarium
+```shell
+$ sudo dnf install stellarium
+```
 
 #### Blender
 
 Don't require RPM Fusion
 
-    sudo dnf install blender
+```shell
+$ sudo dnf install blender
+```
 
 #### VLC
 
 Requires RPM Fusion
 
-    sudo dnf install vlc
+```shell
+$ sudo dnf install vlc
+```
 
 ###### Reference:
 * https://docs.fedoraproject.org/en-US/quick-docs/installing-and-running-vlc/
@@ -580,11 +632,15 @@ It is not free and open source software.
 
 Install the Adobe DNF repository
 
-    sudo dnf install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
+```shell
+$ sudo dnf install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
+```
 
 Install Adobe Flash
 
-    sudo dnf install flash-plugin alsa-plugins-pulseaudio libcurl
+```shell
+$ sudo dnf install flash-plugin alsa-plugins-pulseaudio libcurl
+```
 
 ###### Reference:
 * https://docs.fedoraproject.org/en-US/quick-docs/using-adobe-flash/
@@ -608,7 +664,9 @@ Categories=Development;IDE;
 
 ### Example for Spring Tool Suite 4
 
-    sudo nano /usr/share/application/sts.desktop
+```shell
+$ sudo nano /usr/share/application/sts.desktop
+```
 
 The content of `sts.desktop` is:
 
@@ -647,8 +705,10 @@ Commenting that line in relevant file fixes that issue. Next you must to restart
 
 then restart pulseaudio by executing
 
-    pulseaudio -k
-    pulseaudio --start
+```shell
+$ pulseaudio -k
+$ pulseaudio --start
+```
 
 ###### Reference:
 * https://fedoraproject.org/wiki/How_to_debug_PulseAudio_problems  
@@ -666,7 +726,7 @@ Cuando haya abierto el log de journal, presione la tecla END para ir al final de
 
 Si ve el siguiente error
 
-```
+```shell
 Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0: AER: Corrected error received: 0000:00:1d.0
 Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
 Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:   device [8086:a29e] error status/mask=00000001/00002000
@@ -675,7 +735,7 @@ Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:    [ 0] RxE
 
 Agregue la opción `pci=nommconf` al kernel, esta opción se ediciona en el archivo `/etc/default/grub`, se agrega al final de la línea `GRUB_CMDLINE_LINUX`
 
-```
+```shell
 [andresaldana@localhost ~]$ sudo cat /etc/default/grub
 [sudo] password for andresaldana: 
 GRUB_TIMEOUT=5
@@ -692,7 +752,9 @@ Luego se reinicia el pc.
 
 Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el comando
 
-    sudo grub2-mkconfig
+```shell
+$ sudo grub2-mkconfig
+```
 
 Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca systemd-journal
 
@@ -708,34 +770,17 @@ mount(2) system call failed: Structure needs cleaning
 
 See manual of `fsck` (check and repair a Linux filesystem)
 
-    man fsck
+```shell
+$ man fsck
+```
 
 Repair
 
-    sudo fsck.ext4 -y /dev/sdaX
+```shell
+$ sudo fsck.ext4 -y /dev/sdaX
+```
 
 https://askubuntu.com/questions/910078/structure-needs-cleaning-error-cannot-mount-partition
-
-
-
-
-
-
-
-
-
-
-
-
-Validar instaladores en páginas oficiales
-
-
-
-
-
-
-
-
 
 
 
@@ -756,27 +801,11 @@ PackageKit – PackageKit gui tool (‘add/remove software’ in your menu)
 yumex – Yum Extender
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 Angular
-
-
 
 ng serve
 ng serve -o
 ng serve --port 4201
-
-
 
 
 
