@@ -1,7 +1,43 @@
 # Linux Fedora
 
-## Installation
+## Table of Contents
 
+* [Installation](#installation)
+  * [Recommended Partitioning Scheme](#recommended-partitioning-scheme)
+* [Package management system](#package-management-system)
+  * [yum – Yellowdog Updater Modified](#yum--yellowdog-updater-modified)
+  * [dnf – Dandified yum](#dnf--dandified-yum)
+  * [rpm – RPM package manager](#rpm--rpm-package-manager)
+* [Terminal](#terminal)
+* [Install .tar.gz, .sh and .rpm packages](#install-targz-sh-and-rpm-packages)
+* [Install some programs](#install-some-programs)
+  * [GNOME Tweaks](#gnome-tweaks)
+  * [KDE](#kde)
+  * [unrar](#unrar)
+  * [AnyDesk](#anydesk)
+  * [GIT](#git)
+  * [Node.js](#nodejs)
+    * [TypeScipt](#typescript)
+    * [Angular CLI](#angular-cli)
+  * [MySQL](#mysql)
+    * [MySQL Community Server](#mysql-community-server)
+    * [MySQL Workbench](#mysql-workbench)
+  * [PostgreSQL](#postgresql)
+  * [Transmission](#transmission)
+  * [Stellarium](#stellarium)
+  * [Blender](#blender)
+  * [Java 8 (OpenJDK)](#java-8-openjdk)
+  * [VLC](#vlc)
+  * [Adobe Flash](#adobe-flash)
+  * [Interesting programs](#interesting-programs)
+* [Desktop entries](#desktop-entries)
+* [Troubleshooting](#troubleshooting)
+  * [Sound - Pops when starting and stopping playback](#sound---pops-when-starting-and-stopping-playback)
+  * [Display frozen](#display-frozen)
+  * [Unable to access location](#unable-to-access-location)
+
+
+## Installation
 
 ### Recommended Partitioning Scheme
 
@@ -474,7 +510,7 @@ Las siguientes aplicaciones se descargan de la página web en .tar.gz, .sh o .rp
 * OpenJDK (https://jdk.java.net/)
 
 
-## Creating shortcuts to non installed programs
+## Desktop entries
 
 To create a shortcut to a non-installed application, you must create a `<shortcut-name>.desktop` document in `/usr/share/applications/`.
 
@@ -505,6 +541,12 @@ Terminal=false
 Type=Application
 Categories=Development;IDE;
 ```
+
+Revisar referencias!!!
+
+###### References:
+* https://developer.gnome.org/integration-guide/stable/desktop-files.html.en
+* https://wiki.archlinux.org/index.php/desktop_entries
 
 
 ## Troubleshooting
