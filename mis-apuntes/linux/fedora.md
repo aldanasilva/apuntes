@@ -13,6 +13,7 @@
 * [RPM Fusion](#rpm-fusion)
 * [Customisation](#customisation)
   * [GNOME Tweaks](#gnome-tweaks)
+  * [Dash to Panel](#dash-to-panel)
   * [KDE](#kde)
 * [Install some programs](#install-some-programs)
   * [Development](#development)
@@ -182,37 +183,37 @@ The main rpm operators
 To install or upgrade a package
 
 ```console
-$ sudo rpm -U path/filename.rpm
+[username@localhost ~]$ sudo rpm -U path/filename.rpm
 ```
 
 To get extra feedback, you can use a command like the following, with the -h and -v options in conjunction with the –U option (When you run this command you will see more output than the default, which is no output unless there are errors.)
 
 ```console
-$ sudo rpm -Uvh path/filename.rpm
+[username@localhost ~]$ sudo rpm -Uvh path/filename.rpm
 ```
 
 To remove a package (called erase in RPM terminology)
 
 ```console
-$ sudo rpm –e package_name
+[username@localhost ~]$ sudo rpm –e package_name
 ```
 
 To list every RPM package installed on your system
 
 ```console
-$ sudo rpm –qa
+[username@localhost ~]$ sudo rpm –qa
 ```
 
 To verify if a package is installed
 
 ```console
-$ sudo rpm -q package_name
+[username@localhost ~]$ sudo rpm -q package_name
 ```
 
 The Linux (and Unix) grep command provides a powerful tool for filtering through textual data. If you pipe the output of the rpm –qa command into the grep command, you have a powerful search engine at your fingertips.
 
 ```console
-$ sudo rpm -qa | grep part_of_package_name
+[username@localhost ~]$ sudo rpm -qa | grep part_of_package_name
 ```
 
 ###### Reference:
@@ -227,9 +228,9 @@ $ sudo rpm -qa | grep part_of_package_name
 ### Install .tar.gz program
 
 ```console
-$ tar xvf <archive>.tar.gz
-$ cd <archive>
-$ sudo make
+[username@localhost ~]$ tar xvf <archive>.tar.gz
+[username@localhost ~]$ cd <archive>
+[username@localhost ~]$ sudo make
 ```
 
 ###### Reference:
@@ -240,13 +241,13 @@ $ sudo make
 ### Install .sh program
 
 ```console
-$ sh <program>.sh
+[username@localhost ~]$ sh <program>.sh
 ```
 
 ### Install .rpm programas
 
 ```console
-$ sudo dnf install <program>.rpm
+[username@localhost ~]$ sudo dnf install <program>.rpm
 ```
 
 
@@ -257,14 +258,14 @@ RPM Fusion provides software that the Fedora Project or Red Hat doesn't want to 
 To enable the Free repository, use:
 
 ```console
-$ sudo dnf install \
+[username@localhost ~]$ sudo dnf install \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 ```
 
 Optionally, enable the Nonfree repository:
 
 ```console
-$ sudo dnf install \
+[username@localhost ~]$ sudo dnf install \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 ```
 
@@ -282,7 +283,7 @@ The first time you attempt to install packages from these repositories, the dnf 
 Don't require RPM Fusion
 
 ```console
-$ sudo dnf install gnome-tweaks
+[username@localhost ~]$ sudo dnf install gnome-tweaks
 ```
 
 Con la herramienta Tweaks, se puede modificar la interfaz de linux, adicionando botones de minimizar y maximizar en las ventanas, etc. Tweaks se descarga en la termina con el siguiente comando
@@ -298,7 +299,7 @@ More information in:
 ### KDE
 
 ```console
-$ sudo dnf install @kde-desktop
+[username@localhost ~]$ sudo dnf install @kde-desktop
 ```
 
 ###### Reference:
@@ -318,7 +319,7 @@ Download it from https://www.google.com/chrome/
 Don't require RPM Fusion
 
 ```console
-$ sudo dnf install git
+[username@localhost ~]$ sudo dnf install git
 ```
 
 ###### Reference:
@@ -329,7 +330,7 @@ $ sudo dnf install git
 Don't require RPM Fusion
 
 ```console
-$ sudo dnf install java-1.8.0-openjdk
+[username@localhost ~]$ sudo dnf install java-1.8.0-openjdk
 ```
 
 ###### Reference:
@@ -471,7 +472,7 @@ Download it from https://www.postman.com/downloads/
 Don't require RPM Fusion
 
 ```console
-$ sudo dnf install nodejs
+[username@localhost ~]$ sudo dnf install nodejs
 ```
 
 ###### Reference:
@@ -482,7 +483,7 @@ $ sudo dnf install nodejs
 Requires Node.js
 
 ```console
-$ sudo npm install --global typescript
+[username@localhost ~]$ sudo npm install --global typescript
 ```
 
 ###### Reference:
@@ -493,7 +494,7 @@ $ sudo npm install --global typescript
 Requires Node.js and TypeScript
 
 ```console
-$ sudo npm install --global @angular/cli
+[username@localhost ~]$ sudo npm install --global @angular/cli
 ```
 
 ###### Reference:
@@ -504,15 +505,15 @@ $ sudo npm install --global @angular/cli
 Install the key and repository of VS Codey:
 
 ```console
-$ sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-$ sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+[username@localhost ~]$ sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+[username@localhost ~]$ sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
 ```
 
 Then update the package cache and install the package using dnf (Fedora 22 and above):
 
 ```console
-$ sudo dnf check-update
-$ sudo dnf install code
+[username@localhost ~]$ sudo dnf check-update
+[username@localhost ~]$ sudo dnf install code
 ```
 
 ###### Reference:
@@ -576,7 +577,7 @@ Install pangox-compat and try to install AnyDesk again
 Requires RPM Fusion
 
 ```console
-$ sudo dnf install unrar
+[username@localhost ~]$ sudo dnf install unrar
 ```
 
 ###### Reference:
@@ -585,7 +586,7 @@ $ sudo dnf install unrar
 Para descomprimir un archivo con WinRar use
 
 ```console
-$ unrar x archive.rar
+[username@localhost ~]$ unrar x archive.rar
 ```
 
 ###### Reference:
@@ -597,7 +598,7 @@ $ unrar x archive.rar
 Don't require RPM Fusion
 
 ```console
-$ sudo dnf install transmission
+[username@localhost ~]$ sudo dnf install transmission
 ```
 
 Transmission is used to download from torrent
@@ -611,7 +612,7 @@ Douwnload it from https://jdownloader.org/download/index
 Don't require RPM Fusion
 
 ```console
-$ sudo dnf install stellarium
+[username@localhost ~]$ sudo dnf install stellarium
 ```
 
 #### Blender
@@ -619,7 +620,7 @@ $ sudo dnf install stellarium
 Don't require RPM Fusion
 
 ```console
-$ sudo dnf install blender
+[username@localhost ~]$ sudo dnf install blender
 ```
 
 #### VLC
@@ -627,7 +628,7 @@ $ sudo dnf install blender
 Requires RPM Fusion
 
 ```console
-$ sudo dnf install vlc
+[username@localhost ~]$ sudo dnf install vlc
 ```
 
 ###### Reference:
@@ -640,13 +641,13 @@ It is not free and open source software.
 Install the Adobe DNF repository
 
 ```console
-$ sudo dnf install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
+[username@localhost ~]$ sudo dnf install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
 ```
 
 Install Adobe Flash
 
 ```console
-$ sudo dnf install flash-plugin alsa-plugins-pulseaudio libcurl
+[username@localhost ~]$ sudo dnf install flash-plugin alsa-plugins-pulseaudio libcurl
 ```
 
 ###### Reference:
@@ -672,7 +673,7 @@ Categories=Development;IDE;
 ### Example for Spring Tool Suite 4
 
 ```console
-$ sudo nano /usr/share/application/sts.desktop
+[username@localhost ~]$ sudo nano /usr/share/application/sts.desktop
 ```
 
 The content of `sts.desktop` is:
@@ -713,8 +714,8 @@ Commenting that line in relevant file fixes that issue. Next you must to restart
 then restart pulseaudio by executing
 
 ```console
-$ pulseaudio -k
-$ pulseaudio --start
+[username@localhost ~]$ pulseaudio -k
+[username@localhost ~]$ pulseaudio --start
 ```
 
 ###### Reference:
@@ -743,8 +744,8 @@ Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:    [ 0] RxE
 Agregue la opción `pci=nommconf` al kernel, esta opción se ediciona en el archivo `/etc/default/grub`, se agrega al final de la línea `GRUB_CMDLINE_LINUX`
 
 ```console
-[andresaldana@localhost ~]$ sudo cat /etc/default/grub
-[sudo] password for andresaldana: 
+[username@localhost ~]$ sudo cat /etc/default/grub
+[sudo] password for username: 
 GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
 GRUB_DEFAULT=saved
@@ -760,7 +761,7 @@ Luego se reinicia el pc.
 Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el comando
 
 ```console
-$ sudo grub2-mkconfig
+[username@localhost ~]$ sudo grub2-mkconfig
 ```
 
 Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca systemd-journal
@@ -778,13 +779,13 @@ mount(2) system call failed: Structure needs cleaning
 See manual of `fsck` (check and repair a Linux filesystem)
 
 ```console
-$ man fsck
+[username@localhost ~]$ man fsck
 ```
 
 Repair
 
 ```console
-$ sudo fsck.ext4 -y /dev/sdaX
+[username@localhost ~]$ sudo fsck.ext4 -y /dev/sdaX
 ```
 
 https://askubuntu.com/questions/910078/structure-needs-cleaning-error-cannot-mount-partition
