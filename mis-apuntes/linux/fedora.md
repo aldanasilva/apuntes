@@ -579,9 +579,20 @@ Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca 
 * https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp  
 * https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_the_GRUB_2_Boot_Loader/
 
+### Unable to access location
 
+Error mounting /dev/sdX as /run/media/username/disk:
+mount(2) system call failed: Structure needs cleaning
 
+See manual of `fsck` (check and repair a Linux filesystem)
 
+    man fsck
+
+Repair
+
+    sudo fsck.ext4 -y /dev/sdaX
+
+https://askubuntu.com/questions/910078/structure-needs-cleaning-error-cannot-mount-partition
 
 
 
