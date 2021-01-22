@@ -288,6 +288,13 @@ $ sudo dnf install gnome-tweaks
 Con la herramienta Tweaks, se puede modificar la interfaz de linux, adicionando botones de minimizar y maximizar en las ventanas, etc. Tweaks se descarga en la termina con el siguiente comando
 sudo dnf install gnome-tweak-tool
 
+### Dash to panel
+
+Active or download dash-to-panel from https://extensions.gnome.org/extension/1160/dash-to-panel/
+
+More information in:
+* https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
+
 ### KDE
 
 ```console
@@ -470,7 +477,7 @@ $ sudo dnf install nodejs
 ###### Reference:
 * https://nodejs.org/en/download/package-manager/#centos-fedora-and-red-hat-enterprise-linux
 
-##### TypeScript
+#### TypeScript
 
 Requires Node.js
 
@@ -481,7 +488,7 @@ $ sudo npm install --global typescript
 ###### Reference:
 * https://www.typescriptlang.org/#installation
 
-##### Angular CLI
+#### Angular CLI
 
 Requires Node.js and TypeScript
 
@@ -900,8 +907,7 @@ systemctl
 
 
 
-Extensions (interesting)
-https://extensions.gnome.org/extension/1160/dash-to-panel/
+
 
 
 
