@@ -181,37 +181,37 @@ The main rpm operators
 
 To install or upgrade a package
 
-```shell
+```console
 $ sudo rpm -U path/filename.rpm
 ```
 
 To get extra feedback, you can use a command like the following, with the -h and -v options in conjunction with the –U option (When you run this command you will see more output than the default, which is no output unless there are errors.)
 
-```shell
+```console
 $ sudo rpm -Uvh path/filename.rpm
 ```
 
 To remove a package (called erase in RPM terminology)
 
-```shell
+```console
 $ sudo rpm –e package_name
 ```
 
 To list every RPM package installed on your system
 
-```shell
+```console
 $ sudo rpm –qa
 ```
 
 To verify if a package is installed
 
-```shell
+```console
 $ sudo rpm -q package_name
 ```
 
 The Linux (and Unix) grep command provides a powerful tool for filtering through textual data. If you pipe the output of the rpm –qa command into the grep command, you have a powerful search engine at your fingertips.
 
-```shell
+```console
 $ sudo rpm -qa | grep part_of_package_name
 ```
 
@@ -226,7 +226,7 @@ $ sudo rpm -qa | grep part_of_package_name
 
 ### Install .tar.gz program
 
-```shell
+```console
 $ tar xvf <archive>.tar.gz
 $ cd <archive>
 $ sudo make
@@ -239,13 +239,13 @@ $ sudo make
 
 ### Install .sh program
 
-```shell
+```console
 $ sh <program>.sh
 ```
 
 ### Install .rpm programas
 
-```shell
+```console
 $ sudo dnf install <program>.rpm
 ```
 
@@ -256,14 +256,14 @@ RPM Fusion provides software that the Fedora Project or Red Hat doesn't want to 
 
 To enable the Free repository, use:
 
-```shell
+```console
 $ sudo dnf install \
   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 ```
 
 Optionally, enable the Nonfree repository:
 
-```shell
+```console
 $ sudo dnf install \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 ```
@@ -281,7 +281,7 @@ The first time you attempt to install packages from these repositories, the dnf 
 
 Don't require RPM Fusion
 
-```shell
+```console
 $ sudo dnf install gnome-tweaks
 ```
 
@@ -290,7 +290,7 @@ sudo dnf install gnome-tweak-tool
 
 ### KDE
 
-```shell
+```console
 $ sudo dnf install @kde-desktop
 ```
 
@@ -310,7 +310,7 @@ Download it from https://www.google.com/chrome/
 
 Don't require RPM Fusion
 
-```shell
+```console
 $ sudo dnf install git
 ```
 
@@ -321,7 +321,7 @@ $ sudo dnf install git
 
 Don't require RPM Fusion
 
-```shell
+```console
 $ sudo dnf install java-1.8.0-openjdk
 ```
 
@@ -339,19 +339,19 @@ Log as `root` to do this
 
 Install the repository RPM:
 
-```shell
+```console
 [root@localhost ~]# dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/F-33-x86_64/pgdg-fedora-repo-latest.noarch.rpm
 ```
 
 Install PostgreSQL:
 
-```shell
+```console
 [root@localhost ~]# dnf install -y postgresql13-server
 ```
 
 Initialize the database and enable automatic start:
 
-```shell
+```console
 [root@localhost ~]# /usr/pgsql-13/bin/postgresql-13-setup initdb
 [root@localhost ~]# systemctl enable postgresql-13
 [root@localhost ~]# systemctl start postgresql-13
@@ -361,13 +361,13 @@ User Creation and Database Creation
 
 Switch user to interact with postgres:
 
-```shell
+```console
 [root@localhost ~]# su - postgres
 ```
 
 Run postgre’s interactive shell:
 
-```shell
+```console
 [postgresql@localhost ~]$ psql
 psql (13.1)
 Type “help” for help
@@ -377,20 +377,20 @@ postgres=#
 
 Add password for postgres user:
 
-```shell
+```console
 postgres=# \password postgres
 ```
 
 (Optional) Create other users:
 
-```shell
+```console
 postgres=# CREATE USER lenny WITH PASSWORD ‘leonard’;
 postgres=# CREATE DATABASE carl OWNER lenny;
 ```
 
 Log out of postgre’s interactive shell and postgre@localhost user:
 
-```shell
+```console
 postgres=# exit
 [postgres@localhost ~]$ exit
 logout
@@ -413,7 +413,7 @@ Cambiar los valores de METHOD a md5
 
 Paso 9: Reiniciar el servicio
 
-```shell
+```console
 [root@localhost ~]# systemctl stop postgresql-13
 [root@localhost ~]# systemctl start postgresql-13
 ```
@@ -421,19 +421,19 @@ Paso 9: Reiniciar el servicio
 
 Install the repository of pgAdmin 4
 
-```shell
+```console
 [root@localhost ~]# rpm -i https://ftp.postgresql.org/pub/pgadmin/pgadmin4/yum/pgadmin4-fedora-repo-1-1.noarch.rpm
 ```
 
 Install pgAdmin 4 for both desktop and web modes.
 
-```shell
+```console
 [root@localhost ~]# dnf install -y pgadmin4
 ```
 
 Finally, if you have installed pgadmin4 or pgadmin4-web, run the web setup script to configure the system to run in web mode:
 
-```shell
+```console
 [root@localhost ~]# /usr/pgadmin4/bin/setup-web.sh
 ```
 
@@ -463,7 +463,7 @@ Download it from https://www.postman.com/downloads/
 
 Don't require RPM Fusion
 
-```shell
+```console
 $ sudo dnf install nodejs
 ```
 
@@ -474,7 +474,7 @@ $ sudo dnf install nodejs
 
 Requires Node.js
 
-```shell
+```console
 $ sudo npm install --global typescript
 ```
 
@@ -485,7 +485,7 @@ $ sudo npm install --global typescript
 
 Requires Node.js and TypeScript
 
-```shell
+```console
 $ sudo npm install --global @angular/cli
 ```
 
@@ -496,14 +496,14 @@ $ sudo npm install --global @angular/cli
 
 Install the key and repository of VS Codey:
 
-```shell
+```console
 $ sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
 $ sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
 ```
 
 Then update the package cache and install the package using dnf (Fedora 22 and above):
 
-```shell
+```console
 $ sudo dnf check-update
 $ sudo dnf install code
 ```
@@ -527,7 +527,7 @@ Run commands as root (`su` or `sudo -i`)
 
 Add the repository
 
-```shell
+```console
 [root@localhost ~]# cat > /etc/yum.repos.d/AnyDesk-Fedora.repo << "EOF" 
 [anydesk]
 name=AnyDesk Fedora - stable
@@ -540,13 +540,13 @@ EOF
 
 Install AnyDesk
 
-```shell
+```console
 [root@localhost ~]# dnf install anydesk
 ```
 
 If you have the next error
 
-```shell
+```console
 Error: 
  Problem: conflicting requests
   - nothing provides libpangox-1.0.so.0()(64bit) needed by anydesk-6.0.1-1.x86_64
@@ -554,7 +554,7 @@ Error:
 
 Install pangox-compat and try to install AnyDesk again
 
-```shell
+```console
 [root@localhost ~]# dnf --releasever=32 install pangox-compat.x86_64
 ```
 
@@ -568,7 +568,7 @@ Install pangox-compat and try to install AnyDesk again
 
 Requires RPM Fusion
 
-```shell
+```console
 $ sudo dnf install unrar
 ```
 
@@ -577,7 +577,7 @@ $ sudo dnf install unrar
 
 Para descomprimir un archivo con WinRar use
 
-```shell
+```console
 $ unrar x archive.rar
 ```
 
@@ -589,7 +589,7 @@ $ unrar x archive.rar
 
 Don't require RPM Fusion
 
-```shell
+```console
 $ sudo dnf install transmission
 ```
 
@@ -603,7 +603,7 @@ Douwnload it from https://jdownloader.org/download/index
 
 Don't require RPM Fusion
 
-```shell
+```console
 $ sudo dnf install stellarium
 ```
 
@@ -611,7 +611,7 @@ $ sudo dnf install stellarium
 
 Don't require RPM Fusion
 
-```shell
+```console
 $ sudo dnf install blender
 ```
 
@@ -619,7 +619,7 @@ $ sudo dnf install blender
 
 Requires RPM Fusion
 
-```shell
+```console
 $ sudo dnf install vlc
 ```
 
@@ -632,13 +632,13 @@ It is not free and open source software.
 
 Install the Adobe DNF repository
 
-```shell
+```console
 $ sudo dnf install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
 ```
 
 Install Adobe Flash
 
-```shell
+```console
 $ sudo dnf install flash-plugin alsa-plugins-pulseaudio libcurl
 ```
 
@@ -664,7 +664,7 @@ Categories=Development;IDE;
 
 ### Example for Spring Tool Suite 4
 
-```shell
+```console
 $ sudo nano /usr/share/application/sts.desktop
 ```
 
@@ -705,7 +705,7 @@ Commenting that line in relevant file fixes that issue. Next you must to restart
 
 then restart pulseaudio by executing
 
-```shell
+```console
 $ pulseaudio -k
 $ pulseaudio --start
 ```
@@ -726,7 +726,7 @@ Cuando haya abierto el log de journal, presione la tecla END para ir al final de
 
 Si ve el siguiente error
 
-```shell
+```console
 Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0: AER: Corrected error received: 0000:00:1d.0
 Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
 Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:   device [8086:a29e] error status/mask=00000001/00002000
@@ -735,7 +735,7 @@ Jan 15 14:36:48 localhost.localdomain kernel: pcieport 0000:00:1d.0:    [ 0] RxE
 
 Agregue la opción `pci=nommconf` al kernel, esta opción se ediciona en el archivo `/etc/default/grub`, se agrega al final de la línea `GRUB_CMDLINE_LINUX`
 
-```shell
+```console
 [andresaldana@localhost ~]$ sudo cat /etc/default/grub
 [sudo] password for andresaldana: 
 GRUB_TIMEOUT=5
@@ -752,7 +752,7 @@ Luego se reinicia el pc.
 
 Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el comando
 
-```shell
+```console
 $ sudo grub2-mkconfig
 ```
 
@@ -770,13 +770,13 @@ mount(2) system call failed: Structure needs cleaning
 
 See manual of `fsck` (check and repair a Linux filesystem)
 
-```shell
+```console
 $ man fsck
 ```
 
 Repair
 
-```shell
+```console
 $ sudo fsck.ext4 -y /dev/sdaX
 ```
 
