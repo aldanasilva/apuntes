@@ -253,7 +253,9 @@ The first time you attempt to install packages from these repositories, the dnf 
 
 ## Install some programs
 
-### GNOME Tweaks (Don't require RPM Fusion)
+### GNOME Tweaks
+
+Don't require RPM Fusion
 
     sudo dnf install gnome-tweaks
 
@@ -268,7 +270,9 @@ sudo dnf install gnome-tweak-tool
 * https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
 * https://fedoraproject.org/wiki/KDE
 
-### unrar (requires RPM Fusion)
+### unrar
+
+Requires RPM Fusion
 
     sudo dnf install unrar
 
@@ -320,40 +324,50 @@ Install pangox-compat and try to install AnyDesk again
 * http://rpm.anydesk.com/howto.html  
 * https://www.reddit.com/r/AnyDesk/comments/jojdq1/fedora_33_install_anydesk_through_dnf/
 
-### GIT (Don't require RPM Fusion)
+### GIT
+
+Don't require RPM Fusion
 
     sudo dnf install git
 
 ###### Reference:
 * https://git-scm.com/download/linux
 
-### Node.js (Don't require RPM Fusion)
+### Node.js
+
+Don't require RPM Fusion
 
     sudo dnf install nodejs
 
 ###### Reference:
 * https://nodejs.org/en/download/package-manager/#centos-fedora-and-red-hat-enterprise-linux
 
-#### TypeScript (requires Node.js)
+#### TypeScript
+
+Requires Node.js
 
     sudo npm install --global typescript
 
 ###### Reference:
 * https://www.typescriptlang.org/#installation
 
-#### Angular CLI (requires Node.js and TypeScript)
+#### Angular CLI
+
+Requires Node.js and TypeScript
 
     sudo npm install --global @angular/cli
 
 ###### Reference:
 * https://cli.angular.io/
 
-### MySQL Community Server
+### MySQL
+
+#### MySQL Community Server
 
 * https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/  
 * https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/#repo-qg-yum-fresh-install
 
-### MySQL Workbench
+#### MySQL Workbench
 
 * https://dev.mysql.com/downloads/workbench/  
 * https://github.com/mleandrojr/mysql-workbench-dark-theme
@@ -455,7 +469,9 @@ Add New Server
 * https://www.pgadmin.org/download/pgadmin-4-rpm/  
 * https://www.youtube.com/watch?v=uPqX3hKUaFQ
 
-### Transmission (Don't require RPM Fusion)
+### Transmission
+
+Don't require RPM Fusion
 
     sudo dnf install transmission
 
@@ -463,27 +479,37 @@ Transmission is used to download from torrent
 
 ### Stellarium
 
+Don't require RPM Fusion
+
     sudo dnf install stellarium
 
 ### Blender
 
+Don't require RPM Fusion
+
     sudo dnf install blender
 
 ### Java 8 (OpenJDK)
+
+Don't require RPM Fusion
 
     sudo dnf install java-1.8.0-openjdk
 
 ###### Reference:
 * https://docs.fedoraproject.org/en-US/quick-docs/installing-java/
 
-### VLC (requires RPM Fusion)
+### VLC
+
+Requires RPM Fusion
 
     sudo dnf install vlc
 
 ###### Reference:
 * https://docs.fedoraproject.org/en-US/quick-docs/installing-and-running-vlc/
 
-### Adobe Flash (It is not free and open source software)
+### Adobe Flash
+
+It is not free and open source software.
 
 Install the Adobe DNF repository
 
