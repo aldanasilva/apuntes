@@ -56,15 +56,20 @@
 | `=NUM.DE.SEMANA(FECHA(2017;10;18);1)` | 42 |
 | `=SEGUNDO(AHORA())` | 3 |
 
+Video en YouTube  
+[Funciones de fecha y hora en Excel - Parte 1 - Descripción de las funciones](https://www.youtube.com/watch?v=LoeAwHEcibM)
+
 
 # Ejercicio práctico
 
+Video en YouTube  
+[Funciones de fecha y hora en Excel - Parte 2 - Aplicaciones a casos concretos](https://www.youtube.com/watch?v=ofBWJ4ldAPQ)
 
 
 # Ejercicio en VBA
 
-
-
+Video en YouTube  
+[Funciones de fecha y hora en Excel - Parte 3 - Creación de un procedimiento en VBA](https://www.youtube.com/watch?v=EzAXIkLAZxY)
 
 
 
