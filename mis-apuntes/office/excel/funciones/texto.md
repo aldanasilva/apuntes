@@ -63,14 +63,20 @@
 | `=UNICAR(256)` | Ā |
 | `=UNICODE("HOLA")` | 72 |
 
+Video en YouTube  
+[Funciones de texto en Excel - Parte 1 - Descripción de las funciones](https://www.youtube.com/watch?v=GWuT2JHUavI)
+
 
 # Ejercicio práctico
 
+Video en YouTube  
+[Funciones de texto en Excel - Parte 2 - Aplicaciones a casos concretos](https://www.youtube.com/watch?v=ABWS0mlEH3s)
 
 
 # Ejercicio en VBA
 
-
+Video en YouTube  
+[Funciones de texto en Excel - Parte 3 - Creación de una función en VBA](https://www.youtube.com/watch?v=AhY06WfIqFg)
 
 
 
