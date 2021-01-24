@@ -18,11 +18,4 @@ https://stackoverflow.com/questions/47700347/django-core-exceptions-improperlyco
 
 
 
-## Tutoriales
 
-* Python (https://docs.python.org/3/tutorial/)
-* DJango (https://www.djangoproject.com/start/)
-* C# (https://csharp.net-tutorials.com/ https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/)
-* WPF (https://wpf-tutorial.com/)
-* Java (https://docs.oracle.com/javase/tutorial/)
-* Regular Expressions (https://www.regular-expressions.info/tutorial.html)
