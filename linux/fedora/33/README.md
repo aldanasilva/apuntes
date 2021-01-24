@@ -928,7 +928,7 @@ Ubuntu
 
 
 
-
+https://unix.stackexchange.com/questions/89348/how-to-permanently-disable-the-insert-key-on-linux
 
 
 
