@@ -16,6 +16,8 @@
   * [Dash to Panel](#dash-to-panel)
   * [KDE](#kde)
 * [Install some programs](#install-some-programs)
+  * [Sound](#sound)
+    * [PulseAudio Volume Control](#pulseaudio-volume-control)
   * [Development](#development)
     * [Google Chrome](#google-chrome)
     * [GIT](#git)
@@ -233,10 +235,14 @@ The Linux (and Unix) grep command provides a powerful tool for filtering through
 [username@localhost ~]$ sudo make
 ```
 
+As this package is made with the GNU autotools you should run `./configure` inside the distribution directory for configuring the source tree. After that you should run `make` for compilation and `make install` (as root) for installation of `<package>`.
+
+
 ###### Reference:
 * https://forums.fedoraforum.org/showthread.php?262523-How-do-I-install-a-tar-gz-file  
 * http://www.linuxandubuntu.com/home/how-to-install-targz-or-tgz-packages-in-linux  
 * https://askubuntu.com/questions/25961/how-do-i-install-a-tar-gz-or-tar-bz2-file
+* https://freedesktop.org/software/pulseaudio/pavucontrol/#installation
 
 ### Install .sh program
 
@@ -307,6 +313,19 @@ More information in:
 * https://fedoraproject.org/wiki/KDE
 
 ## Install some programs
+
+### Sound
+
+#### PulseAudio Volume Control
+
+PulseAudio Volume Control (`pavucontrol`) is a simple GTK based volume control tool ("mixer") for the [PulseAudio sound server](https://www.freedesktop.org/wiki/Software/PulseAudio/). In contrast to classic mixer tools this one allows you to control both the volume of hardware devices and of each playback stream separately.
+
+```console
+[username@localhost ~]$ sudo dnf install pavucontrol
+```
+
+###### Reference:
+* https://freedesktop.org/software/pulseaudio/pavucontrol/
 
 ### Development
 
