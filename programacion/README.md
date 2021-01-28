@@ -25,6 +25,10 @@
 * PorstgreSQL (https://www.postgresql.org/)
 
 
+## Informativo
+
+* https://2020.stateofcss.com/en-US/
+* https://www.iconfinder.com/
 
 
 
