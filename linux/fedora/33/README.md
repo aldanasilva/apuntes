@@ -14,6 +14,7 @@
 * [Customisation](#customisation)
   * [GNOME Tweaks](#gnome-tweaks)
   * [Dash to Panel](#dash-to-panel)
+  * [System Fonts](#system-fonts)
   * [KDE](#kde)
 * [Install some programs](#install-some-programs)
   * [Development](#development)
@@ -296,6 +297,37 @@ Active or download dash-to-panel from https://extensions.gnome.org/extension/116
 More information in:
 * https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
 
+### System fonts
+
+System fonts are installed for all users. Anyone with an account on the machine will be able to use these fonts.
+
+You can find fonts to download in:
+
+* https://fonts.google.com/
+* https://www.nerdfonts.com/
+
+To install fonts create a new directory _/usr/share/fonts/<font-family-name>_ for the new font family
+
+```console
+[username@localhost ~]$ sudo mkdir /usr/share/fonts/robofont
+```
+
+Copy font files (e.g. .ttf files) to the new directory
+
+```console
+[username@localhost ~]$ sudo cp ~/Downloads/robofont.ttf /usr/share/fonts/robofont
+```
+
+Update the font cache
+
+```console
+[username@localhost ~]$ sudo fc-cache -v
+```
+
+###### Reference:
+* https://docs.fedoraproject.org/en-US/quick-docs/fonts/
+* https://docs.fedoraproject.org/en-US/quick-docs/fonts/#system-fonts
+
 ### KDE
 
 ```console
@@ -340,6 +372,11 @@ Don't require RPM Fusion
 #### Spring Tool Suite
 
 Download it from https://spring.io/tools
+
+To change editor's font:
+* Window -> Preferences
+  * General -> Appearance -> Colors and Fonts
+    * Basic -> Text Font
 
 #### PostgreSQL
 
@@ -935,3 +972,9 @@ https://unix.stackexchange.com/questions/89348/how-to-permanently-disable-the-in
 
 
 https://askubuntu.com/questions/343268/how-to-use-manual-partitioning-during-installation
+
+
+
+### Fedora Magazine
+
+* https://fedoramagazine.org/5-cool-tiling-window-managers/
