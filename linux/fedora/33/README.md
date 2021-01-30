@@ -997,3 +997,20 @@ https://askubuntu.com/questions/343268/how-to-use-manual-partitioning-during-ins
 ### Fedora Magazine
 
 * https://fedoramagazine.org/5-cool-tiling-window-managers/
+
+
+
+
+
+
+gnome-theme.css
+
+https://ogbe.net/blog/gnome_titles.html
+https://askubuntu.com/questions/1043426/how-can-i-access-org-gnome-shell-theme-which-is-referred-to-in-the-ubuntu-css
+https://developer.gnome.org/gtk3/stable/chap-css-overview.html
+https://linuxhint.com/modify_style_gnome_shell_themes/
+https://developer.gnome.org/gtk3/stable/chap-css-properties.html
+https://unix.stackexchange.com/questions/257163/reduce-title-bar-height-in-gnome-3-gtk-3
+
+
+
