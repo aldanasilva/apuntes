@@ -775,6 +775,8 @@ then restart pulseaudio by executing
 ```
 
 ###### Reference:
+* https://www.freedesktop.org/wiki/Software/PulseAudio/
+* https://fedoraproject.org/wiki/How_to_debug_sound_problems
 * https://fedoraproject.org/wiki/How_to_debug_PulseAudio_problems  
 * https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Pops_when_starting_and_stopping_playback
 
