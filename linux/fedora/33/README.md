@@ -1026,15 +1026,22 @@ https://askubuntu.com/questions/343268/how-to-use-manual-partitioning-during-ins
 ### Fedora Magazine
 
 * https://fedoramagazine.org/5-cool-tiling-window-managers/
+<<<<<<< HEAD
+=======
 * https://fedoramagazine.org/taking-screencast-fedora/
   * https://github.com/EasyScreenCast/EasyScreenCast
 * https://fedoramagazine.org/commandline-quick-tips-locate-file/
+>>>>>>> 536f7ac8609d8378864bd8582502f852ecb6d34d
 
 
 
 
 
 
+<<<<<<< HEAD
+
+
+=======
 gnome-theme.css
 
 https://ogbe.net/blog/gnome_titles.html
@@ -1043,6 +1050,7 @@ https://developer.gnome.org/gtk3/stable/chap-css-overview.html
 https://linuxhint.com/modify_style_gnome_shell_themes/
 https://developer.gnome.org/gtk3/stable/chap-css-properties.html
 https://unix.stackexchange.com/questions/257163/reduce-title-bar-height-in-gnome-3-gtk-3
+>>>>>>> 536f7ac8609d8378864bd8582502f852ecb6d34d
 
 
 

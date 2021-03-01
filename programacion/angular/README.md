@@ -175,3 +175,12 @@ console.log(
 * https://medium.com/@svenbudak/how-to-implement-dark-light-mode-in-angular-mateiral-with-prefers-color-scheme-ce3e980e2ea5
 
 
+
+
+
+#### Angular Router Tutorial
+* https://angular.io/guide/router-tutorial-toh
+* https://stackblitz.com/angular/eaalpaxvpnbj
+* https://stackblitz.com/angular/kmxkdnbbppn
+
+
