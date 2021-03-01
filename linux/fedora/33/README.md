@@ -312,7 +312,7 @@ You can download Mojave Dark Solid Theme [here](https://www.gnome-look.org/p/127
 
 ### Qogir cursors
 
-You can download Qogir cursors [here](https://www.gnome-look.org/p/1366182/), and extract the __.tar.xz__ file into __/usr/share/themes__ with `tar -xf 01-Qogir-cursors.tar.xz` or `tar --extract --file 01-Qogir-cursors.tar.xz`
+You can download Qogir cursors [here](https://www.gnome-look.org/p/1366182/), and extract the __.tar.xz__ file into __/usr/share/icons__ with `tar -xf 01-Qogir-cursors.tar.xz` or `tar --extract --file 01-Qogir-cursors.tar.xz`
 
 ### System fonts
 
