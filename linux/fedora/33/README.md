@@ -14,6 +14,8 @@
 * [Customisation](#customisation)
   * [GNOME Tweaks](#gnome-tweaks)
   * [Dash to Panel](#dash-to-panel)
+  * [Mojave Dark Solid](#mojave-dark-solid)
+  * [Qogir cursors](#qogir-cursors)
   * [System Fonts](#system-fonts)
   * [KDE](#kde)
 * [Install some programs](#install-some-programs)
@@ -303,6 +305,14 @@ Active or download dash-to-panel from https://extensions.gnome.org/extension/116
 
 More information in:
 * https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
+
+### Mojave Dark Solid
+
+You can download Mojave Dark Solid Theme [here](https://www.gnome-look.org/p/1275087/), and extract the __.tar.xz__ file into __/usr/share/themes__ with `tar -xf Mojave-dark-solid.tar.xz` or `tar --extract --file Mojave-dark-solid.tar.xz`
+
+### Qogir cursors
+
+You can download Qogir cursors [here](https://www.gnome-look.org/p/1366182/), and extract the __.tar.xz__ file into __/usr/share/themes__ with `tar -xf 01-Qogir-cursors.tar.xz` or `tar --extract --file 01-Qogir-cursors.tar.xz`
 
 ### System fonts
 
