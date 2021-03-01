@@ -590,7 +590,17 @@ Then update the package cache and install the package using dnf (Fedora 22 and a
 
 #### Skype
 
-Download it from https://www.skype.com/en/get-skype/
+You can download Skype for linux [here](https://www.skype.com/en/get-skype/). If you're installing Skype and get this error:
+
+```console
+Error: 
+ Problem: conflicting requests
+  - nothing provides libatomic1 needed by skypeforlinux-8.69.0.77-1.x86_64
+```
+
+You can try to download Skype Insider [here](https://www.skype.com/en/insider/)
+
+If you still have the same error, try to instal Skype using __Flatpak__ like described [here](https://docs.fedoraproject.org/en-US/quick-docs/installing-skype/#_installing_skype_using_flatpak)
 
 #### Chrome Remote Desktop
 
