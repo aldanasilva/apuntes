@@ -14,6 +14,8 @@
 * [Customisation](#customisation)
   * [GNOME Tweaks](#gnome-tweaks)
   * [Dash to Panel](#dash-to-panel)
+  * [Mojave Dark Solid](#mojave-dark-solid)
+  * [Qogir cursors](#qogir-cursors)
   * [System Fonts](#system-fonts)
   * [KDE](#kde)
 * [Install some programs](#install-some-programs)
@@ -34,6 +36,7 @@
     * [Skype](#skype)
     * [Chrome Remote Desktop](#chrome-remote-desktop)
     * [AnyDesk](#anydesk)
+    * [Microsfot Teams](#microsoft-teams)
   * [More](#more)
     * [unrar](#unrar)
     * [Transmission](#transmission)
@@ -302,6 +305,14 @@ Active or download dash-to-panel from https://extensions.gnome.org/extension/116
 
 More information in:
 * https://docs.fedoraproject.org/en-US/quick-docs/gnome-shell-extensions/
+
+### Mojave Dark Solid
+
+You can download Mojave Dark Solid Theme [here](https://www.gnome-look.org/p/1275087/), and extract the __.tar.xz__ file into __/usr/share/themes__ with `tar -xf Mojave-dark-solid.tar.xz` or `tar --extract --file Mojave-dark-solid.tar.xz`
+
+### Qogir cursors
+
+You can download Qogir cursors [here](https://www.gnome-look.org/p/1366182/), and extract the __.tar.xz__ file into __/usr/share/icons__ with `tar -xf 01-Qogir-cursors.tar.xz` or `tar --extract --file 01-Qogir-cursors.tar.xz`
 
 ### System fonts
 
@@ -626,6 +637,10 @@ Install pangox-compat and try to install AnyDesk again
 * http://rpm.anydesk.com/howto.html  
 * https://www.reddit.com/r/AnyDesk/comments/jojdq1/fedora_33_install_anydesk_through_dnf/
 
+#### Microsoft Teams
+
+Download it [here](https://www.microsoft.com/en-ww/microsoft-teams/download-app)
+
 ### More
 
 #### unrar
@@ -775,8 +790,12 @@ then restart pulseaudio by executing
 ```
 
 ###### Reference:
+* https://www.freedesktop.org/wiki/Software/PulseAudio/
+* https://fedoraproject.org/wiki/How_to_debug_sound_problems
 * https://fedoraproject.org/wiki/How_to_debug_PulseAudio_problems  
 * https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Pops_when_starting_and_stopping_playback
+* https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture/Troubleshooting
+* https://alsa.opensrc.org/Troubleshooting
 
 ### Display frozen
 
@@ -997,14 +1016,31 @@ https://askubuntu.com/questions/343268/how-to-use-manual-partitioning-during-ins
 ### Fedora Magazine
 
 * https://fedoramagazine.org/5-cool-tiling-window-managers/
+<<<<<<< HEAD
+=======
+* https://fedoramagazine.org/taking-screencast-fedora/
+  * https://github.com/EasyScreenCast/EasyScreenCast
+* https://fedoramagazine.org/commandline-quick-tips-locate-file/
+>>>>>>> 536f7ac8609d8378864bd8582502f852ecb6d34d
 
 
 
 
 
 
+<<<<<<< HEAD
 
 
+=======
+gnome-theme.css
+
+https://ogbe.net/blog/gnome_titles.html
+https://askubuntu.com/questions/1043426/how-can-i-access-org-gnome-shell-theme-which-is-referred-to-in-the-ubuntu-css
+https://developer.gnome.org/gtk3/stable/chap-css-overview.html
+https://linuxhint.com/modify_style_gnome_shell_themes/
+https://developer.gnome.org/gtk3/stable/chap-css-properties.html
+https://unix.stackexchange.com/questions/257163/reduce-title-bar-height-in-gnome-3-gtk-3
+>>>>>>> 536f7ac8609d8378864bd8582502f852ecb6d34d
 
 
 
