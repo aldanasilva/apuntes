@@ -997,3 +997,14 @@ https://askubuntu.com/questions/343268/how-to-use-manual-partitioning-during-ins
 ### Fedora Magazine
 
 * https://fedoramagazine.org/5-cool-tiling-window-managers/
+
+
+
+
+
+
+
+
+
+
+
