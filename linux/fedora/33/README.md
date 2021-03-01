@@ -34,6 +34,7 @@
     * [Skype](#skype)
     * [Chrome Remote Desktop](#chrome-remote-desktop)
     * [AnyDesk](#anydesk)
+    * [Microsfot Teams](#microsoft-teams)
   * [More](#more)
     * [unrar](#unrar)
     * [Transmission](#transmission)
@@ -625,6 +626,10 @@ Install pangox-compat and try to install AnyDesk again
 ###### Reference:
 * http://rpm.anydesk.com/howto.html  
 * https://www.reddit.com/r/AnyDesk/comments/jojdq1/fedora_33_install_anydesk_through_dnf/
+
+#### Microsoft Teams
+
+Download it [here](https://www.microsoft.com/en-ww/microsoft-teams/download-app)
 
 ### More
 
