@@ -16,6 +16,8 @@
   * [Dash to Panel](#dash-to-panel)
   * [Mojave Dark Solid](#mojave-dark-solid)
   * [Qogir cursors](#qogir-cursors)
+  * [Desktop icons](#desktop-icons)
+  * [NetSpeed](#netspeed)
   * [System Fonts](#system-fonts)
   * [KDE](#kde)
 * [Install some programs](#install-some-programs)
@@ -313,6 +315,15 @@ You can download Mojave Dark Solid Theme [here](https://www.gnome-look.org/p/127
 ### Qogir cursors
 
 You can download Qogir cursors [here](https://www.gnome-look.org/p/1366182/), and extract the __.tar.xz__ file into __/usr/share/icons__ with `tar -xf 01-Qogir-cursors.tar.xz` or `tar --extract --file 01-Qogir-cursors.tar.xz`
+
+### Desktop icons
+
+You can download __Desktop icons__ extension [here](https://extensions.gnome.org/extension/1465/desktop-icons/)
+
+### NetSpeed
+
+You can download __NetSpeed__ extension [here](https://extensions.gnome.org/extension/104/netspeed/)
+
 
 ### System fonts
 
