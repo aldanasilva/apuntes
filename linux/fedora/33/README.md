@@ -301,6 +301,52 @@ Don't require RPM Fusion
 Con la herramienta Tweaks, se puede modificar la interfaz de linux, adicionando botones de minimizar y maximizar en las ventanas, etc. Tweaks se descarga en la termina con el siguiente comando
 sudo dnf install gnome-tweak-tool
 
+#### gsettings
+
+Si por algún motivo no se puede utilizar gnome-tweaks, la configuración de temas, y botones de minimizar y maximizar se puede hacer con `gsettings`
+
+To view schemas in org.gnome.desktop
+
+```console
+[username@localhost ~]$ gsettings list-schemas | grep org.gnome.desktop | sort
+```
+
+When you found the schemas that you want to modify like
+
+org.gnome.desktop.interface
+org.gnome.desktop.wm.preferences
+
+You can view the keys of that schema
+
+```console
+[username@localhost ~]$ gsettings list-keys org.gnome.desktop.interface | sort
+```
+
+To set themes you can view the themes options with
+
+```console
+[username@localhost ~]$ gsettings list-keys org.gnome.desktop.interface | grep theme | sort
+```
+
+To get the value of a key use
+
+```console
+[username@localhost ~]$ gsettings get org.gnome.desktiop.interface gtk-theme
+```
+
+To set the value of a key use
+
+```console
+[username@localhost ~]$ gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
+```
+
+To show minimize and maximize buttons
+
+```console
+[username@localhost ~]$ gsettings get org.gnome.desktop.wm.preferences button-layout
+[username@localhost ~]$ gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,maximize,close"
+```
+
 ### Dash to panel
 
 Active or download dash-to-panel from https://extensions.gnome.org/extension/1160/dash-to-panel/
