@@ -1,0 +1,149 @@
+/* https://cybmeta.com/formas-basicas-con-css-triangulos-circulos-trapecios-rectangulos-cuadrados */
+
+.cuadrado {
+    height: 100px;
+    width: 100px;
+    background-color: yellow;
+    position: absolute;
+    transition: top 2.5s, left 2.5s, transform 2.5s;
+}
+
+.cuadrado-posicion-1 {
+    top: 420px;
+    left: 190px;
+    transform: rotate(45deg);
+}
+
+.triangulo-pequeno {
+    width: 0;
+    height: 0;
+    border-right: 70px solid transparent;
+    border-top: 70px solid transparent;
+    border-left: 70px solid transparent;
+    position: absolute;
+    transition: top 2.5s, left 2.5s, transform 2.5s;
+}
+
+.triangulo-pequeno-1-color {
+    border-bottom: 70px solid brown;
+}
+
+.triangulo-pequeno-2-color {
+    border-bottom: 70px solid purple;
+}
+
+.triangulo-pequeno-1-posicion-1 {
+    top: 400px;
+    left: 240px;
+}
+
+.triangulo-pequeno-2-posicion-1 {
+    top: 330px;
+    left: 170px;
+    transform: rotate(90deg);
+}
+
+.triangulo-mediano {
+    height: 0;
+    width: 0;
+    border-left: 70px solid orange;
+    border-top: 70px solid transparent;
+    border-right: 70px solid transparent;
+    border-bottom: 70px solid orange;
+    position: absolute;
+    transition: top 2.5s, left 2.5s, transform 2.5s;
+}
+
+.triangulo-mediano-posicion-1 {
+    top: 400px;
+    left: 100px;
+}
+
+.triangulo-grande {
+    height: 0;
+    width: 0;
+    border-left: 140px solid transparent;
+    border-top: 140px solid transparent;
+    border-right: 140px solid transparent;
+    position: absolute;
+    transition: top 2.5s, left 2.5s, transform 2.5s;
+}
+
+.triangulo-grande-1-color {
+    border-bottom: 140px solid green;
+}
+
+.triangulo-grande-2-color {
+    border-bottom: 140px solid red;
+}
+
+.triangulo-grande-1-posicion-1 {
+    top: 260px;
+    left: 100px;
+    transform: rotate(180deg);
+}
+
+.triangulo-grande-2-posicion-1 {
+    top: 260px;
+    left: 100px;
+    transform: rotate(-90deg);
+}
+
+.romboide {
+    height: 70px;
+    width: 140px;
+    background-color: skyblue;
+    transform: skew(-45deg);
+}
+
+.romboide-posicion-1 {
+    position: absolute;
+    top: 330px;
+    left: 65px;
+    transform: rotate(90deg);
+    transition: top 2.5s, left 2.5s, transform 2.5s;
+}
+
+/* Empiezan las clases para cambio de posición de las figuras */
+
+.cuadrado-posicion-2 {
+    top: 88px;
+    left: 850px;
+    transform: rotate(15deg);
+}
+
+.triangulo-pequeno-1-posicion-2 {
+    top: 250px;
+    left: 530px;
+}
+
+.triangulo-pequeno-2-posicion-2 {
+    top: 460px;
+    left: 980px;
+    transform: rotate(180deg);
+}
+
+.triangulo-mediano-posicion-2 {
+    top: 320px;
+    left: 630px;
+    transform: rotate(-45deg);
+}
+
+.triangulo-grande-1-posicion-2 {
+    top: 110px;
+    left: 710px;
+}
+
+.triangulo-grande-2-posicion-2 {
+    top: 200px;
+    left: 800px;
+    transform: rotate(180deg);
+}
+
+.romboide-posicion-2 {
+    position: absolute;
+    top: 390px;
+    left: 885px;
+    transform: rotateX(180deg);
+    transition: top 2.5s, left 2.5s, transform 2.5s;
+}
