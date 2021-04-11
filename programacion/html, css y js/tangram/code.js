@@ -39,6 +39,7 @@ btn.addEventListener('click', () => {
     cambiarPosicion('pato');
 });
 
+<<<<<<< HEAD
 /* Para crear más figuras
  * 
  * - Crear botón en plantilla html con id="<nombre de la figura>"
@@ -47,5 +48,8 @@ btn.addEventListener('click', () => {
  * 
 */
 
+=======
+//cambiarPosicion('pato');
+>>>>>>> 6cb5bd73601330b9f79a1b7fd8d4cb542d0f2ee8
 
 
