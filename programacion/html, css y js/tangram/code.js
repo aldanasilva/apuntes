@@ -8,50 +8,37 @@ let figuras = [
     'triangulo-pequeno-2',
 ];
 
-var posicion = 1;
+var posicion = 'inicial';
 
-function moverFigura(figura, de, a) {
-    if (typeof(figura) == 'number') {
-        figura = figuras[figura];
-    }
-    let clazz = `${figura}-posicion`;
-    let div = document.querySelector(`.${clazz}-${de}`);
-    if (div != null) {
-        div.classList.replace(`${clazz}-${de}`, `${clazz}-${a}`);
-    }
-};
-
-var btn = document.querySelector('#todas');
-btn.addEventListener('click', () => {
+function cambiarPosicion(posicion) {
     figuras.forEach(figura => {
-        moverFigura(figura, posicion, posicion == 1 ? 2 : 1);
+        let clazz = `${figura}-posicion`;
+        let div = document.querySelector(`.${clazz}-${this.posicion}`);
+        if (div != null) {
+            div.classList.replace(
+                `${clazz}-${this.posicion}`,
+                `${clazz}-${posicion}`
+            );
+        }
     });
+    this.posicion = posicion;
+}
 
-    if (posicion == 1) {
-        posicion = 2;
-    } else {
-        posicion = 1;
-    }
-});
-
-var numFigura = 0;
-btn = document.querySelector('#una-por-una');
+var btn = document.querySelector('#inicial');
 btn.addEventListener('click', () => {
-    moverFigura('asd');
-    moverFigura(1);
-    if (numFigura >= figuras.length) {
-        numFigura = 0
-        figuras.forEach(figura => {
-            moverFigura(figura, 2, 1);
-        });
-    } else {
-        moverFigura(numFigura, 1, 2);
-        numFigura += 1;
-    }
+    cambiarPosicion('inicial');
 });
 
+btn = document.querySelector('#corredor');
+btn.addEventListener('click', () => {
+    cambiarPosicion('corredor');
+});
 
+btn = document.querySelector('#pato');
+btn.addEventListener('click', () => {
+    cambiarPosicion('pato');
+});
 
-
+//cambiarPosicion('pato');
 
 
