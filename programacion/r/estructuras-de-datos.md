@@ -1,12 +1,19 @@
 
 # Estructuras de datos
 
-1. [Vectores](#vectores)
-  1.1. [`c()`](#c)
-2. [Factores](#factores)
-3. [Listas](#listas)
-4. [Matrices](#matrices)
-
+* [Vectores](#vectores)
+  * [`c()`](#c)
+  * [`scan()`](#scan)
+  * [`fix()`](#fix)
+  * [`rep()`](#rep)
+  * [`seq()`](#seq)
+  * [`sapply()`](#sapply)
+* [Factores](#factores)
+  * [`factor()`](#factor)
+  * [`ordered()`](#ordered)
+* [Listas](#listas)
+* [Matrices](#matrices)
+* [Data frames](#data-frames)
 
 ## Vectores
 
@@ -96,14 +103,60 @@ La función `sapply()` permite aplicar una función a cada uno de los valores de
 
 ## Factores
 
+Los factores se usan para describir items que pueden tener un número finito de valores (género, estrato, etc.). Un factor puede ser puramente nominal (`factor()`) o puede tener categorías ordenadas (`ordered()`). Los factores actualmente son implementados usando un arreglo de enteros para especificar los niveles actuales (`levels`) y un segundo arreglo de nombres (`names`) que están mapeados a los enteros.
+
+### `factor()`
+
+La función `factor()` se usa para crear un factor no ordenado a partir de un arreglo, con el parámetro `levels` se puede especificar los niveles del factor, con el parámetro `labels` se asigna el nombre de cada nivel, con el parámetro `exclude` se puede especificar qué valores del arreglo excluir al momento de crear el factor, y con el parámtro `ordered=TRUE` se crea el factor ordenado, igual que si se creara con la función `ordered()`. La función `as.factor()` también crea un factor no ordenado, pero no permite parámetros adicionales al vector `x`.
+
+```r
+> x = c("H", "H", "M", "H", "M", "M", "M", "H", "M", "M")
+> x.f = factor(x, levels=c("H", "M"), labels=c("Hombre", "Mujer"))
+> x.f
+ [1] Hombre Hombre Mujer  Hombre Mujer  Mujer  Mujer  Hombre Mujer  Mujer 
+Levels: Hombre Mujer
+> levels(x.f) = c("Male", "Female")
+> x.f
+ [1] Male   Male   Female Male   Female Female Female Male   Female Female
+Levels: Male Female
+```
+
+### `ordered()`
+
+La función `ordered()` se usa para crear un factor ordenado, y recibe los mismos parámetros que `factor()`. La función `as.ordered()` también crea un factor ordenado, pero no recibe parámetros adicionales al vector `x`.
+
+```r
+> x = c(2, 3, 2, 3, 3, 5, 4, 5, 4, 3)
+> x.f = ordered(x,
++   levels=c(1, 2, 3, 4, 5),
++   labels=c("Deficiente", "Insuficiente", "Aceptable", "Sobresaliente", "Excelente"))
+> x.f
+ [1] Insuficiente  Aceptable     Insuficiente  Aceptable     Aceptable     Excelente    
+ [7] Sobresaliente Excelente     Sobresaliente Aceptable    
+Levels: Deficiente < Insuficiente < Aceptable < Sobresaliente < Excelente
+```
 
 ## Listas
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Matrices
 
 
-
+## Data frames
 
 
 
