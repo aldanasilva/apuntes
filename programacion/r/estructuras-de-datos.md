@@ -103,6 +103,22 @@ La función `sapply()` permite aplicar una función a cada uno de los valores de
 [1]  0.000000e+00  1.000000e+00  1.224647e-16 -1.000000e+00 -2.449294e-16
 ```
 
+### `sort()`
+
+La función `sort()` se usa para ordenar los valores de un vector.
+
+```r
+> x = sample(1:10, size=10, replace=TRUE)
+> x
+ [1]  6  3 10  6 10  4 10  9  1 10
+> #?sort -> Sorting or Ordering Vectors
+> sort(x)
+ [1]  1  3  4  6  6  9 10 10 10 10
+> sort(x, decreasing=TRUE)
+ [1] 10 10 10 10  9  6  6  4  3  1
+```
+
+
 
 ## Factores
 
@@ -157,9 +173,9 @@ La función `list()` se una para crear una lista, los valores de la lista se dan
 > l = list(
 +     nombre = "temperaturas",
 +     datos = x,
-+     media = mean(x),
-+     sumas = cumsum(x)
++     media = mean(x)
 + )
+> l$sumas = cumsum(x)
 > l
 $nombre
 [1] "temperaturas"
@@ -199,6 +215,126 @@ List of 4
 
 ## Matrices
 
+```r
+> #?matrix ->
+> M = matrix(1:9, nrow=3)
+> M
+     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+> M = matrix(1:9, ncol=3, byrow=TRUE)
+> M
+     [,1] [,2] [,3]
+[1,]    1    2    3
+[2,]    4    5    6
+[3,]    7    8    9
+> # ?rbind
+> M = rbind(M, c(10, 11, 12), c(13, 14, 15))
+> M
+     [,1] [,2] [,3]
+[1,]    1    2    3
+[2,]    4    5    6
+[3,]    7    8    9
+[4,]   10   11   12
+[5,]   13   14   15
+> #?cbind
+> M = cbind(M, c(16, 17, 18, 19, 20), c(21, 22, 23, 24, 25))
+> M
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    2    3   16   21
+[2,]    4    5    6   17   22
+[3,]    7    8    9   18   23
+[4,]   10   11   12   19   24
+[5,]   13   14   15   20   25
+> #?diag
+> diag(c(1, 2, 3, 4, 5))
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    0    0    0    0
+[2,]    0    2    0    0    0
+[3,]    0    0    3    0    0
+[4,]    0    0    0    4    0
+[5,]    0    0    0    0    5
+> diag(1, nrow=4)
+     [,1] [,2] [,3] [,4]
+[1,]    1    0    0    0
+[2,]    0    1    0    0
+[3,]    0    0    1    0
+[4,]    0    0    0    1
+> M[4, 5]
+[1] 24
+> M[2, ]
+[1]  2  5  8 17 22
+> M[, 2]
+[1]  4  5  6 11 14
+> M[c(2, 4), c(3, 5)]
+     [,1] [,2]
+[1,]    8   22
+[2,]   12   24
+> diag(M)
+[1]  1  5  9 19 25
+> nrow(M)
+[1] 5
+> ncol(M)
+[1] 5
+> dim(M)
+[1] 5 5
+> diag(M)
+[1]  1  5  9 19 25
+> nrow(M)
+[1] 5
+> ncol(M)
+[1] 5
+> dim(M)
+[1] 5 5
+> sum(M)
+[1] 325
+> prod(M)
+[1] 1.551121e+25
+> mean(M)
+[1] 13
+> colSums(M)
+[1]  29  40  51  90 115
+> rowSums(M)
+[1] 49 54 59 76 87
+> colMeans(M)
+[1]  5.8  8.0 10.2 18.0 23.0
+> rowMeans(M)
+[1]  9.8 10.8 11.8 15.2 17.4
+> colMeans(M)
+[1]  5.8  8.0 10.2 18.0 23.0
+> apply(M, MARGIN=1, FUN=function(x) {sqrt(sum(x^2))})
+[1] 27.62245 29.42788 31.28898 36.08324 40.18706
+> apply(M, MARGIN=2, FUN=function(x) {sqrt(sum(x^2))})
+[1] 16.82260 19.84943 23.72762 40.37326 51.52669
+# MARGIN = 1 is by row, = 2 is by column, and = c(1, 2) is by row and column
+> t(M)
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    2    3   10   13
+[2,]    4    5    6   11   14
+[3,]    7    8    9   12   15
+[4,]   16   17   18   19   20
+[5,]   21   22   23   24   25
+> M%*%t(M)
+     [,1] [,2] [,3] [,4] [,5]
+[1,]  763  812  861  946 1019
+[2,]  812  866  920 1022 1106
+[3,]  861  920  979 1098 1193
+[4,]  946 1022 1098 1302 1444
+[5,] 1019 1106 1193 1444 1615
+> # Valores propios de la matriz
+> # eigen(M)$values
+> # Vectores propios de la matriz M
+> # eigen(M)$vectors
+> # Rango de la matriz M
+> # qr(M)$rank
+```
+
+
+
+
+
+
 
 
 
@@ -212,8 +348,57 @@ List of 4
 
 
 
-para aplicar una función específica a todos los valores de un vector se puede usar la función `sapply()`.
+### `which()`
 
 ```r
-sapply(v, function(x) { (x - mean(x))^2 })
+> x = sample(1:10, size=20, replace=TRUE)
+> x
+ [1]  5  1  5  9  6  1  3  7  5  7  2  4  2  9  8  5 10  7  6  2
+> which(x==min(x))
+[1] 2 6
+> which(x==max(x))
+[1] 17
 ```
+
+### `ls()` y `rm()`
+```r
+> x = 4
+> y = 7
+> z = 10
+> #?ls -> List Objects
+> ls()
+[1] "x" "y" "z"
+> #?rm -> Remove Objects from a Specified Environment
+> rm(y)
+> ls()
+[1] "x" "z"
+> rm(list=ls())
+> ls()
+character(0)
+```
+
+```r
+> M = matrix(sample(1:10, size=9, replace=TRUE), ncol=3, byrow=TRUE)
+> M
+     [,1] [,2] [,3]
+[1,]    3    8    7
+[2,]    6    6    6
+[3,]    7    8    9
+> # Inversa de la matriz M
+> solve(M)
+           [,1]       [,2]       [,3]
+[1,] -0.1666667  0.4444444 -0.1666667
+[2,]  0.3333333  0.6111111 -0.6666667
+[3,] -0.1666667 -0.8888889  0.8333333
+> round(M%*%solve(M), 10)
+     [,1] [,2] [,3]
+[1,]    1    0    0
+[2,]    0    1    0
+[3,]    0    0    1
+```
+
+
+
+
+
+* https://cran.r-project.org/doc/manuals/r-release/R-lang.html
