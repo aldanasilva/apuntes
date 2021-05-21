@@ -249,13 +249,44 @@ src/app
 ### A
 
 ```console
-[username@localhost my-app]$
+[username@localhost my-app]$ ng generate class system/system
+CREATE src/app/system/system.ts (24 bytes)
+[username@localhost my-app]$ tree src/app
+src/app
+├── app.component.css
+├── app.component.html
+├── app.component.ts
+├── app.module.ts
+├── app-routing.module.ts
+└── system
+    ├── system.component.css
+    ├── system.component.html
+    ├── system.component.ts
+    ├── system.module.ts
+    ├── system-routing.module.ts
+    └── system.ts
 ```
 
 ### B
 
 ```console
-[username@localhost my-app]$
+[username@localhost my-app]$ ng generate service system/system
+CREATE src/app/system/system.service.ts (135 bytes)
+[username@localhost my-app]$ tree src/app
+src/app
+├── app.component.css
+├── app.component.html
+├── app.component.ts
+├── app.module.ts
+├── app-routing.module.ts
+└── system
+    ├── system.component.css
+    ├── system.component.html
+    ├── system.component.ts
+    ├── system.module.ts
+    ├── system-routing.module.ts
+    ├── system.service.ts
+    └── system.ts
 ```
 
 ### C
