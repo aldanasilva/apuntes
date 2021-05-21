@@ -165,6 +165,146 @@ console.log(
 
 
 
+## Angular CLI
+
+### Create __my-app__ app
+
+```console
+[username@localhost angular]$ ng new my-app --skip-tests
+? Do you want to enforce stricter type checking and stricter bundle budgets in the workspace?
+  This setting helps improve maintainability and catch bugs ahead of time.
+  For more information, see https://angular.io/strict No
+? Would you like to add Angular routing? No
+? Which stylesheet format would you like to use? CSS
+CREATE ...
+✔ Packages installed successfully.
+    Successfully initialized git.
+[username@localhost angular]$ cd my-app
+[username@localhost my-app]$ tree src/app
+src/app
+├── app.component.css
+├── app.component.html
+├── app.component.ts
+└── app.module.ts
+```
+
+`--skip-tests` flag is used to avoid creating `*.test.ts` files
+
+### Create __app-routing-module__
+
+```console
+[username@localhost my-app]$ ng generate module app-routing --flat --module=app
+CREATE src/app/app-routing.module.ts (196 bytes)
+UPDATE src/app/app.module.ts (393 bytes)
+[username@localhost my-app]$ tree src/app
+src/app
+├── app.component.css
+├── app.component.html
+├── app.component.ts
+├── app.module.ts
+└── app-routing.module.ts
+```
+
+### Create __system__ module with __routing__
+
+```console
+[username@localhost my-app]$ ng generate module system --routing
+CREATE src/app/system/system-routing.module.ts (249 bytes)
+CREATE src/app/system/system.module.ts (280 bytes)
+[username@localhost my-app]$ tree src/app
+src/app
+├── app.component.css
+├── app.component.html
+├── app.component.ts
+├── app.module.ts
+├── app-routing.module.ts
+└── system
+    ├── system.module.ts
+    └── system-routing.module.ts
+```
+
+### Create __system__ component into __system__ module
+
+```console
+[username@localhost my-app]$ ng generate component system/system --flat --skip-tests
+CREATE src/app/system/system.component.css (0 bytes)
+CREATE src/app/system/system.component.html (21 bytes)
+CREATE src/app/system/system.component.ts (275 bytes)
+UPDATE src/app/system/system.module.ts (349 bytes)
+[username@localhost my-app]$ tree src/app
+src/app
+├── app.component.css
+├── app.component.html
+├── app.component.ts
+├── app.module.ts
+├── app-routing.module.ts
+└── system
+    ├── system.component.css
+    ├── system.component.html
+    ├── system.component.ts
+    ├── system.module.ts
+    └── system-routing.module.ts
+```
+
+### A
+
+```console
+[username@localhost my-app]$
+```
+
+### B
+
+```console
+[username@localhost my-app]$
+```
+
+### C
+
+```console
+[username@localhost my-app]$
+```
+
+### D
+
+```console
+[username@localhost my-app]$
+```
+
+### E
+
+```console
+[username@localhost my-app]$
+```
+
+### F
+
+```console
+[username@localhost my-app]$
+```
+
+### G
+
+```console
+[username@localhost my-app]$
+```
+
+### H
+
+```console
+[username@localhost my-app]$
+```
+
+### I
+
+```console
+[username@localhost my-app]$
+```
+
+
+
+
+
+
 
 
 
