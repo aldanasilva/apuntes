@@ -1,0 +1,33 @@
+---
+title: "graficos"
+author: "Andrés Aldana"
+date: "5/23/2021"
+output: html_document
+---
+
+# Gráficos
+
+## Gráfico de dispersión
+
+```{r}
+x = c(2,6,4,9,-1)
+y = c(1,8,4,-2,4)
+plot(x,y)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
