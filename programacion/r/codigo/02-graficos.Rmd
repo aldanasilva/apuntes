@@ -1,0 +1,165 @@
+---
+title: "graficos"
+author: "Andrés Aldana"
+date: "5/23/2021"
+output: html_document
+---
+
+# Gráficos
+
+Para hacer gráficos en `R`, la función básica es `plot()`, y hay otras funciones para graficas como `points()`, `lines()`, `curve()`, 
+
+```{r funciones_trigonometricas}
+x = seq(0, 2*pi, length.out=100)
+
+plot(
+  x, sin(x),
+  main="Funciones trigonométricas",
+  cex.main=1.5, font.main=4,
+  type="l", lwd=3, col="blue",
+  xlab="x", ylab="",
+  xlim=c(0, 2*pi), ylim=c(-1, 1),
+  yaxp=c(-1, 1, 2),
+  xaxt='n',
+  cex.axis=1.2, cex.lab=1.5,
+  panel.first=abline(
+    h=c(-1,0,1),
+    v=seq(0, 2*pi, by=pi/2),
+    lty="dashed", col="gray")
+)
+axis(
+  1, # side: 1=below, 2=left, 3=above, 4=right
+  seq(0, 2*pi, by=pi/2), # at
+  expression(0, pi/2, pi, 3*pi/2, 2*pi), cex.axis=1.2
+)
+points(
+  x, cos(x),
+  type="l", lwd=3, col="green"
+)
+lines(
+  x[x<=pi/2], tan(x[x<=pi/2]),
+  lwd=3, col="purple"
+)
+curve(
+  tan, pi/2 + 0.01, 3*pi/2,
+  lwd=3, col="purple",
+  add=TRUE
+)
+curve(
+  tan, 3*pi/2 + 0.01, 2*pi,
+  lwd=3, col="purple",
+  add=TRUE
+)
+legend(
+  "bottomleft", # bottomright, bottom, bottomleft, left, topleft, top, topright, right
+  legend=c("sin(x)", "cos(x)", "tan(x)"),
+  col=c("blue", "green", "purple"),
+  lwd=3, bg="gray90" #gray0 = black, gray100 = white
+)
+abline(v=c(pi/2, 3*pi/2), col="purple", lwd=3, lty="dashed")
+arrows(pi/2+0.05, 0.25, pi, 0.7, length=0.15, angle=30, code=1, col="red", lwd=2)
+arrows(pi, 0.7, 3*pi/2-0.05, 0.25, length=0.15, angle=30, code=2, col="red", lwd=2)
+text(pi, c(0.80, 0.68), labels=c("Asíntotas de", "tan(x)"), pos=3, col="red", font=2)
+```
+
+```
+x, y: the x and y coordinates of a set of points. Alternatively, a single argument x can be provided. If only x is provided then y = x and x = 1:length(y).
+
+type: 1-character string giving the type of plot desired.
+- p for points
+- l for lines
+- b for both (points and lines)
+- c for empty points joined by lines
+- o for overplotted points and lines
+- s and S for stair steps
+- h for histogram-like vertical lines
+- n does not produce any points or lines
+
+xlim (x limits): the x limits (x1, x2) of the plot.
+ylim (y limits): the y limits (y1, y2) of the plot.
+Note that v1 > v2 is allowed and leads to a 'reverser axis'
+
+log: a character string which contains "x" if the x axis is to be logarithmic, "y" if the y axis is to be logarithmic and "xy" or "yx" if both axes are to be logarithmic.
+
+main: a main title (on top) for the plot.
+sub: a sub title (at bottom) for the plot.
+
+xlab (x label): a label for the x axis, defaults to a description of x.
+ylab (y label): a label for the y axis, defaults to a description of y.
+
+ann (annotation): a logical value indicating whether the default annotation (title and x and y axis labels) should appear on the plot.
+
+axes: a logical value indicating whether both axes should be drawn on the plot. Use "xaxt='n'" or "yaxt='n'" to suppress just one of the axes.
+
+yaxt: y axis type.
+xaxt: x axis type.
+A character which specifies the axis type. Specifying "n" suppresses plotting of the axis, any value other than "n" implies plotting.
+
+frame.plot: a logical indicating whether a box should be drawn around the plot.
+
+panel.first: an ‘expression’ to be evaluated after the plot axes are set up but before any plotting takes place. This can be useful for drawing background grids or scatterplot smooths. Note that this works by lazy evaluation: passing this argument from other plot methods may well not work since it may be evaluated too early.
+
+col (color): color code or name. The colors for lines and points. Multiple colors can be specified so that each point can be given its own color. If there are fewer colors than points they are recycled in the standard fashion. Lines will all be plotted in the first colour specified.
+
+bg (background): a vector of background (fill) colors for open plot symbols given by pch = 21:25.
+
+pch (plotting character): plotting ‘character’, i.e., symbol to use: a vector of plotting characters or symbols. This can either be a single character or an integer code for one of a set of graphics symbols. The full set of S symbols is available with pch = 0:18
+
+cex (character expansion): a numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default.
+
+lty (line type): line types can either be specified as an integer or as one of the character strings, where "blank" uses ‘invisible lines’ (i.e., does not draw them). A vector of line types.
+- 0 = blank
+- 1 = solid (default)
+- 2 = dashed
+- 3 = dotted
+- 4 = dotdash
+- 5 = longdash
+- 6 = twodash
+
+cex.axis, col.axis, font.axis: settings for axis.
+cex.lab, col.lab, font.lab: settings for labels.
+cex.main, col.main, font.main: settings for main title.
+cex.sub, col.sub, font.sub: settings for sub-title.
+
+lwd (line width): line width for drawing symbols: a vector of line widths.
+
+font: an integer which specifies which font to use for text.
+- 1 to plain text (the default)
+- 2 to bold face
+- 3 to italic
+- 4 to bold italic
+- 5 to symbol font in Adobe symbol encoding
+
+xaxp: A vector of the form c(x1, x2, n).
+yaxp: A vector of the form c(y1, y2, n).
+Give the coordinates of the extreme tick marks and the number of intervals between tick-marks.
+```
+
+```{r}
+x = c(rep(1:9, 2), 1:8)
+y = c(rep(2, 9), rep(1.5, 9), rep(1, 8))
+plot(x, y,
+  main="pch (plotting character)",
+  xlab="", ylab="",  cex.main=1.8,
+  ylim=c(0.7, 2.1),
+  pch=0:25, cex=2, axes=FALSE,
+  lwd=2, col="blue", bg="gray75"
+)
+text(x, y-0.1, labels=0:25, pos=1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
