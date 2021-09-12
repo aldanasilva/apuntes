@@ -1,0 +1,55 @@
+---
+title: "15.1-integrales-dobles-sobre-rectangulos"
+author: "Andrés Aldana"
+date: "8/26/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse=TRUE)
+```
+
+$$
+\sum_{i=1}^{m}{\sum_{j=1}^{n}{f(x_i, y_j)\ \Delta A}}
+$$
+
+```{r pag_977}
+f = function(x,y) { 16-x^2-2*y^2 }
+R = c(0, 2, 0, 2)
+m = 256
+n = 256
+dA = (R[2]-R[1])/m * (R[4]-R[3])/n
+i_seq = seq(R[1], R[2], length.out=m+1)
+i_seq = i_seq[i_seq>R[1]]
+j_seq = seq(R[3], R[4], length.out=n+1)
+j_seq = j_seq[j_seq>R[3]]
+A = 0
+for (i in i_seq) {
+  for (j in j_seq) {
+    A = A + f(i,j)*dA
+  }
+}
+A
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

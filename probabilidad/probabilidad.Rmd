@@ -1,0 +1,1657 @@
+---
+title: "probabilidad"
+author: "Andrés Aldana"
+date: "6/19/2021"
+output:
+  rmdformats::downcute:
+    code_folding: show
+    self_contained: true
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse=TRUE)
+set.seed(2021)
+reticulate::use_python('~/anaconda3/bin/python3')
+```
+
+# Índice
+
+* [Distribuciones de probabilidad](#distribuciones-de-probabilidad)
+  * [Discretas](#discretas)
+    * [Bernoulli](#bernoulli)
+    * [Binomial](#binomial)
+    * [Geométrica](#geométrica)
+    * [Binomial Negativa](#binomial-negativa)
+    * [Poisson](#poisson)
+    * [Hipergeométrica](#hipergeométrica)
+  * [Continuas](#continuas)
+    * [Uniforme](#uniforme)
+    * [Exponencial](#exponencial)
+    * [Normal](#normal)
+
+# Conjuntos
+
+```{r}
+Omega = c(1,2,3,4,5,6,7,8,9,10)
+A=c(1,2,3,4,5)
+B=c(1,4,5)
+C=c(4,6,7,8)
+Omega
+union(A,B)
+intersect(A,B)
+setdiff(A,B)
+```
+
+```{python}
+Omega=set([1,2,3,4,5,6,7,8,9,10])
+A=set([1,2,3,4,5])
+B=set([1,4,5])
+C=set([4,6,7,8])
+Omega
+A & B # intersección
+A | B # unión
+A - B
+```
+
+## Combinaciones (orden no importa, sin repetición)
+
+Número de subconjuntos de tamaño $k$ de un conjunto de tamaño $n$. Este número es
+
+$$C_n^k={{n}\choose{k}} = \frac{n!}{k!\cdot (n-k)!}$$
+
+donde
+
+$$n! = 1\cdot2\cdot3\cdots n$$
+
+Entonces si $n=7$ y $k=5$
+
+$${7\choose5}=\frac{7!}{5!\cdot(7-5)!}=\frac{7!}{5!\cdot2!}=\frac{1\cdot2\cdot3\cdot4\cdot5\cdot6\cdot7}{1\cdot2\cdot3\cdot4\cdot5\cdot1\cdot2}=\frac{6\cdot7}{2}=\frac{42}{2}=21$$
+
+De un conjunto de 7 elementos, se pueden formar 21 subconjuntos diferentes de 5 elementos.
+
+```{r}
+n = 7
+k = 5
+factorial(n)/(factorial(k)*factorial(n-k))
+
+library(gtools)
+#?combinations -> Enumerate the Combinations of the Elements of a Vector
+# combinations(n, r, v=1:n, set=TRUE, repeats.allowed=FALSE)
+# n = Size of the source vector
+# r = Size of the target vectors
+# v = Source vector
+# Logical flag indicating whether duplicates should be removed from the source vector v.
+#Logical flag indicating whether the constructed vectors may include duplicated values.
+combinations(n, k)
+```
+
+## Variaciones (orden importa, sin repetición)
+
+Denotaremos las variaciones (sin repeticion) de $k$ elementos (de orden $k$) de un conjunto de $n$ elementos por $V_n^k$ su valor es
+
+$$V_n^k=\frac{n!}{(n-k)!}=(n-k+1)\cdot(n-k+2)\cdots n$$
+
+```{r}
+n = 3
+k = 2
+factorial(n)/factorial(n-k)
+
+library(gtools)
+#?permutations -> Enumerate the Permutations of the Elements of a Vector
+# permutations(n, r, v=1:n, set=TRUE, repeats.allowed=FALSE)
+# n = Size of the source vector
+# r = Size of the target vectors
+# v = Source vector
+# Logical flag indicating whether duplicates should be removed from the source vector v.
+#Logical flag indicating whether the constructed vectors may include duplicated values.
+permutations(3,2)
+```
+
+## Variaciones con repetición (orden importa)
+
+$$VR_n^k=n^k$$
+
+## Permutaciones (orden importa, sin repetición)
+
+Las permutaciones de un conjunto cardinal $n$ don todas las variaciones de orden máximo $n$. Se denotan y vale:
+
+$$P_n=VR_n^n=n!$$
+
+```{r}
+library(combinat)
+for (perm in permn(3)) print(perm)
+```
+
+```{python}
+from itertools import combinations, combinations_with_replacement, permutations
+from scipy.special import comb
+```
+
+## Combinaciones con repetición (orden no importa)
+
+$$CR_n^k={{n+k-1}\choose{k}}=\frac{(n+k-1)!}{k!(n-1)!}$$
+
+```{r}
+n = 12
+k = 4
+
+factorial(n+k-1)/(factorial(k)*factorial(n-1))
+```
+
+## Permutaciones con repetición
+
+Considerando el conjunto de elementos $\{a_1, a_2,\dots,a_k\}$
+
+Entonces, si cada uno de los objetos $a_i$ de un conjunto, aparece repetido $n_i$ veces para cada $i$ desde $1$ hasta $k$, entonces el número de permutaciones con elementos repetidos es:
+
+$$PR_{n}^{n_1,n_2,\dots,n_k}={{n}\choose{n_1\quad n_2\quad\dots\quad n_k}}=\frac{n!}{n_1!\cdot n_2!\cdot\ldots\cdot n_k!}$$
+
+donde $n=n_1+n_2+\cdots+n_k$
+
+Usos: ¿Cúantas palabras diferentes se pueden formar con las letras de la palabra 'probabilidad'?
+
+
+# Probabilidad
+
+### Propiedades
+
+* $P(\emptyset)=0$
+
+* $P(A-B)=P(A)-P(A\cap B)$
+
+* $B\subseteq A$, entonces $0\le P(B)\le P(A)$
+
+* $P(A^C)=1-P(A)$
+
+* $P(A\cup B)=P(A)+P(B)-P(A\cap B)$
+
+* $P(A\cup B\cup C)=P(A)+P(B)+P(C)-P(A\cap B)-P(A\cap C)-P(B\cap C)+P(A\cap B\cap C)$
+
+## Probabilidad condiconal
+
+$$P(B|A)=\frac{P(A\cap B)}{P(A)}$$
+
+### Propiedades
+
+* $P(B^C|A)=1-P(B|A)$
+
+* $P(B_1\cup B_1|A)=P(B_1|A)+P(B_2|A)-P(B_1\cap B_2|A)$
+
+## Teorema de la probabilidad total
+
+$$P(B)=P(B\cap A)+P(B\cap A^C)$$
+
+entonces
+
+$$P(B)=P(A)\cdot P(B|A)+P(A^C)\cdot P(B|A^C)$$
+
+## Matriz de confusión
+
+|                        | El test da Positivo              | El test da Negativo              |
+| :----------------:     | :------------------------------: | :------------------------------: |
+| __Condición Positiva__ | Correcto<br>(Verdadero Positivo) | Error<br>(Falso Negativo)        |
+| __Condición Negativa__ | Error<br>(Falso Positivo)        | Correcto<br>(Verdadero Negativo) |
+
+## Fórmula de Bayes
+
+$$P(A|B)=\frac{P(A)\cdot P(B|A)}{P(B)}$$
+
+### Usando el teorema de la probabilidad total
+
+$$P(A|B)=\frac{P(A)\cdot P(B|A)}{P(B|A)\cdot P(A)+P(B|A^C)\cdot P(A^C)}$$
+
+## Sucesos independientes
+
+Los sucesos $A$ y $B$ son __independientes__ si $P(A\cap B)=P(A)\cdot P(B)$
+
+$A_1,\dots,A_n$, son sucesos __independientes__ cuando, para toda subfamilia $A_{i_1},\dots,A_{i_k}$,
+
+$$P(A_{i_1}\cap\cdots\cap A_{i_k})=P(A_{i_1})\cdots P(A_{i_k})$$
+
+__Proposición:__ Dados dos sucesos $A$ y $B$ con $P(A),P(B)>0$, las siguientes afirmaciones son equivalentes:
+
+* $A$ y $B$ son independientes
+
+* $P(A|B)=P(A)$
+
+* $P(B|A)=P(B)$
+
+## Función de probabilidad discreta $f_{_X}(x)$
+
+La función de probabilidad (probability mass function o probability density function) de una variable aleatoria v.a. X, que se denota por $P_X(x)$, está definida por
+
+$$P_X(x)=P(X=x)$$
+
+es decir, la probabilidad de que $X$ tome el valor $x$
+
+### Dominio de una variable aleatoria discreta
+
+El conjunto
+
+$$D_X=\{x \in \mathbb{R}\ |\ P_X(x)>0\}$$
+
+recibe el nombre de *dominio* dela v.a. y son los valores posibles de esta variable.
+
+
+## Función de distribución de probabilidad $F_{_X}(x)$
+
+La función de distribución de probabilidad (acumulada) de la v.a. $X$ (de cualquier tipo; discreta o continua) $F_X(x)$ representa la probabilidad de que $X$ tome un valor menor o igual que $x$, es decir
+
+$$F_X(x)=P(X\le x)$$
+
+Esta función también se denomina función de distribución de una v.a. o *cumulative density function* que se puede abreviar como __cdf__.
+
+### Propiedades
+
+Sea $X$ una v.a. y $F_X$ su función de distribución:
+
+* $P(X>x)=1-P(X\le x)=1-F_X(x)$
+
+* Sea $a$ y $b$ tales que $a<b$, $P(a<X\le b)=P(X\le b)-P(X\le a)=F_X(b)-F_X(a)$
+
+* $0\le F_X(x)\le 1$
+
+* La función $F_X$ es no decreciente
+
+* La función $F_X$ es continua por derecha
+
+* Si $F_X$ es continua en $x$ se tiene que $P(X=x)=0$. Así que si la v.a. es continua $P(X\le a)=P(X<a)+P(X=a)=P(X<a)$ y propiedades similares.
+
+* Sea $X$ una v.a. discreta con dominio $D_X$ y que tiene por función de probabilidad $P_X(x)$ entonces su función de distribución $F_X(x_0)$ es
+
+$$F_X(x_0)=\sum_{x\le x_0}{P_X(x)}$$
+
+donde $\sum_{x\le x_0}$ indica que sumamos todos los $x \in D_X$ tales que $x \le x_0$
+
+## Valor esperado $E(X)$
+
+El *valor esperado* o *esperanza* (*expected value*) $E(X)$ de una v.a. discreta $X$, se define como
+
+$$E(X)=\sum_{x \in X(\Omega)}{xP_X(x)}$$
+
+En ocasiones de le denomina *media* (*mean*) poblacional o simplemente media y muy frecuentemente se le denota $\mu_X=E(X)$ o simplemente $\mu=E(X)$
+
+Sea $X$ una v.a. discreta con función de probabilidad $P_X$ y de distribución $F_X$. Entonces el *valor esperado* de una función $g(x)$ es:
+
+$$E(g(X))=\sum_{x}{g(x)P_X(x)}$$
+
+```{r}
+s = 0
+v = 1/2
+for (k in 7:107) {
+  s = s + v^k;
+}
+s
+v^7/(1-v)
+```
+
+## Series geométricas
+
+Una progresión geométrica de razón $r$ es una sucesión de la forma
+
+$$r^0, r^1, \dots, r^n, \dots, .$$
+
+La serie geométrica es la suma de todos los valores de la progresión geométrica $\sum_{k=0}^{+\infty}{r^k}$
+
+Las sumas parciales desde el término $n_0$ al $n$ de una progresión geométrica valen
+
+$$\sum_{k=n_0}^{n}{r^k}=\frac{r^{n_0}-r^{n}r}{1-r}$$
+
+### Propiedades
+
+* Si $|r|<1$ la serie geométrica es convergente y
+
+$$\sum_{k=0}^{+\infty}{r^k}=\frac{1}{1-r}$$
+
+* En el caso de que se comience en $n_0$ se tiene que
+
+$$\sum_{k=n_0}^{+\infty}{r^k}=\frac{r^{n_0}}{1-r}$$
+
+* Si $|r|<1$ también son convergentes las derivadas, respecto de $r$, de la serie geométrica y convergen a la derivada correspondiente. Así tenemos que
+
+
+$$
+\left(\sum_{k=0}^{+\infty}{r^k}\right)'=\sum_{k=1}^{+\infty}{kr^{k-1}}\quad\text{entonces}\quad\left(\frac{1}{1-r}\right)'=\frac{1}{(1-r)^2}
+$$
+
+$$
+\left(\sum_{k=0}^{+\infty}{r^k}\right)''=\sum_{k=2}^{+\infty}{k(k-1)r^{k-2}}\quad\text{entonces}\quad\left(\frac{1}{1-r}\right)''=\frac{2}{(1-r)^3}
+$$
+
+## Varianza de una v.a.
+
+Sea $X$ una v.a. llamaremos varianza de $X$ a
+
+$$Var(X)=E\left((X-E(X))^2\right)$$
+
+Por lo tanto la varianza es el momento central de orden 2.
+
+De forma frecuente se utiliza la notación
+
+$$\sigma_X^2=Var(X)$$
+
+A la raíz cuadrada positiva de la varianza
+
+$$\sigma_X=\sqrt{Var(X)}$$
+
+se le denomina desviación típica o estándar de $X$
+
+
+## Variable aleatoria continua $X$
+
+### Valor esperado (Esperanza) $E(X)$
+
+$$E(X)=\int_{-\infty}^{+\infty}{x \cdot f_{_X}(x)dx}$$
+
+Si $g(x)$ es una función de la variable $X$ entonces:
+
+$$E(g(X))=\int_{-\infty}^{+\infty}{g(x) \cdot f_{_X}(x)dx}$$
+
+### Varianza $Var(X)$
+
+$$Var(x) = \sigma_{X}^{2} = E((X - \mu_{X})^2) = \int_{-\infty}^{+\infty}{(x-\mu_X)^2 \cdot f_{_X}(x)dx}$$
+
+$$Var(x) = \sigma_{X}^{2} = E(X^2) - \mu_{X}^2 = \int_{-\infty}^{+\infty}{x^2 \cdot f_{_X}(x)dx}-\mu_{X}^{2}$$
+
+### Desviación típica $\sigma_{_X}$
+
+$$\sigma_{_X} = +\sqrt{\sigma_{_X}^2}$$
+
+### Transformaciones lineales
+
+Sea $X$ una v.a. continua con $E(X)=\mu_{X}$ y $Var(X)=\sigma_X^2$. Sea $Y=a+bX$, donde $a,b\in\mathbb{R}$, es una nueva v.a. continua obtenida mediante una transformación lineal de $X$. Se verifican las mismas propiedades que en el caso discreto:
+
+* $E(Y) = E(a+bX) = a+bE(X)$
+
+* $Var(Y) = Var(a+bX) = b^2 Var(X)$
+
+* $\sigma_Y = |b|\sigma_X$
+
+* $Z = \frac{X - \mu_X}{\sigma_X}$ es una transformación lineal de $X$ de forma que
+
+$$E(Z) = 0\ \ \text{y}\ \ Var(Z)=1$$
+
+$$$$
+
+# Distribuciones de probabilidad
+
+$p(X\le a)=F(a)$
+
+Coeficiente de asimetría
+
+$$$$
+
+## R
+
+* `dva(x, ...)`: Función de densidad o de probabilidad $f(x)$ de la variable aleatoria para el valor $x$ del dominio de definición.
+* `pva(x, ...)`: Función de distribución $F(x)$ de la variable aleatoria para el valor x del dominio de definición.
+* `qva(x, ...)`: Cuantil *p*-ésimo de la variable aleatoria (el valor de $x$ más pequeño tal que $F(x)\ge p$.
+* `rva(x, ...)`: Generador de n observaciones siguiendo la distribución de la variable aleatoria.
+
+## Python
+
+* `pmf`: Probability Mass Function
+* `pdf`: Probability Density Function
+* `cdf`: Cumulative Distribution Function
+* `ppf`: Percent Point Function (Inverse of CDF)
+* `rvs`: Random Variates
+
+## Discretas
+
+### Bernoulli
+
+Si $X$ es v.a. que mide el __número de éxitos__ y se realiza un único experimento con dos posibles resultados (éxito, que toma un valor de 1, o fracaso, que toma valor 0), se dice que $X$ se distribuye como una __Bernoulli__ con parámetro $p$
+
+$$X \sim \text{Be}(p)$$
+
+donde $\ p\ $ es la probabilidad de éxito y $\ q = 1 - p\ $ es la probabilidad de fracaso.
+
+* El __dominio__ de $X$ es $X(\Omega)=\{0,1\}$
+* La __función de probabilidad__ está dada por
+
+$$
+f_X(x)=p^x(1-p)^{1-x}, \quad x \in \{0,\ 1\}=
+ \left\{
+  \begin{array}{rl}
+   p  \quad& \text{si }\ x = 1 \\
+   1 - p \quad & \text{si }\ x = 0 \\
+   0 \quad & \text{en cualquier otro caso}
+  \end{array}
+ \right.
+$$
+
+donde $\ x \in \{0,\ 1\}$
+
+* La __función de distribución__ está dada por
+
+$$
+F_X(x)=
+ \left\{
+  \begin{array}{rl}
+   0 \quad & \text{si }\ x < 0 \\
+   1-p \quad & \text{si }\ 0 \le x < 1 \\
+   1 \quad & \text{si }\ x \ge 1
+  \end{array}
+ \right.
+$$
+
+* La __Esperanza__ es $E(X)=p$
+* La __Varianza__ es $Var(X)=pq$
+* El __Momento de orden $n$__ es $E(X^n)=p$
+
+#### Funciones en `R`
+
+```r
+library(Rlab)
+# prob = probabilidad de éxito
+dbern(x, prob)
+pbern(q, prob)
+qbern(p, prob)
+rbern(n, prob)
+```
+
+#### Funciones en `python`
+
+```python
+from scipy.stats import bernoulli
+# p = probabilidad de éxito
+bernoulli.pmf(k, p)
+bernoulli.cdf(k, p)
+bernoulli.ppf(q, p)
+bernoulli.rvs(p, size)
+```
+
+#### Ejercicio
+
+Sea $\ X = Be(p=0.7)$, la distribución que modela la probabilidad de obtener una cara usando una moneda trucada. La probabilidad de obtener cara es 70%.
+
+```{r comment="", message=FALSE, collapse=TRUE}
+#packages.install("Rlab")
+library(Rlab)
+# Probabilidad de éxito (1)
+p = 0.7
+# Probabilidad de obtener 0
+dbern(0, prob=p)
+# Probabilidad de obtener 1
+dbern(1, prob=p)
+# Probabilidad acumulada de obtener 0
+pbern(0, prob=p)
+# Probabilidad acumulada de obtener 1
+pbern(1, prob=p)
+# Mediana
+qbern(0.5, prob=p)
+# Primer cuartil
+qbern(0.25, prob=p)
+# Barplot
+par(bg='gray90')
+barplot(
+  prop.table(table(rbern(10000, prob=p))),
+  ylim=c(0,0.8))
+abline(h=seq(0.1, 0.8, by=0.1), col='gray60')
+```
+
+###### ([volver al índice](#índice))
+
+
+### Binomial
+
+Si $X$ es una v.a. que mide el __número de éxitos__ y se realizan $n$ ensayos de __Bernoulli__ independientes entre sí, se dice que $X$ se distribuye como una __Binomial__ con parámetros $n$ y $p$
+
+$$X\sim \text{B}(n, p)$$
+
+donde $p$ es la probabilidad de éxito y $q=1-p$ es la probabilidad de fracaso
+
+* El __dominio__ de $X$ será $D_X=\{0, 1, 2, \dots, n\}$  
+* La __función de densidad__ está dada por:  
+
+$$f_X(x)={n\choose x}p^x(1-p)^{n-x}$$
+
+* La __función de distribución__ está dada por:  
+
+$$
+F_X(x)=
+ \left\{
+  \begin{array}{rl}
+   0 \quad & \text{si } x < 0 \\
+   \sum_{k=0}^{x}{}f(k) \quad & \text{si } 0 \le x < n \\
+   1 \quad & \text{si } x \ge n
+  \end{array}
+ \right.
+$$
+
+* La __Esperanza__ es $E(X)=np$
+* La __Varianza__ es $Var(X)=npq$
+
+#### Funciones en `R`
+
+```r
+# library(Rlab) # aunque ya está en el paquete stats
+# prob = probabilidad de éxito
+# size = número de ensayos del experimento
+dbinom(x, size, prob)
+pbinom(q, size, prob)
+qbinom(p, size, prob)
+rbinom(n, size, prob)
+```
+
+#### Funciones en `python`
+
+```python
+from scipy.stats import binom
+# p = probabilidad de éxito
+# n = número de ensayos del experimento
+binom.pmf(k, n, p)
+binom.cdf(k, n, p)
+binom.ppf(q, n, p)
+binom.rvs(n, p, size)
+```
+
+#### Ejercicio
+
+Sea $X = \text{B}(n=30, p=0.6)$
+
+```{r, message=FALSE, comment="", collapse=TRUE}
+library(reticulate)
+#library(Rlab)
+n = 30
+p = 0.6
+# Primer cuartil
+qbinom(0.25, n, p)
+# Mediana
+qbinom(0.5, n, p)
+# Tercer cuartil
+qbinom(0.75, n, p)
+# Generación de valores aleatorios
+v = rbinom(100000, n, p)
+x = min(v):max(v)
+# Histogram
+breaks = seq(min(x)-0.5, max(x)+0.5, by=1)
+hist(v, breaks=breaks,
+  main="Función de probabilidad de una B(30, 0.6)",
+  xlab="",
+  ylab="",
+  freq=FALSE)
+lines(x, dbinom(x, n, p), type='b', col='blue')
+```
+
+```{r}
+plot(x, pbinom(x, n, p))
+```
+
+
+
+###### ([volver al índice](#índice))
+
+
+### Geométrica
+
+Si $X$ es v.a. que mide el __número de repeticiones independientes del experimento hasta haber conseguido el primer éxito__, se dice que $X$ se distribuye como una __Geométrica__ con parámetro $\ p$
+
+$$X \sim \text{Ge}(p)$$
+
+donde $\ p\ $ es la probabilidad de éxtio, y $\ q=1-p\ $ es la probabilidad de fracaso
+
+* El __Dominio__ de $X$ será $D_X=\{0,1,2,\dots\}$ o bien $D_X=\{1,2,\dots\}$ en función de si empieza en 0 o en 1 respectivamente. Empieza en 0 cuando se mide el número de fracasos, y empieza en 1 cuando se mide el número de intentos hasta conseguir el primer éxito
+* La __función de densidad__ está dada por:  
+
+$$
+f_X(x)=
+ \left\{
+  \begin{array}{ll}
+   (1-p)^{x}p \qquad   & \text{si empieza en 0} \\
+   (1-p)^{x-1}p \qquad & \text{si empieza en 1}
+  \end{array}
+ \right.
+$$
+
+* La __función de distribución__ está dada por (empezando en 0)
+
+$$
+F_X(x) =
+P(X \le x) =
+ \left\{
+  \begin{array}{rl}
+     0 \quad             & \text{si }\ x<0 \\
+     1-(1-p)^{k+1} \quad & \text{si }\ \left\{\begin{array}{l}k \le x < k+1 \\ \text{para }\ k = 0,1,2,\dots\end{array}\right.
+  \end{array}
+ \right.
+$$
+
+* La __esperanza__ es $\ E(X)=\frac{1-p}{p}\ $ si empieza en 0 y $\ E(X)=\frac{1}{p}\ $ si empieza en 1
+* La __varianza__ $\ Var(X)=\frac{1-p}{p^2}$
+* __Propiedad de la falta de memoria__: Si $\ X\ $ es una v.a. $\ \text{Ge}(p)\ $, entonces
+
+$$p(X > m+n|X\ge n)=p(X > m)\ \ \forall\ \ m, n = 0,1,\dots$$
+
+#### Funciones en `R`
+
+```r
+# prob = probabilidad de éxito del experimento
+dgeom(x, prob)
+pgeom(q, prob)
+qgeom(p, prob)
+rgeom(n, prob)
+```
+
+#### Funciones en `python`
+
+```python
+from scipy.stats import geom
+# p = probabilidad de éxito del experimento
+# Con python la geométrica empieza en uno, cuenta el número de intentos hasta conseguir el primer éxito, si se quiere contar fracasos hasta el primer éxito, se debe aregar el parámetro loc=-1
+geom.pmf(k, p)
+geom.cdf(k, p)
+geom.ppf(q, p)
+geom.rvs(p, size)
+```
+
+#### Ejercicio
+
+Sea $X=\text{Ge}(p=0.25)$ la distribución que modela la probabilidad de intentar abrir una puerta hasta conseguirlo.
+
+```{r comment="", collapse=TRUE}
+# Probabilidad de éxito
+p = 0.25
+# Probabilidad de acertar en el primer intento
+dgeom(0, p)
+# Probabilidad de acertar en el segundo intento
+dgeom(1, p)
+# Probabilidad acumulada de haber acertado en el sexto intento
+pgeom(5, p)
+# Mediana
+qgeom(0.5, p)
+# Primer cuartil
+qgeom(0.25, p)
+# Generación de valores aleatorios
+rgeom(100000, p) -> v
+x = min(v):max(v)
+# Histogram
+hist(v, freq=FALSE, breaks=seq(min(x)-0.5, max(x)+0.5, by=1))
+lines(x, dgeom(x, p), type='b', col='blue')
+```
+
+###### ([volver al índice](#índice))
+
+
+### Binomial Negativa
+
+Si $X$ es una variable aleatoria que mide el __número de repeticiones hasta observar los $r$ éxitos en ensayos de Bernoulli__, se dice que $X$ se distribuye como una Binomial Negativa con parámetros $r$ y $p$
+
+$$X \sim \text{BN}(r,p)$$
+
+donde $p$ es la probabilidad de éxito
+
+* El __dominio__ de $X$ será $D_X=\{r,\ r+1,\ r+2,\ \dots\}$
+* La __función de densidad__ está dada por
+
+$$f(k)={k-1 \choose r-1}p^r(1-p)^{k-r},\qquad k \ge r $$
+
+* La __función de distribución__ no tiene una expresión analítica
+* La __Esperanza__ es $E(X)=\frac{r}{p}$
+* La __varianza__ es $Var(X)=r \frac{1-p}{p^2}$
+
+#### Funciones en `R`
+
+```r
+# size = número de casos exitosos
+# prob = probabilidad de éxito
+dnbinom(x, size, prob)
+pnbinom(q, size, prob)
+qnbinom(p, size, prob)
+rnbinom(n, size, prob)
+```
+
+#### Funciones en `python`
+
+```python
+from scipy.stats import nbinom
+# n = número de casos exitosos
+# p = probabilidad de éxito
+nbinom.pmf(k, n, p)
+nbinom.cdf(k, n, p)
+nbinom.ppf(q, n, p)
+nbinom.rvs(n, p)
+```
+
+#### Ejercicio
+
+
+```{r comment="", collapse=TRUE}
+# número de éxitos que se buscan
+n = 5
+# probabilidad de éxito
+p = 0.5
+# probabilidad de obtener r aciertos en el intento número 7
+dnbinom(7-n, n, p)
+# Generación de valores aleatorios
+rnbinom(100000, n, p) -> v
+x = min(v):max(v)
+# Histograma
+hist(v+n, breaks=seq(0.5, max(v)+n+0.5, by=1),
+  main="Función de probabilidad de una BN(5, 0.5)",
+  xlab="Número de intentos",
+  ylab="Probabilidad de éxito",
+  freq=FALSE)
+lines(c(1:(n-1), x+n), c(rep(0, n-1), dnbinom(x, n, p)), type='b', col='blue')
+```
+
+```{python}
+# En este caso se busca es número de fallos antes de obtener n aciertos, no el total de intentos hasta obtener n aciertos
+from scipy.stats import nbinom
+n, p = 5, 0.5
+params = nbinom.stats(n, p, moments='mv')
+print('E(X) = {m}'.format(m = params[0]))
+print('Var(X) = {v}'.format(v = params[1]))
+```
+
+###### ([volver al índice](#índice))
+
+
+### Poisson
+
+Si $X$ es una v.a. que mide el __número de eventos en un cierto intervalo de tiempo__, se dice que $X$ se distribuye como una __Poisson__ con parámetro $\lambda$
+
+$$X\sim \text{Po}(\lambda)$$
+
+donde $\lambda$ representa le número de veces que se espera que ocurra el evento durante un intervalo de tiempo dado
+
+* El __dominio__ de $X$ será $D_X=\{0,1,2,\dots\}$
+* La __función de densidad__ está dada por
+
+$$
+f_X(x) =
+P(X=x) =
+ \left\{
+  \begin{array}{ll}
+   \displaystyle\frac{\lambda^x}{x!}e^{-\lambda} & \text{si }\ x = 0,1,2,\dots \\[5pt]
+   0 & \text{en otro caso}
+  \end{array}
+ \right.
+$$
+
+* La __función de distribución__ está dada por
+
+$$F_X(x) =
+P(X \le x) =
+ \left\{
+  \begin{array}{rl}
+   0 \quad                      & \text{si }\ x<0 \\
+   \displaystyle\sum_{i=0}^{k}{f_X(i)} \quad & \text{si }\ k \le x < n \\
+   1 \quad                      & \text{si }\ x \ge n
+  \end{array}
+ \right.$$
+
+* La __Esperanza__ es $E(X)=\lambda$
+* La __Varianza__ es $Var(X)=\lambda$
+
+#### Funciones en `R`
+
+```r
+# lambda = número esperado de eventos por unidad de tiempo de la distribución
+dpois(x, lambda)
+ppois(q, lambda)
+qpois(p, lambda)
+rpois(n, lambda)
+```
+
+#### Funciones en `python`
+
+```python
+from scypy.stats import poisson
+# mu = número esperado de eventos por unidad de tiempo de la distribución
+poisson.pmf(k, mu)
+poisson.cdf(k, mu)
+poisson.ppf(q, mu)
+poisson.rvs(M, mu)
+```
+
+#### Ejercicio
+
+Supongamos que $X$ modela el número de errores por página que tiene un valor esperado $\lambda = 5$.
+
+```{r comment="", collapse=TRUE}
+# lambda
+l = 5
+# Probabilidad de cometer 3 errores
+dpois(3, l)
+# Probabilidad de cometer 3 errores o menos
+ppois(3, l)
+sum(dpois(0:3, l))
+# Primer cuartil
+qpois(0.25, l)
+# Mediana
+qpois(0.5, l)
+# Tercer cuartil
+qpois(0.75, l)
+# Generación de valores aleatorios
+rpois(n=100000, lambda=l) -> v
+x = min(v):max(v)
+# Histograma
+hist(v, breaks=seq(min(x)-0.5, max(x)+0.5, by=1), freq=FALSE)
+lines(x, dpois(x, lambda=l), type='b', col='blue')
+```
+
+###### ([volver al índice](#índice))
+
+
+### Hipergeométrica
+
+Considerando el experimento __"extraer a la vez (o una detás de otra, sin retornarlos) $k$ objetos donde hay $m$ de tipo A y $n$ de tipo B"__. Si $X$ es v.a. que mide el __número de objetos del tipo A__, se dice que $X$ se distribuye como una __Hipergeométrica__ con parámetros $m$, $n$, $k$
+
+$$X \sim \text{H}(m, n, k)$$
+
+* El __dominio__ de $X$ será $D_X=\{x \in \mathbb{N} | \max\{0, k - n\} \le x \le \min\{m, k\}\}$ (en general)  
+* La __función de densidad__ está dada por
+
+$$
+f_X(x) =
+P_X(x) =
+ \left\{
+  \begin{array}{ll}
+   \displaystyle \frac{{{m} \choose {x}} \cdot {{n} \choose {k-x}}}{{m+n} \choose {k}} & \text{si }\ \max\{0, k-n\} \le x \le \min\{m,k\}\ \text{ para }\ x \in \mathbb{N} \\
+   0 & \text{en otro caso}
+  \end{array}
+ \right.
+$$
+
+* La __función de distribución__ está dada por
+
+$$
+F(x)=
+ \left\{
+  \begin{array}{rl}
+   0 \quad & \text{si }\ x < 0 \\
+   \displaystyle \sum_{k=0}^{x}{f(k)} \quad & \text{si }\ 0 \le x < n \\
+   1 \quad & \text{si }\ x \ge n
+  \end{array}
+ \right.
+$$
+
+* La __esperanza__ es $\displaystyle{E(X)=\frac{k \cdot m}{m + n}}$
+
+* La __varianza__ es
+
+$$Var(X)=k \cdot \frac{m}{m + n} \cdot \left(1 - \frac{m}{m + n}\right) \cdot \frac{m + n - k}{m + n - 1} = \frac{k \cdot m \cdot n}{(m + n)^2} \cdot \frac{m + n - k}{m + n - 1}$$
+
+#### Funciones en `R`
+
+```r
+# m = número de objetos del primer tipo
+# n = número de objetos del segundo tipo
+# k = número de extracciones realizadas
+dhyper(x, m, n, k)
+phyper(q, m, n, k)
+qhyper(p, m, n, k)
+rhyper(nn, m, n, k)
+```
+
+#### Funciones en `python`
+
+```python
+from scipy.stats import hypergeom
+# M = m + n = número total de objetos
+# n = m = número de objetos del primer tipo
+# N = k = número de extracciones realizadas
+hypergeom.pmf(k, M, n, N)
+hypergeom.cdf(k, M, n, N)
+hypergeom.ppf(q, M, n, N)
+hypergeom.rvs(M, n, N, size)
+```
+
+#### Ejercicio
+
+De 20 animales, 7 son perros. Cuál es la probabilidad de encontrar 6 perros si se extraen $k=12$ animales del grupo?.
+
+```{r comment="", collapse=TRUE}
+# Número de perros
+M = 7
+# Número de otros animales
+N = 13
+# Número de animales extraídos del grupo
+k = 12
+n = 6
+# Probabilidad de obtener 6 perros en 12 extracciones
+dhyper(n, M, N, k)
+# Primer cuartil
+qhyper(0.25, M, N, k)
+# Mediana
+qhyper(0.5, M, N, k)
+# Tercer cuartil
+qhyper(0.75, M, N, k)
+
+# Generación de valores aleatorios
+rhyper(100000, M, N, k) -> v
+x = min(v):max(v)
+# Histograma
+hist(v, breaks=seq(min(x)-0.5, max(x)+0.5, by=1), freq=FALSE)
+lines(x, dhyper(x, M, N, k), type='b', col='blue')
+```
+
+###### ([volver al índice](#índice))
+
+
+## Continuas
+
+Una v.a. $\ X : \Omega \longrightarrow \mathbb{R}\ $ es continua cuando su función de distribución $\ F_X : \mathbb{R} \longrightarrow [0, 1]\ $ es continua
+
+En este caso, $\ F_X(x)=F_X(x^-)\ $ y, por este motivo,
+
+$$p(X=x)=0 \quad \forall\ x \in \mathbb{R}$$
+
+pero esto no significa que sean sucesos imposibles
+
+__Función de densidad:__ es una función $\ f : \mathbb{R} \longrightarrow \mathbb{R}\ $ que satisface:
+
+* $f(x) \ge 0 \quad \forall \ x \in \mathbb{R}$  
+
+* $\int_{-\infty}^{+\infty}{f(t)\cdot dt}=1$
+
+Una función de densidad puede tener puntos de discontinuidad
+
+__Función de distribución:__ toda variable aleatoria $X$ con función de distribución
+
+$$F(x)=\int_{-\infty}^{x}{f(t)\cdot dt} \quad \forall\ x \in \mathbb{R}$$
+
+para cualquier densidad $f$ es una v.a. continua, entonces se dirá que $f$ es la función de densidad de $X$
+
+A partir de ahora, se considerarán solamente las v.a. $X$ continuas que tienen función de densidad
+
+__Esperanza:__ La esperanza de una v.a. continua $X$ con densidad $f_X$ es
+
+$$E(X)=\int_{-\infty}^{+\infty}{x\cdot f_X(x)\cdot dx}$$
+
+Si el dominio $D_X$ de $X$ es un intervalo de extremos $\ a<b$, entonces
+
+$$E(X)=\int_{a}^{b}{x \cdot f_X(x) \cdot dx}$$
+
+Sea $g:D_X\longrightarrow \mathbb{R}$ una función continua. Entonces, 
+
+$$E(g(X)) = \int_{-\infty}^{+\infty}g(x)\cdot f_X(x)\cdot dx$$
+
+Si el dominio $D_X$ de $X$ es un intervalo de extremos $a<b$, entonces
+
+$$E(g(X))=\int_a^b g(x)\cdot f_X(x)\cdot dx$$
+
+__Varianza:__ la varianza de una v.a. continua, como en el caso discreto
+
+$$Var(X)=E((X-E(X))^2)$$
+
+y se puede demostrar que
+
+$$Var(X)=E(X^2)-(E(X))^2$$
+
+
+### Uniforme
+
+Una v.a. continua $X$ tiene una distribución uniforme sobre el intervalo real $[a,b]$ con $a<b, X \sim \text{U}(a,b)$ si su función de densidad es
+
+$$
+f_X(x)=
+ \left\{
+  \begin{array}{rl}
+   \displaystyle\frac{1}{b-a} \quad & \text{si } a \le x \le b \\
+   0 \quad             & \text{en cualquier otro caso}
+  \end{array}
+ \right.
+$$
+
+Modela el elegir un elemento del intervalo $[a,b]$ de manera equiprobable
+
+* El __dominio__ de $X$ es $D_X = [a,b]$
+
+* La __función de distribución__ está dada por
+
+$$
+F_X(x) =
+ \left\{
+  \begin{array}{rl}
+   0 \quad               & \text{si }\ x \le a \\
+   \displaystyle\frac{x-a}{b-a} \quad & \text{si }\ a < x < b \\
+   1 \quad               & \text{si }\ x \ge b
+  \end{array}
+ \right.
+$$
+
+* La __esperanza__ es $E(X)=\displaystyle\frac{b+a}{2}$
+
+* La __varianza__ es $Var(X)=\displaystyle\frac{(b-a)^2}{12}$
+
+#### Funciones en `R`
+
+```r
+# min = a
+# max = b
+dunif(x, min=0, max=1)
+punif(q, min=0, max=1)
+qunif(p, min=0, max=1)
+runif(n, min=0, max=1)
+```
+
+#### Funciones en `python`
+
+Si $X \sim U(a, b)$, entonces $\ \displaystyle{Z=\frac{x-a}{b-a} \sim U(0,1)}$
+
+##### Propiedad: Cambio lineal
+
+Sea $X$ una v.a. $U(a,b)$
+
+Si $\ scale \ne 0\ $ y $\ loc\ $ son dos constantes entonces:
+
+* si $\ scale>0 \rightarrow T=scale \cdot X + loc\ $ sigue una ley $U(scale \cdot a + loc, scale \cdot b + loc)$
+
+* si $\ scale<0 \rightarrow T=scale \cdot X + loc\ $ sigue una ley $U(scale \cdot b + loc, scale \cdot a + loc)$
+
+```python
+from scipy.stats import uniform
+# A uniform continuous random variable.
+# In the standard form, the distribution is uniform on ``[0, 1]``. Using the parameters ``loc`` and ``scale``, one obtains the uniform distribution on ``[loc, loc + scale]``.
+# loc = a
+# scale = b - a
+
+uniform.pmf(x, loc=0, scale=1)
+uniform.cdf(x, loc=0, scale=1)
+uniform.ppf(q, loc=0, scale=1)
+uniform.rvs(loc=0, scale=1, size=1)
+```
+
+Supongamos que $X\sim \text{U}[0,1]$
+
+```{r}
+a = 0
+b = 1
+
+x = c(0, 0.9999, 1, 2, 3, 4, 4.0001, 5)
+plot(x, dunif(x, 1, 4), type='b')
+plot(x, punif(x, 1, 4), type='b')
+
+hist(runif(1000000))
+
+```
+
+###### ([volver al índice](#índice))
+
+
+### Exponencial
+
+Una variable aleatoria $X$ tiene distribución exponencial de parámetro $\lambda$, $X \sim \text{Exp}(\lambda)$, si su función de densidad es
+
+$$
+f_X(x)=
+ \left\{
+  \begin{array}{rl}
+   0 \quad & \text{si } x \le 0 \\
+   \lambda \cdot e^{-\lambda x} \quad & \text{si } x > 0
+  \end{array}
+ \right.
+$$
+
+__Teorema__: Si se tiene un proceso de $\text{Poisson}$ con parámetro $\lambda$ por unidad de tiempo, el tiempo que pasa entre dos sucesos consecutivos es una variable aleatoria $\text{Exp}(\lambda)$
+
+__Propiedad de la pérdida de memoria__: Si $X$ es una v.a. $\text{Exp}(\lambda)$, entonces
+
+$$P(X>s+t|X>s)=P(X>t)\quad \forall\ s,t>0$$
+
+* El __dominio__ de $X$ será $D_X=[0,\infty)$
+* La __función de distribución__ está dada por
+
+$$
+F_X(x)=
+ \left\{
+  \begin{array}{rl}
+   0 & \text{si } x \le 0 \\
+   1-e^{-\lambda x} & \text{si } x > 0
+  \end{array}
+ \right.
+$$
+
+* La __Esperanza__ es $E(X)=\displaystyle\frac{1}{\lambda}$
+
+* La __Varianza__ es $Var(X)=\displaystyle\frac{1}{\lambda^2}$
+
+* El __Momento de orden $n$__ es $E(X^n)=\displaystyle\frac{n!}{\lambda^n}$
+
+* El __coeficiente de asimetría__ es 2
+
+* La __curtosis__ es 9
+
+#### Funciones en `R`
+
+```r
+# rate = lambda
+dexp(x, rate=1)
+pexp(q, rate=1)
+qexp(p, rate=1)
+rexp(n, rate=1)
+```
+
+#### Funciones en `python`
+
+```python
+from scipy.stats import expon
+# loc
+# scale = E(X)
+
+expon.pmf(x, loc=0, scale=1)
+expon.cdf(x, loc=0, scale=1)
+expon.ppf(q, loc=0, scale=1)
+expon.rvs(loc=0, scale=1, size=1)
+```
+
+#### Ejercicio
+
+```{r}
+plot(0:20, dexp(0:20, 0.2), type='b')
+plot(0:20, pexp(0:20, 0.2), type='b')
+```
+
+###### ([volver al índice](#índice))
+
+
+### Normal
+
+Una v.a. $X$ tiene distribución normal o gaussiana de parámetros $\mu$ y $\sigma$, $X \sim \mathcal{N}(\mu, \sigma)$ si su función de densidad es
+
+$$f_X(x)=\frac{1}{\sigma\sqrt{2\pi}}{e^{-\frac{1}{2}\cdot\left(\frac{x-\mu}{\sigma}\right)^2}} \quad \forall\ z \in \mathbb{R}$$
+
+La gráfica de $f_X$ es conocida como la __Campana de Gauss__
+
+Cuando $\mu = 0$ y $\sigma = 1$, se dice que la v.a. $X$ es __estándar__ y se indicará usualmente como $Z$, la cuál tendrá __función de densidad__
+
+$$f_Z(z) = \frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}} \quad \forall\ z \in \mathbb{R}$$
+
+* La __Esperanza__ es $E(X)=\mu$
+* La __Varianza__ es $Var(X)=\sigma^2$
+* El __coeficiente de asimetría__ es 0
+* La __curtosis__ es 3
+
+En particular, si $Z$ sigue una distribución estándar
+
+* La __Esperanza__ es $E(X)=0$
+* La __Varianza__ es $Var(X)=1$
+
+```{r}
+curve(
+  dnorm(x),
+  from=-3.5, to=3.5,
+  panel.first=
+    abline(
+      h=seq(from=0, to=0.4, by=0.1),
+      v=seq(from=-4, to=4, by=1),
+      col="gray90"))
+```
+
+* __Estandarización de una v.a. normal__: Si $X$ es una v.a. $\mathcal{N}(\mu,\sigma)$, entonces
+
+$$Z=\frac{X-\mu}{\sigma} \sim \mathcal{N}(0,1) \quad y \quad X=\sigma\cdot Z + \mu \sim \mathcal{N}(\mu,\sigma)$$
+
+Las probabilidades de una normal estándar $Z$ determinan las de cualquier $X$ de tipo $\mathcal{N}(\mu, \sigma)$
+
+$$p(X\le x)=p\left( \frac{X-\mu}{\sigma} \le \frac{x-\mu}{\sigma} \right) = p\left( Z\le\frac{x-\mu}{\sigma} \right)$$
+
+Los puntos de inflexión están en $\ \mu-\sigma\ $ y $\ \mu+\sigma$.
+
+* __Transformación lineal de la distribución normal__: Sea $\ X\ $ una variable $\ \mathcal{N}(\mu,\sigma)\ $ entonces la variable $\ Y=aX+b\ $ con $\ a \ne 0,\ b \in \mathbb{R}\ $ tiene distribución $\ \mathcal{N}(a\mu+b,\ |a|\sigma)$
+
+#### Funciones en `R`
+
+```r
+# library stats
+dnorm(x, mean=0, sd=1)
+pnorm(q, mean=0, sd=1)
+qnorm(p, mean=0, sd=1)
+rnorm(n, mean=0, sd=1)
+```
+
+#### Funciones en `python`
+
+```python
+from scipy.stats import norm
+# loc = mean
+# scale = standard deviation.
+
+norm.pmf(x, loc=0, scale=1)
+norm.cdf(x, loc=0, scale=1)
+norm.ppf(q, loc=0, scale=1)
+norm.rvs(loc=0, scale=1, size=1)
+```
+
+
+
+#### Cuantiles
+
+Si $\ X\ $ es una v.a. con dominio $\ D_X\ $ y $\ 0<q<1\ $ llamaremos cuantil de orden $\ q\ $ al menor valor perteneciente al dominio $\ X_q\in D_X\ $ tal que
+
+$$P(X \le x_q) \ge q$$
+
+En `R`, cada distribución $\ X\ $ tiene una función `qX(p, ...)` que devuelve precisamente el cuantil $\ x_p\ $ tal que $\ P(X \le x_p) \ge p$
+
+
+* El __coeficiente de asimetría de Pearson__ es
+
+$$
+\gamma_1=
+E\left(\left(\frac{X-\mu}{\sigma}\right)^{3}\right)=
+\frac{\mu_{3}}{\sigma^{3}}
+$$
+
+* La __curtosis de Pearson__ es
+
+$$
+\gamma_2=
+E\left(\left(\frac{X-\mu}{\sigma}\right)^{4}\right)=
+\frac{\mu_{4}}{\sigma^{4}}
+$$
+
+* La __función generatriz de momentos__ de una v.a. $X$ es
+
+$$
+m_X(t)=
+E\left(e^{tX}\right)
+$$
+
+* El __momento de orden $n$__ de una v.a. también se puede calcular como
+
+$$
+m_n=
+E\left(X^n\right)=
+\left.\frac{d^n\left(m_X(t)\right)}{dt^n}\right|_{t=0}=
+m_X^{(n)}(0)
+$$
+
+* La __función generatriz acumulativa__ de una v.a. $X$ es
+
+$$
+K_X(t)=
+\text{ln}\left(m_X(t)\right)
+$$
+
+$$
+\left.\frac{d(K_X(t))}{dt}\right|_{t=0}=
+\mu_X=
+E(X)
+$$
+
+$$
+\left.\frac{d^2(K_X(t))}{dt^2}\right|_{t=0}=
+\sigma_X^2=
+Var(X)
+$$
+
+* La __función de probabilidad__ $f_X(k)$ se puede calcular a partir de la *función generatriz de momentos* como
+
+$$
+f_X(k)=
+\frac{m_X^{(k)}(0)}{k!}
+$$
+
+* La __función característica__ de una v.a. $X$ es
+
+$$
+\phi_X(w)=
+E\left(e^{\text{i}wX}\right) \qquad \text{donde }\ \ \text{i}=\sqrt{-1}
+$$
+
+* La relación entra la __función característica__ y los __momentos de roden $n$__ de una v.a. $X$ es la siguiente
+
+$$
+m_n=
+E(X^n)=
+\frac{1}{\text{i}^n}\cdot\left.\frac{d^n(\phi_X(w))}{dw^n}\right|_{w=0}=
+\frac{1}{\text{i}^n}\cdot\phi_X^{(n)}(0)
+$$
+
+
+
+
+
+
+#### Binomio de Newton
+
+$$
+\begin{array}{lllll}
+ \displaystyle(x+y)^n&=&
+  \displaystyle\sum_{k=0}^{n}{{n \choose k}\cdot x^{n-k}\cdot y^{k}}&=&
+  \displaystyle\sum_{k=0}^{n}{\frac{n!}{k!\cdot(n-k)!}\cdot x^{n-k}\cdot y^k} \\[5pt]
+ \displaystyle(x-y)^n&=&
+  \displaystyle\sum_{k=0}^{n}{(-1)^k\cdot{n \choose k}\cdot x^{n-k}\cdot y^{k}}&=&
+  \displaystyle\sum_{k=0}^{n}{(-1)^k\cdot\frac{n!}{k!\cdot(n-k)!}\cdot x^{n-k}\cdot y^k}
+\end{array}
+$$
+
+#### Función exponencial
+
+La __función exponencial__ ${\displaystyle e^{x}}$ tiene como serie de Maclaurin
+
+$$
+e^{x}=
+\sum _{n=0}^{\infty}{\frac{x^{n}}{n!}}=
+1+x+{\frac{x^{2}}{2!}}+{\frac {x^{3}}{3!}}+\cdots
+$$
+
+y converge para toda ${\displaystyle x}$.
+
+###### Referencia
+
+* https://es.wikipedia.org/wiki/Serie_de_Taylor#Funci%C3%B3n_exponencial
+
+$$$$
+
+## Conjuntas
+
+### Función de distribución
+
+Dada una __v.a. bidimensional__ $(X,\ Y)$, se define su __función de distribución__ $F_{XY}$ a la función definida sobre $\mathbb{R}^2$ de la manera siguiente:
+
+$$
+\begin{array}{rl}
+ F_{XY}:\mathbb{R}^2 & \longrightarrow \mathbb{R} \\
+ (x,\ y) & \longrightarrow F_{XY}(x,\ y)=P(X\leq x,\ Y\leq y)
+\end{array}
+$$
+
+Las v.a. $X$ y $Y$ se llaman __variables aleatorias marginales__ y sus funciones de distribución $F_X$ y $F_Y$ pueden hallarse a partir de la distribución conjunta de la siguiente forma:
+
+$$F_X(x)=F_{XY}(x,\ \infty), \quad F_Y(y)=F_{XY}(\infty,\ y)$$
+
+para todo $x,\ y \in \mathbb{R}$.
+
+Dados $\ x_1<x_2\ $ y $\ y_1<y_2\ $, consideramos $B$ el rectángulo de vértices $(x_1,y_1)$, $(x_1,y_2)$, $(x_2,y_1)$ y $(x_2,y_2): (x_1,x_2]\times(y_1,y_2]$. Entonces,
+
+$$
+P((X,\ Y)\in B)=
+F_{XY}(x_2,\ y_2)-F_{XY}(x_2,\ y_1)-F_{XY}(x_1,\ y_2)+F_{XY}(x_1,\ y_1)
+$$
+
+$$$$
+
+### Variable discreta
+
+Dada una __v.a. bidimensional discreta__ $(X,\ Y)$, se define su __función de probabilidad__ $P_{XY}$ para un valor $(x,\ y)\in\mathbb{R}^2$ de la siguiente forma:
+
+$$
+\begin{array}{rl}
+ P_{XY}:\mathbb{R}^2 & \longrightarrow \mathbb{R} \\
+ (x,\ y) & \longrightarrow P_{XY}(x,\ y)=P(X=x,\ Y=y)
+\end{array}
+$$
+
+La suma de todos los valores de la __función de probabilidad conjunta__ cobre el conjunto de valores siempre vale 1:
+
+$$\sum_{i}\sum_{j}P_{XY}(x_i,\ y_j)=1$$
+
+La relación entre la __función de distribución conjunta__ y la __función de probabilidad conjunta__ es:
+
+$$
+F_{XY}(x,\ y)=
+\sum_{x_i\leq x,\ y_j\leq y}{P_{XY}(x_i,\ y_j)}
+$$
+
+#### Función de probabilidad marginal
+
+Las __funciones de probabilidad marginales__ $P_X(x_i)$ y $P_Y(y_j)$ se calculan usando las siguientes expresiones:
+
+$$P_{X}(x)=\sum_{j}{P_{XY}(X=x,\ Y=y_j)}$$
+$$P_{Y}(y)=\sum_{i}{P_{XY}(X=x_i,\ Y=y)}$$
+
+$$$$
+
+### Variable continua
+
+La relación que hay entre la __función de distribución__ $F_{XY}$ y la __función de densidad__ $f_{XY}$ es la siguiente:
+
+$$F_{XY}(x,\ y)=\int_{-\infty}^{x}{\int_{-\infty}^{y}{f_{XY}(u,\ v)\ du\ dv}}$$
+
+La relación que hay entre la __función de densidad__ $f_{XY}$ y la __función de distribución__ $F_{XY}$ es:
+
+$$f_{XY}(x,\ y)=\frac{\partial^2F_{XY}(x,\ y)}{\partial x\partial y}$$
+
+Las __funciones de densidad marginales__ de las variables $X$ y $Y$, $f_X(x)$ y $f_Y(y)$ respectivamente, se calculan de la siguiente manera:
+
+$$
+f_X(x)=
+\int_{-\infty}^{\infty}{f_{XY}(x,\ y)\ dy}, \quad
+f_Y(y)=
+\int_{-\infty}^{\infty}{f_{XY}(x,\ y)\ dx}
+$$
+
+$$$$
+
+### Distribución Gaussiana bidimensional
+
+La distribución de la v.a. bidimensional $(X,\ Y)$ es __gaussiana bidimensional__ dependiendo del parámetro $\rho$ (rho) si su __función de densidad conjunta__ es:
+
+$$f_{XY}(x,\ y)=\frac{1}{2\pi\sqrt{1-\rho^2}}e^{-\frac{\left(x^2-2\rho xy+y^2\right)}{2\left(1-\rho^2\right)}}, \quad -\infty<x,\ y<\infty, \quad |\rho|<1$$
+
+Para cualquier punto $(x,\ y)\in\mathbb{R}^2$, la función de densidad es no nula: $f_{XY}(x,\ y)>0$.
+
+La __función de densidad__ tiene un único máximo absoluto en el punto $(0,\ 0)$. Para $\rho=0$, dicho máximo alcanza el mínimo valor posible y si $\rho\to\pm1$, dicho máximo tiende a $\infty$.
+
+Las __densidades marginales__ $f_X(x)$ y $f_Y(y)$ son normales $N(0,\ 1)$.
+
+$$$$
+
+### Independencia de v.a. conjuntas
+
+Las __v.a. discretas__ $X$ y $Y$ son independientes si:
+
+$$P_{XY}(x_i,\ y_j)=P_X(x_i)\cdot P_Y(y_j), \quad i=1,2,\dots,\quad j=1,2,\dots$$
+
+Las __v.a. continuas__ $X$ y $Y$ son independientes si:
+
+$$f_{XY}(x,\ y)=f_X(x)\cdot f_Y(y), \quad \text{para todo } x,\ y \in \mathbb{R}$$
+También, las v.a. continuas $X$ y $Y$ son independientes si:
+
+$$F_{XY}(x,\ y)=F_X(x)\cdot F_Y(y), \quad (x,\ y)\in\mathbb{R}^2$$
+
+Las __v.a. continuas__ $X$ y $Y$ de la __distribución gaussiana bidimensional__ son independientes cuando $\rho=0$.
+
+$$$$
+
+### Valor esperado
+
+El __valor esperado__ de $g(X,\ Y)$ se puede hallar usando la siguiente expresión:
+
+$$
+E(g(X,\ Y))=
+\left\{
+ \begin{array}{ll}
+  \displaystyle\sum_{x_i}\sum_{y_j}{g(x_i,\ y_j)\cdot P(x_i,\ y_j)} &
+  \qquad\text{para v.a. discreta} \\[10pt]
+  \displaystyle\int_{-\infty}^{\infty}{\int_{-\infty}^{\infty}{g(x,\ y)\cdot f_{XY}(x,\ y)\ dx\ dy}} &
+  \qquad\text{para v.a. continua}
+ \end{array}
+\right.
+$$
+
+Si las v.a. $X$ y $Y$ son independientes, y $g(x,\ y)$ se puede expresar como $g_x(x)\cdot g_y(y)$ para todo valor $x,\ y \in \mathbb{R}$. En este caso, el valor esperado de $g(x,\ y)$ se puede calcular como:
+
+$$
+E(g(X,\ Y))=
+E_X(g_x(X))\cdot E_Y(g_y(Y))
+$$
+
+Es decir
+
+$$
+E(g(X,\ Y))=
+\left\{
+ \begin{array}{ll}
+  \displaystyle\left(\sum_{x_i}{g_x(x_i)\cdot P_X(x_i)}\right)\cdot\left(\sum_{y_j}{g_y(y_j)\cdot P_Y(y_j)}\right) &
+  \qquad\text{para v.a. discreta} \\[10pt]
+  \displaystyle\left(\int_{-\infty}^{\infty}{g_x(x)\cdot f_X(x)\ dx}\right)\cdot\left(\int_{-\infty}^{\infty}{g_y(y)\cdot f_Y(y)\ dy}\right) &
+  \qquad\text{para v.a. continua}
+ \end{array}
+\right.
+$$
+
+$$$$
+
+### Momentos conjuntos
+
+El __momento conjunto de orden $(k,\ l)$__ para la v.a. bidimensional $(X,\ Y)$ se define como:
+
+$$
+E\left(X^kY^l\right)=
+\left\{
+ \begin{array}{ll}
+  \displaystyle\sum_{x_i}{\sum_{y_j}{x_i^k\ y_j^l\ P_{XY}(x_i,\ y_j)}} &
+  \qquad\text{para v.a. discreta} \\[10pt]
+  \displaystyle\int_{-\infty}^{\infty}{\int_{-\infty}^{\infty}{x^k\ y^l\ f_{XY}(x,\ y)\ dx\ dy}} &
+  \qquad\text{para v.a. continua}
+ \end{array}
+\right.
+$$
+
+Donde $\ \ k,\ l\in\mathbb{N}$.
+
+#### Observaciones
+
+Si $l=0$, los momentos conjuntos de orden $(k,\ 0)$ coinciden con los momentos de orden $k$ de la v.a. $X$.
+
+Si $k=0$, los momentos conjuntos de orden $(0,\ l)$ coinciden con los momentos de orden $l$ de la v.a. $Y$.
+
+Para $k=1$ y $l=1$ se tiene el momento conjunto de orden $(1,\ 1)$: $E(X\cdot Y)$, denominado __correlación entre las varaibles $X$ y $Y$__. Si $E(X\cdot Y)=0$, se dice que las v.a. $X$ y $Y$ con __ortogonales__.
+
+$$$$
+
+### Momentos conjuntos centrados en las medias
+
+El __momento conjunto de orden $(k,\ l)$ centrado en las medias__ para la v.a. bidimensional $(X,\ Y)$ se define como:
+
+$$
+E\left(\left(X-\mu_X\right)^k\ \left(Y-\mu_Y\right)^l\right)=
+\left\{
+ \begin{array}{ll}
+  \displaystyle\sum_{x_i}{\sum_{y_j}{(x_i-\mu_X)^k\ (y_j-\mu_Y)^l\ P_{XY}(x_i,\ y_j)}} &
+  \qquad\text{para v.a. discreta} \\[10pt]
+  \displaystyle\int_{-\infty}^{\infty}{\int_{-\infty}^{\infty}{(x-\mu_X)^k\ (y-\mu_Y)^l\ f_{XY}(x,\ y)\ dx\ dy}} &
+  \qquad\text{para v.a. continua}
+ \end{array}
+\right.
+$$
+
+Donde $\ \ k,\ l\in\mathbb{N}$, $\ \ \mu_X=E(X)\ \ $ y $\ \ \mu_Y=E(Y)$.
+
+$$$$
+
+### Covarianza entra las variables
+
+El __momento conjunto centrado en las medias__ para $k=1$ y $l=1$ se denomina __covarianza__ entre las variables $X$ y $Y$:
+
+$$\text{Cov}(X,\ Y)=E((X-\mu_X)\cdot(Y-\mu_Y))$$
+
+La covarianza puede calcularse a partir de la __correlación__ entre las variables:
+
+$$\text{Cov}(X,\ Y)=E(X\cdot Y)-\mu_X\cdot\mu_Y$$
+
+Las v.a. $X$ y $Y$ son independientes si $\text{Cov}(X,\ Y)=0$, es decir, $E(X\cdot Y)=\mu_X\cdot\mu_Y$
+
+$$$$
+
+### Varianza
+
+La __varianza__ de la suma o resta de las v.a. $X$ y $Y$, se puede calcular utilizando la siguiente expresión:
+
+$$
+\text{Var}(X\pm Y)=
+E\left(\left(X\pm Y\right)^2\right)-(E(X\pm Y))^2=
+\text{Var}(X)+\text{Var}(Y)\pm2\text{Cov}(X,\ Y)
+$$
+
+$$$$
+
+### Coeficiente de correlación
+
+El __coeficiente de correlación__ entre las v.a. $X$ y $Y$ se define como:
+
+$$
+\rho_{XY}=
+\frac{\text{Cov}(X,\ Y)}{\sqrt{\text{Var}(X)}\cdot\sqrt{\text{Var}(Y)}}=
+\frac{E(X\cdot Y)-\mu_X\cdot\mu_Y}{\sqrt{E(X^2)-\mu_X^2}\cdot\sqrt{E(Y^2)-\mu_Y^2}}
+$$
+
+Si las v.a. $X$ y $Y$ con independientes entonces $\rho_{XY}=0$
+
+El __coeficiente de correlación__ es un valor normalizado ya que siempre está entre -1 y 1, es decir que $\ -1\leq\rho_{XY}\leq1$.
+
+$$$$
+
+### Variable aleatoria condicional discreta
+
+Sean $(X,\ Y)$ una v.a. bidimensional discreta, la probabilidad de que $Y=y_j|X=x_1$ se define como:
+
+$$
+P_{Y|X=x_i}(y_j)=
+P(Y=y_j|X=x_i)=
+\frac{P(X=x_i,\ Y=y_j)}{P(X=x_i)}=
+\frac{P_{XY}(x_i,\ y_j)}{P_{X}(x_i)}
+$$
+
+Al ser $\ Y|X=x_i\ $ una v.a. unidimensional, se debe verificar que:
+
+$$\sum_{y_j}{P_{Y|X=x_i}(y_j)}=1$$
+
+Si las v.a. $X$ y $Y$ son independientes, se tiene que:
+
+$$P_{Y|X=x_i}(y_j)=P_Y(y_i)$$
+
+$$$$
+
+### Variable aleatoria condicional continua
+
+Sean $(X,\ Y)$ una v.a. bidimensional continua, la probabilidad de que $Y=y|X=x$ se define como:
+
+$$
+f_{Y|X=x}(y)=
+\frac{f_{XY}(x,\ y)}{f_{X}(x)}
+$$
+
+Al ser $\ Y|X=x_i\ $ una v.a. unidimensional, se debe verificar que:
+
+$$\int_{-\infty}^{\infty}{f_{Y|X=x}(y)\ dy}=1$$
+
+Si las v.a. $X$ y $Y$ son independientes, se tiene que:
+
+$$f_{Y|X=x}(y)=f_Y(y)$$
+
+$$$$
+
+### Valor esperado condicional
+
+Sean $(X,\ Y)$ una v.a. bidimensional, se define el __valor esperado de la variable $Y$ dado que $X=x$__ como $E(Y|x)$, es decir, el valor esperado de la __v.a. condicional $Y|X=x$__:
+
+$$
+E(Y|x)=
+\left\{
+ \begin{array}{ll}
+  \displaystyle\sum_{y_j}{y_j\ P_{Y|X=x}(y_j)} & \qquad \text{para v.a. discreta} \\[10pt]
+  \displaystyle\int_{-\infty}^{\infty}{y\ f_{Y|X=x}(y)\ dy} & \qquad \text{para v.a. continua}
+ \end{array}
+\right.
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
