@@ -42,6 +42,17 @@ declare @viewcode varchar(max) = (select object_definition(object_id('object_nam
 print(@viewcode)
 ```
 
+### Query table default constraints
+
+```sql
+declare @table varchar(128) = 'my_table'
+
+select t.name as table_name, c.name as column_name, dc.definition as default_value
+from sys.default_constraints as dc
+ inner join sys.tables as t on (dc.parent_object_id = t.object_id)
+ inner join sys.columns as c on (dc.parent_object_id = c.object_id and dc.parent_column_id = c.column_id)
+where t.name = @table
+```
 
 
 
