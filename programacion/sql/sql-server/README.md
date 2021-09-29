@@ -5,7 +5,7 @@
 
 ###### Archivo: 20200829 - IDENTITY.sql
 
-```
+```sql
 use db_prueba;
 go
 
@@ -17,7 +17,7 @@ create table t_prueba(
 go
 
 insert into t_prueba (nombre)
-values ('Andr�s');
+values ('Andrés');
 
 set identity_insert t_prueba on;
 
@@ -35,7 +35,12 @@ from t_prueba
 --drop table t_prueba
 ```
 
+### View code
 
+```sql
+declare @viewcode varchar(max) = (select object_definition(object_id('object_name')))
+print(@viewcode)
+```
 
 
 
