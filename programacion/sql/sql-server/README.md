@@ -54,10 +54,44 @@ from sys.default_constraints as dc
 where t.name = @table
 ```
 
+### Using system tables to query objects
 
+```sql
+select s.name as schema_name,
+ o.name as object_name,
+ o.type, o.type_desc,
+ o.create_date, o.modify_date,
+ m.definition
+from sys.sql_modules as m
+ inner join sys.objects as o on (m.object_id = o.object_id)
+ inner join sys.schemas as s on (o.schema_id = s.schema_id)
 
+select *
+from INFORMATION_SCHEMA.VIEWS
 
+select *
+from INFORMATION_SCHEMA.VIEW_TABLE_USAGE
 
+select *
+from INFORMATION_SCHEMA.ROUTINES
+
+select *
+from INFORMATION_SCHEMA.ROUTINE_COLUMNS
+```
+
+### ad hoc distributed queries Server Configuration Option
+
+```sql
+sp_configure 'show advanced options', 1;
+RECONFIGURE;
+GO
+sp_configure 'Ad Hoc Distributed Queries', 1;
+RECONFIGURE;
+GO
+```
+
+###### References:
+* https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/ad-hoc-distributed-queries-server-configuration-option?view=sql-server-ver15
 
 
 
