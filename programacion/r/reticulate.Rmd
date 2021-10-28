@@ -1,0 +1,48 @@
+---
+title: "reticulate"
+author: "Andrés Aldana"
+date: "10/20/2021"
+output:
+  rmdformats::downcute:
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Reticulate
+
+Cargar librería `reticulate` y configurar el markdown para que use la versión de python instalada con anaconda
+
+```{r}
+library(reticulate)
+use_python('~/anaconda3/bin/python3', TRUE)
+reticulate::py_config()
+```
+
+## Importar una librería de python y usarla
+
+```{r}
+os = import("os")
+userdir = os$path$expanduser("~")
+os$listdir(sprintf("%s%s", userdir, "/Desktop"))
+#os$uname("~")
+py_help(os$listdir)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

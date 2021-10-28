@@ -1666,6 +1666,47 @@ X+Y\sim\mathcal{N}\left(\mu_1+\mu_2,\ \sqrt{\sigma_1^2+\sigma_2^2}\right)
 $$
 
 
+### Teorema central del límite
+
+El __Teorema Central del Límite__ se aplica a la práctica en la forma siguiente:
+
+Sea $\{X\}_{n=1}^{\infty}$ una sucesión de variables aleatorias independientes e idénticamente distribuidas con $E(X_i)=\mu$ y $Var(X_i)=\sigma^2$. Entonces, podemos aproximar para $n$ grande $(n\geq30)$, la media muestral $\overline{X}_n$ por:
+
+$$
+\overline{X}_n=\frac{1}{n}\cdot\sum_{i=1}^{n}{X_i}\approx
+\mathcal{N}\left(\mu,\ \frac{\sigma}{\sqrt{n}}\right)
+$$
+
+o también:
+
+$$
+X_n=\sum_{i=1}^{n}{X_i}\approx
+\mathcal{N}\left(n\mu,\ \sigma\sqrt{n}\right)
+$$
+
+Las aproximaciones anteriores se pueden obtener teniendo en cuenta que el Teorema Central del Límite nos dice que la
+
+$$
+Z_n=
+\frac{\displaystyle\sum_{i=1}^{n}{X_i}-n\mu}{\sigma\sqrt{n}}\approx
+\mathcal{N}(0,\ 1) \Rightarrow
+\sum_{i=1}^{n}{X_i}\approx
+\sigma\sqrt{n}\cdot\mathcal{N}(0,\ 1)+n\mu=
+\mathcal{N}\left(n\mu,\ \sigma\sqrt{n}\right)
+$$
+
+Dividiendo por $n$ la aproximación anterior, obtenemos:
+
+$$
+\overline{X}_n=
+\frac{1}{n}\sum_{i=1}^{n}{X_i}\approx
+\frac{1}{n}\cdot\mathcal{N}\left(n\mu,\ \sigma\sqrt{n}\right)=
+\mathcal{N}\left(\mu,\ \frac{\sigma}{\sqrt{n}}\right)
+$$
+
+
+
+
 
 
 

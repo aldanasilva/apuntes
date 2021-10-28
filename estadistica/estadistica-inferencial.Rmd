@@ -1,0 +1,320 @@
+---
+title: "estadistica-inferencial"
+author: "Andrés Aldana"
+date: "10/25/2021"
+output:
+  rmdformats::downcute:
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse=TRUE)
+set.seed(2021)
+```
+
+# Muestreo
+
+## Muestreo aleatorio simple (con reposición) o m.a.s.
+
+```{r}
+(x = sample(1:100, 15, replace=TRUE))
+##
+plot(table(x))
+```
+
+obtener una muestra de tamaño 10 del dataset `iris` con reposición
+
+```{r}
+flores.elegidas.10.con = sample(1:150, 10, TRUE)
+(muestra.iris.10.con = iris[flores.elegidas.10.con,])
+```
+
+## Muestreo aleatorio sin reposición
+
+```{r}
+(x = sample(1:100, 15, replace=FALSE))
+plot(table(x))
+```
+
+obtener una muestra de tamaño 10 del dataset `iris` con reposición
+
+```{r}
+flores.elegidas.10.sin = sample(1:150, 10, FALSE)
+(muestra.iris.10.sin = iris[flores.elegidas.10.sin,])
+```
+
+## Muestreo sistemático
+
+Suponiendo que los individuos de una población están dados de forma ordenada, se escoge el primer individuo de la población al azar, y luego se escogen los demás con intervalos constantes.
+
+obtener una muestra sistemática de tamaño 10 del dataset `iris`
+
+```{r}
+(primera.flor = sample(1:150, 1))
+(incremento = floor(150/10))
+flores.elegidas.10.sis =
+  seq(from=primera.flor, by=incremento, length.out=10)
+flores.elegidas.10.sis = flores.elegidas.10.sis %% 150
+(muestra.iris.10.sis = iris[flores.elegidas.10.sis,])
+```
+
+## Muestreo aleatorio estratificado
+
+Este tipo de muestreo se utiliza cuando la población está clasificada en __estratos__ que son de interés para la propiedad estudiada. Se toma una muestra de cada estrato y se unen en una muestra global. A este proceso se le llama __muestreo aleatorio estratificado__.
+
+obtener una muestra estratificada por especie de tamaño 12 del dataset `iris`
+
+```{r}
+fls.muestra.setosa = sample(1:50, 4, replace=TRUE)
+fls.muestra.versicolor = sample(51:100, 4, replace=TRUE)
+fls.muestra.virginica = sample(101:150, 4, replace=TRUE)
+fls.muestra = 
+  c(fls.muestra.setosa, fls.muestra.versicolor, fls.muestra.virginica)
+(muestra.iris.est = iris[fls.muestra,])
+```
+
+## Muestreo por conglomerados
+
+```{r}
+library(faraway)
+head(worldcup)
+##
+str(worldcup)
+##
+numeros.paises.elegidos = sample(1:32, 4, replace=FALSE)
+(paises.elegidos = unique(worldcup$Team)[numeros.paises.elegidos])
+##
+muestra.worldcup.con = worldcup[worldcup$Team %in% paises.elegidos,]
+head(muestra.worldcup.con, 8)
+##
+nrow(muestra.worldcup.con)
+##
+```
+
+## Muestreo polietápico
+
+```{r}
+worldcup.pais1 = worldcup[worldcup$Team == paises.elegidos[1],]
+worldcup.pais2 = worldcup[worldcup$Team == paises.elegidos[2],]
+worldcup.pais3 = worldcup[worldcup$Team == paises.elegidos[3],]
+worldcup.pais4 = worldcup[worldcup$Team == paises.elegidos[4],]
+##
+jugadores.pais1 = sample(1:nrow(worldcup.pais1), 5, replace=FALSE)
+jugadores.pais2 = sample(1:nrow(worldcup.pais2), 5, replace=FALSE)
+jugadores.pais3 = sample(1:nrow(worldcup.pais3), 5, replace=FALSE)
+jugadores.pais4 = sample(1:nrow(worldcup.pais4), 5, replace=FALSE)
+##
+muestra.worldcup.pol =
+  rbind(worldcup.pais1[jugadores.pais1,],
+        worldcup.pais2[jugadores.pais2,],
+        worldcup.pais3[jugadores.pais3,],
+        worldcup.pais4[jugadores.pais4,])
+##
+muestra.worldcup.pol
+##
+dim(muestra.worldcup.pol)
+##
+```
+
+## Funciones de muestreo en `python`
+
+Cargar la libraría `reticulate` para conectar `R` con `python` indicando en donde está la versión de `python` que se va a utilizar
+
+```{r}
+## R
+Sys.setenv(RETICULATE_PYTHON='~/anaconda3/bin/python3')
+library(reticulate)
+#reticulate::py_config()
+# https://stackoverflow.com/questions/50145643/unable-to-change-python-path-in-reticulate-r
+```
+
+```{python}
+import random
+import pandas as pd
+##
+random.seed(2021)
+##
+worldcup_py = r.worldcup
+worldcup_py.head()
+##
+numeros_paises_elegidos = random.sample(range(0,32), 4) # sin reposición
+paises_elegidos = worldcup_py.Team.unique()[numeros_paises_elegidos]
+paises_elegidos
+##
+worldcup_pais1 = worldcup_py[worldcup_py.Team == paises_elegidos[0]]
+worldcup_pais2 = worldcup_py[worldcup_py.Team == paises_elegidos[1]]
+worldcup_pais3 = worldcup_py[worldcup_py.Team == paises_elegidos[2]]
+worldcup_pais4 = worldcup_py[worldcup_py.Team == paises_elegidos[3]]
+##
+jugadores_pais1 = random.sample(range(0,len(worldcup_pais1)),5)
+jugadores_pais2 = random.sample(range(0,len(worldcup_pais2)),5)
+jugadores_pais3 = random.sample(range(0,len(worldcup_pais3)),5)
+jugadores_pais4 = random.sample(range(0,len(worldcup_pais4)),5)
+##
+muestra_worldcup_pol = pd.concat([
+  worldcup_pais1.iloc[jugadores_pais1,:],
+  worldcup_pais2.iloc[jugadores_pais2,:],
+  worldcup_pais3.iloc[jugadores_pais3,:],
+  worldcup_pais4.iloc[jugadores_pais4,:]
+])
+##
+muestra_worldcup_pol
+```
+
+
+# Estimación puntual
+
+## Media muestral
+
+Sea $\ X_1,\dots,X_n\ $ una m.a.s. de tamaño $n$ de una v.a. $X$ de esperanza $\mu_X$ y desviación típica $\sigma_X$
+
+La *media muestral* es:
+
+$$
+\overline{X}=\frac{X_1+\cdots+X_n}{n}
+$$
+
+### Proposición
+
+En estas condiciones,
+
+$$
+E(\overline{X})=\mu_X, \qquad
+\sigma_{\overline{X}}=\frac{\sigma_X}{\sqrt{n}}
+$$
+
+donde $\sigma_{\overline{X}}$ es el __error estándar__ de $\overline{X}$.
+
+### Ejemplo
+
+Comprobar las propiedades mencionadas anteriormente generando 10000 muestras de tamaño 40 (con reposición) de las longitudes del pétalo (Petal.Length) del dataset `iris`.
+
+```{r}
+n = 40
+k = 10000
+##
+valores.medios.long.petalo =
+  replicate(k, mean(sample(iris$Petal.Length, n, replace=TRUE)))
+valores.medios.long.petalo[1:10]
+##
+mean.s = mean(valores.medios.long.petalo)
+mean.p = mean(iris$Petal.Length)
+sd.s = sd(valores.medios.long.petalo) # sd calcula desviación muestral
+sd.p = sd(iris$Petal.Length)/sqrt(n) # sd calcula desviación muestral
+##
+df = data.frame(
+  Media=c(mean.s, mean.p),
+  Desv=c(sd.s, sd.p),
+  row.names=c('Muestral', 'Poblacional'))
+##
+df
+##
+mn = min(valores.medios.long.petalo)
+mx = max(valores.medios.long.petalo)
+x = seq(mn, mx, length.out=ceiling((mx-mn)/0.01))
+##
+v = hist(valores.medios.long.petalo, breaks=16, freq=FALSE,
+  main=sprintf("Histograma\nde las medias de %d muestras\nde tamaño %d de las longitudes del pétalo", k, n),
+  ylim=c(0,1.6), ylab="Densidad", xlab="Valores medios de las longitudes del pétalo")
+lines(density(valores.medios.long.petalo), lwd=2, lty='longdash', col='red')
+lines(x, dnorm(x, mean.p, sd.p), lwd=2, lty='dashed', col='blue')
+legend("topright", legend=c("densidad", "normal"), lwd=2, col=c("red", "blue"), lty=c("longdash", "dashed"))
+```
+
+## Poblaciones normales
+
+### Combinación lineal de distribuciones __normales__
+
+La combinación lineal de distribuciones normales es normal. Es decir, si $\ Y_1,\dots,Y_n\ $ son v.a. normales independientes, cada $\ Y_i\sim N(\mu_i,\sigma_i)$,$\ $ y $\ a_1,\dots,a_n$, $\ b\in \mathbb{R}\ $ entonces
+
+$$
+Y=a_1Y_1+\cdots+a_nY_n+b
+$$
+
+es una v.a. $\ N(\mu,\sigma)\ $ donde
+
+* $\mu=a_1\cdot\mu_1+\cdots+a_n\cdot\mu_n+b$
+
+* $\sigma=\sqrt{a_1^2\cdot\sigma_1^2+\cdots+a_n^2\cdot\sigma_n^2}$
+
+### Distribución de la media muestral
+
+Si la población $X$ es normal.
+
+Sea $\ X_1,\dots,X_n\ $ una m.a.s. de una v.a. $\ X\ $ de esperanza $\ \mu_X\ $ y desviación típica $\ \sigma_X$.
+
+Si $\ X\ $ es $\ N(\mu_X,\sigma_X)$, $\ $ entonces
+
+$$
+\overline{X}\sim N\left(\mu_X,\frac{\sigma_X}{\sqrt{n}}\right)
+$$
+
+y por lo tanto
+
+$$
+Z=\frac{\overline{X}-\mu_X}{\frac{\sigma_X}{\sqrt{n}}}\sim N(0,1)
+$$
+
+### Teorema central de límite
+
+Sea $\ X_1,\dots,X_n\ $ una m.a.s. de una v.a. $X$ __cualquiera__ de esperanza $\mu_X$ y desviación típica $\sigma_X$. Cuando $n\to\infty$,
+
+$$
+\overline{X}\to N\left(\mu_X,\frac{\sigma_X}{\sqrt{n}}\right)
+$$
+
+y por lo tanto
+
+$$
+Z=\frac{\overline{X}-\mu_X}{\frac{\sigma_X}{\sqrt{n}}}\to N(0,1)
+$$
+
+(estas convergencias se refieren a las distribuciones)
+
+### Media muestral en muestras sin reposición
+
+Sea $\ X_1,\dots,X_n\ $ una m.a. __sin reposición__ de tamaño $n$ de una v.a. $X$ de esperanza $\mu_X$ y desviación típica $\sigma_X$.
+
+Si $n$ es pequeño en relación al tamaño $N$ de la población, los teoremas enteriores funcionan (aproximadamente).
+
+Si $n$ es grande en relación a $N$, entonces
+
+$$
+E(\overline{X})=\mu_X, \qquad
+\sigma_{\overline{X}}=\frac{\sigma_X}{\sqrt{n}}\cdot\sqrt{\frac{N-n}{N-1}}
+$$
+
+donde $\sqrt{\frac{N-n}{N-1}}$ se llama __factor de corrección por población finita__.
+
+El Teorema Central del Límite ya no funciona exactamente en este último caso.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
