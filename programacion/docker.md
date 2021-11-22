@@ -9,6 +9,7 @@ This is a short list of commands and options for each command, to get a full lis
   * [`exec`](#exec)
   * [`stop`](#stop)
   * [`start`](#start)
+  * [`build`](#build)
 
 ### `docker`
 
@@ -83,6 +84,8 @@ Commands:
   version     Show the Docker version information
 ```
 
+
+
 ### `pull`
 
 Pull an image or a repository from a registry
@@ -119,6 +122,7 @@ Options:
       --pull string                    Pull image before running ("always"|"missing"|"never") (default "missing")
       --rm                             Automatically remove the container when it exits
       --stop-timeout int               Timeout (in seconds) to stop a container
+  -t, --tty                            Allocate a pseudo-TTY
   -v, --volume list                    Bind mount a volume
   -w, --workdir string                 Working directory inside the container
 ```
@@ -212,6 +216,233 @@ Options:
   -t, --timestamps     Show timestamps
       --until string   Show logs before a timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)
 ```
+
+
+### `build`
+
+Build an image from a Dockerfile
+
+```console
+username@localhost:~$ docker build [OPTIONS] PATH | URL | -
+```
+
+Options:
+
+```
+      --add-host list           Add a custom host-to-IP mapping (host:ip)
+      --build-arg list          Set build-time variables
+  -f, --file string             Name of the Dockerfile (Default is 'PATH/Dockerfile')
+      --label list              Set metadata for an image
+      --network string          Set the networking mode for the RUN instructions during build (default "default")
+      --no-cache                Do not use cache when building the image
+      --pull                    Always attempt to pull a newer version of the image
+  -q, --quiet                   Suppress the build output and print image ID on success
+      --security-opt strings    Security options
+  -t, --tag list                Name and optionally a tag in the 'name:tag' format
+      --target string           Set the target build stage to build.
+```
+
+
+### Docker file
+
+Docker can build images automatically by reading the instructions from a **Dockerfile**. A **Dockerfile** is a text document that contains all the commands a user could call on the command line to assemble an image. Using docker build users can create an automated build that executes several command-line instructions in succession.
+
+#### Basic structure of Dockerfile
+
+```Dockerfile
+FROM python:3.10-slim
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    pip install --upgrade pip && \
+    pip install numpy pandas scipy matplotlib
+WORKDIR /app
+COPY . .
+CMD ["python", "inicio.py"]
+```
+
+
+
+
+### Linux useful commands
+
+To know linux distro that is running
+
+```console
+username@localhost:~$ cat /etc/os-release
+```
+
+
+
+
+
+
+### Run image of postgres
+
+```console
+username@localhost:~$ docker pull postgres:14.1-alpine
+username@localhost:~$ docker run -d \
+    --network my-network --network-alias postgres \
+    -v ~/docker/postgres/data:/var/lib/postgresql/data \
+    -e POSTGRES_PASSWORD=secret \
+    -p 5432:5432 \
+    --name postgres \
+    postgres:14.1-alpine
+username@localhost:~$ docker ps
+```
+
+Note: remember to create the network `my-network`.
+
+###### References:
+* https://hub.docker.com/_/postgres
+* https://github.com/docker-library/postgres/blob/e331a5bb8dd2494ffd70d67eeca495ace748c8bd/14/alpine/Dockerfile
+
+
+### Run image of pgadmin4
+
+```console
+username@localhost:~$ docker pull dpage/pgadmin4:6.2
+username@localhost:~$ docker run -d \
+    --network my-network --network-alias pgadmin \
+    -v ~/docker/pgadmin/data:/var/lib/pgadmin \
+    -e PGADMIN_DEFAULT_EMAIL=user@domain.com \
+    -e PGADMIN_DEFAULT_PASSWORD=secret \
+    -p 80:80 \
+    --name pgadmin \
+    dpage/pgadmin4:6.2
+username@localhost:~$ docker ps
+```
+
+Note: remember to create the network `my-network`
+
+###### References:
+* https://www.pgadmin.org/download/pgadmin-4-container/
+* https://hub.docker.com/r/dpage/pgadmin4/
+* https://hub.docker.com/layers/dpage/pgadmin4/6.2/images/sha256-2abd224a4a1821d388920b8a8f99ca4921fc2eb5e640fb569ae1f33e61d2cb7b?context=explore
+
+###### Troubleshooting with volume in host:
+* https://www.py4u.net/discuss/1627490
+* https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#mapped-files-and-directories
+
+
+### View network IPs
+
+You can see containters IPs using netshoot
+
+```console
+username@localhost:~$ docker run -it --network my-network nicolaka/netshoot
+                    dP            dP                           dP   
+                    88            88                           88   
+88d888b. .d8888b. d8888P .d8888b. 88d888b. .d8888b. .d8888b. d8888P 
+88'  `88 88ooood8   88   Y8ooooo. 88'  `88 88'  `88 88'  `88   88   
+88    88 88.  ...   88         88 88    88 88.  .88 88.  .88   88   
+dP    dP `88888P'   dP   `88888P' dP    dP `88888P' `88888P'   dP   
+                                                                    
+Welcome to Netshoot! (github.com/nicolaka/netshoot)
+                                                                
+
+
+ a7663fa9d350  ~  dig postgres
+
+; <<>> DiG 9.16.22 <<>> postgres
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 588
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;postgres.			IN	A
+
+;; ANSWER SECTION:
+postgres.		600	IN	A	172.29.0.2
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.11#53(127.0.0.11)
+;; WHEN: Mon Nov 22 19:31:27 UTC 2021
+;; MSG SIZE  rcvd: 50
+
+
+ a7663fa9d350  ~  exit
+                                                                                                                                                
+username@localhost:~$
+```
+
+
+
+
+### Postgres and pgAdmin4 with Compose
+
+`docker-compose.yml`
+```yml
+version: "3.9"
+
+services:
+  
+  postgres:
+    image: postgres:14.1-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+    networks:
+      my-network:
+        aliases:
+          - postgres
+          - db
+    ports:
+      - "5432:5432"
+    volumes:
+      - "~/docker/postgres/data:/var/lib/postgresql/data"
+    container-name: postgres
+    
+  pgadmin:
+    image: dpage/pgadmin4:6.2
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=secret
+    networks:
+      my-network:
+        aliases:
+          - pgadmin
+    ports:
+      - "80:80"
+    volumes:
+      - "~/docker/pgadmin/data:/var/lib/pgadmin"
+    depends_on:
+      - postgres
+    container_name: pgadmin
+
+networks:
+  my-network:
+    name: my-network
+```
+
+
+
+
+
+
+/*create table if not exists mytable (
+ id int generated always as identity (start 1),
+ name varchar(50),
+ constraint pk_mytable primary key (id)
+);*/
+
+insert into mytable (name)
+values ('Andrés');
+
+select *
+from mytable
+
+
+
+
+
+
+docker version
+
+docker info
+
+
+
+
 
 
 
