@@ -3,15 +3,35 @@
 This is a short list of commands and options for each command, to get a full list of commands use `docker --help`, to get a full list of options for a command use `docker COMMAND --help`.
 
 * [`docker`](#docker)
-  * [`pull`](#pull)
-  * [`run`](#run)
-  * [`ps`](#ps)
-  * [`exec`](#exec)
-  * [`stop`](#stop)
-  * [`start`](#start)
+  * [`version`](#version)
+  * [`info`](#info)
+  * [`image pull`](#image-pull)
+  * [Running a container](#running-a-container)
+    * [`container run`](#container-run)
+    * [`container ls`](#container-ls)
+    * [`container stop`](#container-stop)
+    * [`container start`](#container-start)
+  * [Monitoring a container](#monitoring-a-container)
+    * [`container logs`](#container-logs)
+    * [`container top`](#container-top)
+    * [`container inspect`](#container-inspect)
+    * [`container stats`](#container-stats)
+  * [Getting inside of a container](#getting-inside-of-a-container)
+    * [`container exec`](#container-exec)
+  * [Networking](#networking)
+    * [`container port`](#container-port)
+    * [`network ls`](#network-ls)
+    * [`network inspect`](#network-inspect)
+    * [`network create`](#network-create)
+    * [`network connect`](#network-connect)
+    * [`network disconnect`](#network-disconnect)
+    * [Network Exercises](#network-exercises)
+
+
+
   * [`build`](#build)
 
-### `docker`
+# `docker`
 
 A self-sufficient runtime for containers
 
@@ -84,55 +104,95 @@ Commands:
   version     Show the Docker version information
 ```
 
+* An image is the application we want to run
+* A container is an instance of that image running as a process
+* You can have many containers running of the same image
+* Docker's default image "registry" is called Docker Hub ([hub.docker.com])
 
 
-### `pull`
 
-Pull an image or a repository from a registry
 
-```console
-username@localhost:~$ docker pull NAME[:TAG|@DIGEST]
+
+
+```
+$ docker container logs
+$ docker container top CONTAINER
+$ docker container rm / Can use first three letters of container id
 ```
 
-### `run`
+## `version`
 
-Run a command in a new container
+Show the Docker version information
 
 ```console
-username@localhost:~$ docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+$ docker version
+```
+
+## `info`
+
+Display system-wide information
+
+```console
+$ docker info
+```
+
+## `image pull`
+
+Pull an image or a repository from a registry (`docker pull` also works)
+
+```console
+$ docker image pull NAME[:TAG]
+```
+
+## Running a container
+
+### `container run`
+
+Run a command in a new container (`docker run` also works)
+
+```console
+$ docker container run [OPTIONS] IMAGE [COMMAND] [ARG...]
 ```
 
 Options:
 
 ```
       --add-host list                  Add a custom host-to-IP mapping (host:ip)
-  -d, --detach                         Run container in background and print container ID
+#  -d, --detach                         Run container in background and print container ID
       --device list                    Add a host device to the container
-  -e, --env list                       Set environment variables
+#  -e, --env list                       Set environment variables
       --env-file list                  Read in a file of environment variables
       --expose list                    Expose a port or a range of ports
   -h, --hostname string                Container host name
-  -i, --interactive                    Keep STDIN open even if not attached
+#  -i, --interactive                    Keep STDIN open even if not attached
   -l, --label list                     Set meta data on a container
       --mount mount                    Attach a filesystem mount to the container
-      --name string                    Assign a name to the container
-      --network network                Connect a container to a network
-      --network-alias list             Add network-scoped alias for the container
-  -p, --publish list                   Publish a container's port(s) to the host
+#      --name string                    Assign a name to the container
+#      --network network                Connect a container to a network
+#      --network-alias list             Add network-scoped alias for the container
+#  -p, --publish list                   Publish a container's port(s) to the host. HOST:CONTAINER format
       --pull string                    Pull image before running ("always"|"missing"|"never") (default "missing")
-      --rm                             Automatically remove the container when it exits
+#      --rm                             Automatically remove the container when it exits
       --stop-timeout int               Timeout (in seconds) to stop a container
-  -t, --tty                            Allocate a pseudo-TTY
+#  -t, --tty                            Allocate a pseudo-TTY
   -v, --volume list                    Bind mount a volume
   -w, --workdir string                 Working directory inside the container
 ```
 
-### `ps`
-
-List containers
+Examples:
 
 ```console
-username@localhost:~$ docker ps [OPTIONS]
+$ docker container run --publish 80:80 nginx
+$ docker container run -it --name nginx nginx bash
+$ docker container run -it --name ubuntu ubuntu
+```
+
+### `container ls`
+
+List containers (`docker ps` also works)
+
+```console
+$ docker container ls [OPTIONS]
 ```
 
 Options:
@@ -145,35 +205,12 @@ Options:
   -s, --size            Display total file sizes
 ```
 
-### `exec`
+### `container stop`
 
-Run a command in a running container
-
-```console
-username@localhost:~$ docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
-```
-
-Options:
-
-```
-  -d, --detach               Detached mode: run command in the background
-  -e, --env list             Set environment variables
-      --env-file list        Read in a file of environment variables
-  -i, --interactive          Keep STDIN open even if not attached
-      --privileged           Give extended privileges to the command
-  -t, --tty                  Allocate a pseudo-TTY
-  -u, --user string          Username or UID (format: <name|uid>[:<group|gid>])
-  -w, --workdir string       Working directory inside the container
-```
-
-Read: https://stackoverflow.com/questions/30137135/confused-about-docker-t-option-to-allocate-a-pseudo-tty
-
-### `stop`
-
-Stop one or more running containers
+Stop one or more running containers (`docker stop` also works)
 
 ```console
-username@localhost:~$ docker stop [OPTIONS] CONTAINER [CONTAINER...]
+$ docker container stop [OPTIONS] CONTAINER [CONTAINER...]
 ```
 
 Options:
@@ -182,28 +219,35 @@ Options:
   -t, --time int   Seconds to wait for stop before killing it (default 10)
 ```
 
-### `start`
+### `container start`
 
-Start one or more stopped containers
+Start one or more stopped containers (`docker start` also works)
 
 ```console
-username@localhost:~$ docker start [OPTIONS] CONTAINER [CONTAINER...]
+$ docker start [OPTIONS] CONTAINER [CONTAINER...]
 ```
 
 Options:
 
 ```
   -a, --attach               Attach STDOUT/STDERR and forward signals
-      --detach-keys string   Override the key sequence for detaching a container
   -i, --interactive          Attach container's STDIN
 ```
 
-### `logs`
+Examples
+
+```console
+$ docker container start -ai CONTAINER
+```
+
+## Monitoring a container
+
+### `container logs`
 
 Fetch the logs of a container
 
 ```console
-username@localhost:~$ docker logs [OPTIONS] CONTAINER
+$ docker container logs [OPTIONS] CONTAINER
 ```
 
 Options:
@@ -216,6 +260,301 @@ Options:
   -t, --timestamps     Show timestamps
       --until string   Show logs before a timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)
 ```
+
+### `container top`
+
+Display the running processes of a container
+
+```console
+$ docker container top CONTAINER
+```
+
+### `container inspect`
+
+Display detailed information on one or more containers, show metadata about metadata (startup, config, volumes, networking, etc).
+
+```console
+$ docker container inspect [OPTIONS] CONTAINER [CONTAINER...]
+```
+
+Options:
+
+```
+  -f, --format string   Format the output using the given Go template
+  -s, --size            Display total file sizes
+```
+
+### `container stats`
+
+Display a live stream of container(s) resource usage statistics
+
+```console
+$ docker container stats [OPTIONS] [CONTAINER...]
+```
+
+Options:
+
+```
+  -a, --all             Show all containers (default shows just running)
+      --no-stream       Disable streaming stats and only pull the first result
+```
+
+## Getting inside of a container
+
+### `container exec`
+
+Run a command in a running container
+
+```console
+$ docker container exec [OPTIONS] CONTAINER COMMAND [ARG...]
+```
+
+Options:
+
+```
+  -d, --detach               Detached mode: run command in the background
+  -e, --env list             Set environment variables
+      --env-file list        Read in a file of environment variables
+#  -i, --interactive          Keep STDIN open even if not attached
+      --privileged           Give extended privileges to the command
+#  -t, --tty                  Allocate a pseudo-TTY
+  -u, --user string          Username or UID (format: <name|uid>[:<group|gid>])
+  -w, --workdir string       Working directory inside the container
+```
+
+Read: https://stackoverflow.com/questions/30137135/confused-about-docker-t-option-to-allocate-a-pseudo-tty
+
+Examples:
+
+```console
+$ docker container exec -it ANY_CONTAINER bash
+$ docker container exec -it MYSQL_CONTAINER mysql -u root -p
+```
+
+## Networking
+
+### `container port`
+
+List port mappings or a specific mapping for the container
+
+```console
+$ docker container port CONTAINER
+```
+
+Another form to do this is using `container inspect`
+
+```console
+$ docker container inspect --format '{{ .NetworkSettings.IPAddress}}' CONTAINER
+```
+
+### `network ls`
+
+List networks
+
+```console
+$ docker network ls [OPTIONS]
+```
+
+Options:
+
+```
+  -q, --quiet           Only display network IDs
+```
+
+Explanation of default existing networks
+
+* `bridge`: Default Docker virtual network, which is NAT'ed behind the Host IP.
+* `host`: It gains performance by skipping virtual networks but sacrifices security of container model.
+* `none`: Removes eth0 and only leaves you with localhost interface in container.
+
+Network driver: Buil-in or 3rd party extensions that give you virtual network features.
+
+### `network inspect`
+
+Display detailed information on one or more networks
+
+```console
+$ docker network inspect NETWORK [NETWORK...]
+```
+
+### `network create`
+
+Create a network
+
+```console
+$ docker network create [OPTIONS] NETWORK
+```
+
+Options:
+
+```
+  -d, --driver string        Driver to manage the Network (default "bridge")
+```
+
+### `network connect`
+
+Connect a container to a network
+
+```console
+$ docker network connect [OPTIONS] NETWORK CONTAINER
+```
+
+Options:
+
+```
+      --alias strings           Add network-scoped alias for the container
+```
+
+### `network disconnect`
+
+Disconnect a container from a network
+
+```console
+$ docker network disconnect [OPTIONS] NETWORK CONTAINER
+```
+
+Options:
+
+```
+  -f, --force   Force the container to disconnect from a network
+```
+
+### Network Exercises
+
+1. Connection between two `nginx` containers
+
+```console
+$ docker network create my-net
+$ docker container run -d --rm --name first_nginx --net my-net nginx:1.21-alpine
+$ docker container run -d --rm --name second_nginx --net my-net nginx:1.21-alpine
+$ docker container exec -it first_nginx ping second_nginx
+$ docker container stop first_nginx second_nginx
+$ docker network rm my-net
+```
+
+2. Connection to two different `nginx` containers with the same `--net-alias`
+
+```console
+$ docker network create my-net
+$ docker container run -d --rm --name first_es --net my-net --net-alias search elasticsearch:2
+$ docker container run -d --rm --name second_es --net my-net --net-alias search elasticsearch:2
+$ docker container run --rm --net my-net alpine:3.10 nslookup search
+$ docker container run --rm --net my-net centos:7 curl -s search:9200
+$ docker container stop first_es second_es
+$ docker network rm my-net
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ### `build`
@@ -279,8 +618,8 @@ username@localhost:~$ cat /etc/os-release
 ### Run image of postgres
 
 ```console
-username@localhost:~$ docker pull postgres:14.1-alpine
-username@localhost:~$ docker run -d \
+username@localhost:~$ docker image pull postgres:14.1-alpine
+username@localhost:~$ docker container run -d \
     --network my-network --network-alias postgres \
     -v ~/docker/postgres/data:/var/lib/postgresql/data \
     -e POSTGRES_PASSWORD=secret \
@@ -300,8 +639,8 @@ Note: remember to create the network `my-network`.
 ### Run image of pgadmin4
 
 ```console
-username@localhost:~$ docker pull dpage/pgadmin4:6.2
-username@localhost:~$ docker run -d \
+username@localhost:~$ docker image pull dpage/pgadmin4:6.2
+username@localhost:~$ docker container run -d \
     --network my-network --network-alias pgadmin \
     -v ~/docker/pgadmin/data:/var/lib/pgadmin \
     -e PGADMIN_DEFAULT_EMAIL=user@domain.com \
@@ -436,9 +775,106 @@ from mytable
 
 
 
-docker version
 
-docker info
+
+
+
+
+
+
+
+
+
+`ps aux` in Linux show all running proceses
+
+
+
+
+
+* `nginx`, 80:80
+* `mysql`, 3306:3306
+* `httpd` (apache) server, 8080:80
+
+
+curl localhost:8080
+
+
+$ docker container run -e MYSQL_ROOT_PASSWORD=secret -d mysql
+$ 
+
+> exit
+
+
+
+
+
+
+
+
+
+
+```
+-t   pseudo-TTY    simulates a real terminal, like what SSH does
+-i   interactive   keep session open to recieve terminal input
+```
+
+
+
+
+
+
+
+du -sh /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$ docker container exec -it CONTAINER ping -n OTHER_CONTAINER_IN_NETWORK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Exercises of network
+
+
+
+
+
+
+```
+$ ifconfig INTERFACE
+```
+
+
+
 
 
 
