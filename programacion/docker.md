@@ -11,6 +11,7 @@ This is a short list of commands and options for each command, to get a full lis
     * [`container ls`](#container-ls)
     * [`container stop`](#container-stop)
     * [`container start`](#container-start)
+    * [`container rm`](#container-rm)
   * [Monitoring a container](#monitoring-a-container)
     * [`container logs`](#container-logs)
     * [`container top`](#container-top)
@@ -30,6 +31,9 @@ This is a short list of commands and options for each command, to get a full lis
 
 
   * [`build`](#build)
+* [Docker Compose](#docker-compose)
+
+
 
 # `docker`
 
@@ -646,9 +650,38 @@ COPY . .
 CMD ["python", "inicio.py"]
 ```
 
+### `image prune`
 
+Remove unused images
 
+```console
+$ docker image prune [OPTIONS]
+```
 
+Options:
+
+```
+  -a, --all             Remove all unused images, not just dangling ones
+      --filter filter   Provide filter values (e.g. 'until=<timestamp>')
+  -f, --force           Do not prompt for confirmation
+```
+
+### `system`
+
+Manage Docker
+
+```console
+$ docker system COMMAND
+```
+
+Commands:
+
+```
+  df          Show docker disk usage
+  events      Get real time events from the server
+  info        Display system-wide information
+  prune       Remove unused data
+```
 
 
 
@@ -664,6 +697,703 @@ $ docker image push MYACCOUNT/mysql
 ```
 
 If you get an error doing this, probably you're not logged in in **docker hub**, to do that use `docker login`.
+
+
+
+
+## Volumes
+
+### Container Lifetime & Persistent data
+### Persistent Data: Data Volumes
+
+### `volume ls`
+
+List volumes
+
+```console
+$ docker volume ls [OPTIONS]
+```
+
+You can then `inspect` the volume that you want.
+
+### in runtime
+
+You can create or use a **named volume** using the next notation `docker container run -v NAME:VOLUME [OPTIONS] IMAGE`, then you could have something like `docker container run -v mysql-db:/var/lib/mysql [OPTIONS] mysql`.
+
+If you want to use a **bind mounting**, you use the same notation but `NAME` must be an absolute path in your pc, for example, `docker container run -v ~/docker/mysql-db:/var/lib/mysql [OPTIONS] mysql` or `docker container run -v $(pwd):/usr/share/nginx/html [OPTIONS] nginx`.
+
+
+
+# Docker Compose
+
+Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
+
+To use compose you must define the services that make up your app in `docker-compose.yml` so they can be run together in an isolated environment.
+
+A `docker-compose.yml` looks like this:
+
+Basic structure of `docker-compose.yml`
+
+```yml
+version: "3.9"
+
+services: # containers. same as docker run
+  service1: # a friendly name. this is also DNS name inside network
+    image: # Optional if you use build
+    command: # Optional, override the default command.
+    environment: # Optional, same as -e in docker run
+    volumes: # Optional, same as -v in docker run
+  service2:
+    #...
+
+volumes: # Optional, same as docker volume create
+
+networks: # Optional, same as docker network create
+```
+
+In options where you can specify mutiple values, you can use list form or dictionary form
+
+list form 
+
+```yml
+- "KEY1=VALUE1"
+- "KEY2=VALUE2"
+- "KEY3=VALUE3"
+```
+
+dictionary form
+
+```yml
+  key1: value1
+  key2: value2
+  key3: value3
+```
+
+## `docker-compose version`
+
+Show version information and quit.
+
+```console
+$ docker-compose version [--short]
+```
+
+## `docker-compose config`
+
+Validate and view the Compose file.
+
+```
+$ docker-compose config [OPTIONS]
+```
+
+Options:
+
+```
+    --no-interpolate         Don't interpolate environment variables.
+    -q, --quiet              Only validate the configuration, don't print anything.
+    --profiles               Print the profile names, one per line.
+    --services               Print the service names, one per line.
+    --volumes                Print the volume names, one per line.
+```
+
+## Running
+
+### `docker-compose up`
+
+Builds, (re)creates, starts, and attaches to containers for a service.
+
+Unless they are already running, this command also starts any linked services.
+
+The `docker-compose up` command aggregates the output of each container. When the command exits, all containers are stopped. Running `docker-compose up -d` starts the containers in the background and leaves them running.
+
+If there are existing containers for a service, and the service's configuration or image was changed after the container's creation, `docker-compose up` picks up the changes by stopping and recreating the containers (preserving mounted volumes). To prevent Compose from picking up changes, use the `--no-recreate` flag.
+
+If you want to force Compose to stop and recreate all containers, use the `--force-recreate` flag.
+
+```console
+$ docker-compose [ARGS] up [OPTIONS] [--scale SERVICE=NUM...] [SERVICE...]
+```
+
+Args:
+
+```
+  -f, --file FILE             Specify an alternate compose file
+                              (default: docker-compose.yml)
+  -p, --project-name NAME     Specify an alternate project name
+                              (default: directory name)
+```
+
+Options:
+
+```
+    -d, --detach               Detached mode: Run containers in the background,
+                               print new container names. Incompatible with
+                               --abort-on-container-exit.
+    --force-recreate           Recreate containers even if their configuration
+                               and image haven't changed.
+    --no-recreate              If containers already exist, don't recreate
+                               them. Incompatible with --force-recreate and -V.
+    --remove-orphans           Remove containers for services not defined
+                               in the Compose file.
+    --scale SERVICE=NUM        Scale SERVICE to NUM instances. Overrides the
+                               `scale` setting in the Compose file if present.
+```
+
+### `docker-compose down`
+
+Stops containers and removes containers, networks, volumes, and images created by `up`.
+
+By default, the only things removed are:
+
+- Containers for services defined in the Compose file
+- Networks defined in the `networks` section of the Compose file
+- The default network, if one is used
+
+Networks and volumes defined as `external` are never removed.
+
+```console
+$ docker-compose down [OPTIONS]
+```
+
+Options:
+
+```
+    -v, --volumes           Remove named volumes declared in the `volumes`
+                            section of the Compose file and anonymous volumes
+                            attached to containers.
+```
+
+Alternatively you can use commands like `pause`, `unpause`, `stop` and `start` to enable or disable services without removing them.
+
+```console
+$ docker-compose COMMAND [SERVICE...]
+```
+
+### `docker-compose exec`
+
+Execute a command in a running container
+
+```console
+$ docker-compose exec [OPTIONS] SERVICE COMMAND [ARGS...]
+```
+
+Options:
+
+```
+    -d, --detach      Detached mode: Run command in the background.
+    -T                Disable pseudo-tty allocation. By default `docker-compose exec`
+                      allocates a TTY.
+    --index=index     index of the container if there are multiple
+                      instances of a service [default: 1]
+```
+
+## Monitoring
+
+### `docker-compose ps`
+
+List containers.
+
+```console
+$ docker-compose ps [OPTIONS] [SERVICE...]
+```
+
+Options:
+
+```
+    -q, --quiet          Only display IDs
+    --services           Display services
+    --filter KEY=VAL     Filter services by a property
+    -a, --all            Show all stopped containers (including those created by the run command)
+```
+
+### `docker-compose logs`
+
+View output from containers.
+
+```console
+$ docker-compose logs [OPTIONS] [SERVICE...]
+```
+
+Options:
+
+```
+    -f, --follow            Follow log output.
+    -t, --timestamps        Show timestamps.
+    --tail="all"            Number of lines to show from the end of the logs
+                            for each container.
+```
+
+### `docker-compose top`
+
+Display the running processes
+
+```console
+$ docker-compose top [SERVICE...]
+```
+
+### `docker-compose port`
+
+Print the public port for a port binding.
+
+```console
+$ docker-compose port [OPTIONS] SERVICE PRIVATE_PORT
+```
+
+Options:
+
+```
+    --protocol=proto  tcp or udp [default: tcp]
+    --index=index     index of the container if there are multiple
+                      instances of a service [default: 1]
+```
+
+### Notes
+
+* Not a production-grade tool but ideal for local development and test
+* Two most common commands are:
+  * `docker-compose up` # setup volumes/networks and start all containers
+  * `docker-compose down` # stop all containers and remove cont/vol/net
+* If all your projects had a `Dockerfile` and `docker-compose.yml` then "new developer onboarding" would be:
+  * `git clone github.com/some/software`
+  * `docker-compose up`
+
+to backup a postgres database `docker-compose exec postgres pg_dump -u postgres -p postgres > somefile.sql`
+
+
+
+
+
+
+# 62. Create your first service and scale it
+```console
+$ docker info
+$ docker swarm init
+$ docker node ls
+$ docker service create alpine ping 8.8.8.8
+$ docker service ls
+$ docker service ps SERVICE
+$ docker container ls
+$ docker service update SERVICE --replicas 3
+$ docker service ls
+$ docker service ps SERVICE
+$ docker container ls
+$ docker container rm -f CONTAINER
+$ docker service ls
+$ docker service ls
+$ docker service ps SERVICE
+$ docker service rm SERVICE
+$ docker service ls
+$ docker container ls
+$ docker container ls
+```
+
+# 63. Creating a 3-Node Swarm cluster
+
+In **[play with docker](https://labs.play-with-docker.com/)** create 3 instances (ins1, ins2, ins3)
+
+```console
+ins1 $ docker info | grep Swarm
+ins1 $ docker swarm init
+ins1 $ docker swarm init --advertise-addr IP_ADDRESS
+ins2 $ docker swarm join --token ... # this is the line generated in the past step
+ins1 $ docker node ls
+int2 $ docker node ls # Error because is a worker, not a manager
+ins1 $ docker node update --role manager NODE
+ins1 $ docker swarm join-token manager
+```
+
+
+# 66. 
+
+```console
+$ docker network create --driver overlay mydrupal
+$ docker network ls
+$ docker service create --name psql --network mydrupal -e POSTGRES_PASSWORD=secret postgres
+$ docker service ls
+$ docker service ps psql
+$ docker service logs psql
+$ docker service create --name drupal --network mydrupal -p 80:80 drupal
+```
+
+Linux trick
+
+```console
+watch --interval 0.5 docker service ls
+```
+
+
+
+```console
+$ docker service ps postgres drupal \
+    --filter desired-state=running \
+    --format "table {{.Name}}\t{{.Image}}\t{{.Node}}\t{{.DesiredState}}\t{{.CurrentState}}\t{{.Ports}}"
+```
+
+If you want to use `watch` command, then you need to escate some characters
+
+
+```console
+$ watch --interval 0.5 docker node ls \
+    --format \"table {{.Hostname}}\\t{{.Status}}\\t{{.Availability}}\\t{{.ManagerStatus}}\\t{{.EngineVersion}}\"
+```
+
+```console
+$ watch --interval 0.5 docker service ls \
+    --format \"table {{.Name}}\\t{{.Mode}}\\t{{.Replicas}}\\t{{.Image}}\\t{{.Ports}}\"
+```
+
+```console
+$ watch --interval 0.5 docker service ps postgres drupal \
+    --filter desired-state=running \
+    --format \"table {{.Name}}\\t{{.Image}}\\t{{.Node}}\\t{{.DesiredState}}\\t{{.CurrentState}}\\t{{.Ports}}\"
+```
+
+
+
+
+
+## `stack`
+
+Manage Docker stacks
+
+```console
+$ docker stack COMMAND
+```
+
+Commands:
+
+```
+  deploy      Deploy a new stack or update an existing stack
+  ls          List stacks
+  ps          List the tasks in the stack
+  rm          Remove one or more stacks
+  services    List the services in the stack
+```
+
+### `stack deploy`
+
+Deploy a new stack or update an existing stack
+
+```console
+$ docker stack deploy [OPTIONS] STACK
+```
+
+Options:
+
+```
+  -c, --compose-file strings   Path to a Compose file, or "-" to read from stdin
+```
+
+### `stack ls`
+
+List stacks
+
+```console
+$ docker stack ls [OPTIONS]
+```
+
+Options:
+
+```
+      --format string         Pretty-print stacks using a Go template
+```
+
+### `stack ps`
+
+List the tasks in the stack
+
+```console
+$ docker stack ps [OPTIONS] STACK
+```
+
+Options:
+
+```
+  -f, --filter filter         Filter output based on conditions provided
+      --format string         Pretty-print tasks using a Go template
+  -q, --quiet                 Only display task IDs
+```
+
+### `stack rm`
+
+Remove one or more stacks
+
+```console
+$ docker stack rm STACK [STACK...]
+```
+
+### `stack services`
+
+List the services in the stack
+
+```console
+$ docker stack services [OPTIONS] STACK
+```
+
+Options:
+
+```
+  -f, --filter filter         Filter output based on conditions provided
+      --format string         Pretty-print services using a Go template
+  -q, --quiet                 Only display IDs
+```
+
+
+
+
+
+## `secret`
+
+Manage Docker secrets
+
+```console
+$ docker secret COMMAND
+```
+
+Commands:
+
+```
+  create      Create a secret from a file or STDIN as content
+  inspect     Display detailed information on one or more secrets
+  ls          List secrets
+  rm          Remove one or more secrets
+```
+
+### `secret create`
+
+Create a secret from a file or STDIN as content
+
+```console
+$ docker secret create [OPTIONS] SECRET [file|-]
+```
+
+Options:
+
+```
+  -l, --label list               Secret labels
+```
+
+### `secret inspect`
+
+Display detailed information on one or more secrets
+
+```console
+$ docker secret inspect [OPTIONS] SECRET [SECRET...]
+```
+
+Options:
+
+```
+  -f, --format string   Format the output using the given Go template
+      --pretty          Print the information in a human friendly format
+```
+
+### `secret ls`
+
+List secrets
+
+```console
+$ docker secret ls [OPTIONS]
+```
+
+Options:
+
+```
+  -f, --filter filter   Filter output based on conditions provided
+      --format string   Pretty-print secrets using a Go template
+  -q, --quiet           Only display IDs
+```
+
+### `secret rm`
+
+Remove one or more secrets
+
+```console
+$ docker secret rm SECRET [SECRET...]
+```
+
+### Example in `service`
+
+`psql-pass.xt`
+```txt
+WyPazzMd
+```
+
+```console
+$ echo "username" | docker secret create psql-user
+$ docker secret create psql-pass psql-pass.txt
+$ docker service create --name psql \
+    --secret psql-user --secret psql-pass \
+    -e POSTGRES_USER_FILE=/run/secrets/psql-user \
+    -e POSTGRESS_PASSWORD_FILE=/run/secrets/psql-pass \
+    postgres:14.1-alpine
+```
+
+### Example in `stack`
+
+`psql-pass.txt`
+```txt
+WyPazzMd
+```
+
+```console
+$ echo "username" | docker secret create psql-user
+$ docker secret create psql-pass psql-pass.txt
+```
+
+```yml
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER_FILE=/run/secrets/psql-user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/psql-pass
+    ports:
+      - "5432:5432"
+    secrets:
+      - psql-user
+      - psql-pass
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4:6.2
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+    ports:
+      - "80:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+secrets:
+  psql-user:
+    external: true
+  psql-pass:
+    external: true
+  another-secret:
+    file: ./mysecret.txt
+
+volumes:
+  postgres:
+  pgadmin:
+```
+
+
+
+
+
+### Example of updating services
+
+```console
+$ docker swarm init
+$ docker service create -p 8088:80 --name web nginx:1.13.7
+$ docker service ls
+$ docker service scale web=5
+$ docker service ps web
+$ docker service update --image nginx:1.13.6 web
+$ docker service update --publish-rm 8088 --publish-add 9090:80 web
+$ docker service update --force web
+```
+
+### Example of `HEALTHCHECK`
+
+```console
+$ docker container run --name p1 -e POSTGRES_PASSWORD=secret -d postgres:14.1-alpine
+$ docker container run --name p2 -e POSTGRES_PASSWORD=secret -d \
+    --health-cmd="pg_isready -U postgres || exit 1" postgres:14.1-alpine
+$ docker container ls
+$ docker container inspect p2
+$ docker service create --name p1 -e POSTGRES_PASSWORD=secret postgres:14.1-alpine
+$ docker service create --name p2 -e POSTGRES_PASSWORD=secret \
+    --health-cmd="pg_isready -U postgres || false" postgres:14.1-alpine
+```
+
+
+### `registry` image
+
+```console
+$ docker container run -d -p 5000:5000 --name registry registry
+$ docker container ls
+$ docker image ls
+$ docker image pull hello-world
+$ docker container run --name hw hello-world
+$ docker image tag hello-world 127.0.0.1:5000/hello-world
+$ docker image ls
+$ docker image push 127.0.0.1:5000/hello-world
+$ docker container rm -f hw
+$ docker image rm hello-world 127.0.0.1:5000/hello-world
+$ docker image ls
+$ docker image pull 127.0.0.1:5000/hello-world
+$ docker container rm --force registry
+$ docker container run -d -p 5000:5000 --name registry -v $(pwd)/registry-data:/var/lib/registry registry
+$ ls registry-data
+$ docker image push 127.0.0.1:5000/hello-world
+$ ls registry-data
+$ tree registry-data
+```
+
+#### summary
+
+* Run the registry image
+  * `docker container run -d -p 5000:5000 --name registry registry`
+* Re-tag an existing image and push it to your new registry
+  * `docker image pull hello-world`
+  * `docker image tag hello-world 127.0.0.1:5000/hello-world`
+  * `docker image push 127.0.0.1:5000/hello-world`
+* Remove that image from local cache and pull it from new registry
+  * `docker image rm hello-world`
+  * `docker image rm 127.0.0.1:5000/hello-world`
+  * `docker image pull 127.0.0.1:5000/hello-world`
+* Re-create registry using a bind mount and see how it stores data
+  * `docker container run -d -p 5000:5000 -v $(pwd)/registry-data:/var/lib/registry --name registry registry`
+
+
+
+
+
+
+
+
+
+
+
+
+### Kubernetes
+
+
+```console
+$ kubectl create deployment DEPLOYMENT --image IMAGE
+```
+
+
+
+```console
+$ kubectl api-resources
+$ kubectl api-versions
+$ kubectl explain services --recursive
+$ kubectl explain services.spec
+$ kubectl explain services.spec.type
+$ kubectl explain deployment.spec.template.spec.volumes.nfs.server
+```
+
+Lookup for documentation
+- https://kubernetes.io/docs/reference/#api-reference
+- https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/
+
+#### `yaml`
+
+```yml
+apiVersion:
+kind:
+metadata:
+specs:
+---
+apiVersion:
+kind:
+metadata:
+specs:
+```
 
 
 
@@ -885,7 +1615,7 @@ services:
       - "5432:5432"
     volumes:
       - "~/docker/postgres/data:/var/lib/postgresql/data"
-    container-name: postgres
+    container_name: postgres
     
   pgadmin:
     image: dpage/pgadmin4:6.2
