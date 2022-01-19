@@ -387,7 +387,15 @@ for (i in 2:length(n)) {
 legend("topright", legend=sprintf("n = %d", n), col=cols, lwd=1)
 ```
 
+### Estimador de $N$
 
+Si se tiene una población numerada $1,2,\dots,N$
+
+Se toma una m.a.s. $x_1,x_2,\dots,x_n$; sea $m=\max\{x_1,x_2,\dots,x_n\}$.
+
+El estimador no sesgado más eficiente del tamaño de la población $N$ es
+
+$$\widehat{N}=m+\frac{m-n}{n}$$
 
 
 

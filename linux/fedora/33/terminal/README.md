@@ -21,12 +21,118 @@ Linux is a sort-of-descendent of Unix. The core part of Linux is designed to beh
 
 
 
+## `zsh`
+
+Zsh is a shell designed for interactive use, although it is also a powerful scripting language.
+
+### Installation
+
+#### Ububtu
+
+```console
+$ sudo apt-get update
+$ sudo apt-get install -y zsh
+```
+
+#### Fedora
+
+```console
+$ sudo dnf install -y zsh
+```
+
+###### Resource:
+* https://www.zsh.org/
+
+### Oh My Zsh
+
+Oh My Zsh is an open source, community-driven framework for managing your Zsh configuration.
+
+Once installed, your terminal shell will become the talk of the town or your money back! With each keystroke in your command prompt, you'll take advantage of the hundreds of powerful plugins and beautiful themes.
+
+#### Installation
+
+```console
+$ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+###### Resource
+* https://ohmyz.sh/
+
+### Plugins
+
+#### `zsh-syntax-highlighting`
+
+This package provides syntax highlighting for the shell zsh. It enables highlighting of commands whilst they are typed at a zsh prompt into an interactive terminal. This helps in reviewing commands before running them, particularly in catching syntax errors.
+
+##### Installation
+
+Clone the repository inside your oh-my-zsh repo:
+
+```console
+$ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+```
+
+Enable it in your `~/.zshrc` by adding it to your plugin list:
+
+```
+  plugins=(... zsh-syntax-highlighting)
+```
+
+you can also source it with:
+
+```console
+$ echo "source ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ~/.zshrc
+```
+
+###### Resource
+* https://github.com/zsh-users/zsh-syntax-highlighting
+
+#### `zsh-autosuggestions`
+
+It suggests commands as you type based on history and completions.
+
+As you type commands, you will see a completion offered after the cursor in a muted gray color. This color can be changed by setting the ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE variable.
+
+If you press the `→` key (`forward-char` widget), it will accept the suggestion, replacing the contents of the command line buffer with the suggestion.
+
+If you invoke the `forward-word` widget, it will partially accept the suggestion up to the point that the cursor moves to.
+
+##### Installation
+
+Clone the repository inside your oh-my-zsh repo:
+
+```console
+$ git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+```
+
+Enable it in your `~/.zshrc` by adding it to your plugin list:
+
+```
+  plugins=(... zsh-autosuggestions)
+```
+
+you can also source it with:
+
+```console
+$ echo "source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ~/.zshrc
+```
+
+###### Resource
+* https://github.com/zsh-users/zsh-autosuggestions
 
 
+#### Other useful plugins`battery`
 
+* [`battery`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/battery)
+* [`colored-man-pages`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/colored-man-pages)
+* [`command-not-found`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/command-not-found)
+* [`sudo`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/sudo)
+* [`themes`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/themes)
+* [`zsh-interactive-cd`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/zsh-interactive-cd)
 
+#### Create custom theme
 
-
+* https://blog.carbonfive.com/writing-zsh-themes-a-quickref/
 
 
 
