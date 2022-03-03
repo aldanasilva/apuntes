@@ -1063,7 +1063,9 @@ https://docs.fedoraproject.org/en-US/Fedora/23/html/System_Administrators_Guide/
 
 Ubuntu
 
+### Clean snaps
 
+* https://www.debugpoint.com/2021/03/clean-up-snap/
 
 
 

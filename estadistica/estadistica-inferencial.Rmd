@@ -16,7 +16,7 @@ set.seed(2021)
 
 ## Muestreo aleatorio simple (con reposición) o m.a.s.
 
-```{r}
+```{r, cache=TRUE}
 (x = sample(1:100, 15, replace=TRUE))
 ##
 plot(table(x))
@@ -24,21 +24,21 @@ plot(table(x))
 
 obtener una muestra de tamaño 10 del dataset `iris` con reposición
 
-```{r}
+```{r, cache=TRUE}
 flores.elegidas.10.con = sample(1:150, 10, TRUE)
 (muestra.iris.10.con = iris[flores.elegidas.10.con,])
 ```
 
 ## Muestreo aleatorio sin reposición
 
-```{r}
+```{r, cache=TRUE}
 (x = sample(1:100, 15, replace=FALSE))
 plot(table(x))
 ```
 
 obtener una muestra de tamaño 10 del dataset `iris` con reposición
 
-```{r}
+```{r, cache=TRUE}
 flores.elegidas.10.sin = sample(1:150, 10, FALSE)
 (muestra.iris.10.sin = iris[flores.elegidas.10.sin,])
 ```
@@ -49,7 +49,7 @@ Suponiendo que los individuos de una población están dados de forma ordenada, 
 
 obtener una muestra sistemática de tamaño 10 del dataset `iris`
 
-```{r}
+```{r, cache=TRUE}
 (primera.flor = sample(1:150, 1))
 (incremento = floor(150/10))
 flores.elegidas.10.sis =
@@ -64,7 +64,7 @@ Este tipo de muestreo se utiliza cuando la población está clasificada en __est
 
 obtener una muestra estratificada por especie de tamaño 12 del dataset `iris`
 
-```{r}
+```{r, cache=TRUE}
 fls.muestra.setosa = sample(1:50, 4, replace=TRUE)
 fls.muestra.versicolor = sample(51:100, 4, replace=TRUE)
 fls.muestra.virginica = sample(101:150, 4, replace=TRUE)
@@ -75,7 +75,7 @@ fls.muestra =
 
 ## Muestreo por conglomerados
 
-```{r}
+```{r, cache=TRUE}
 library(faraway)
 head(worldcup)
 ##
@@ -93,7 +93,7 @@ nrow(muestra.worldcup.con)
 
 ## Muestreo polietápico
 
-```{r}
+```{r, cache=TRUE}
 worldcup.pais1 = worldcup[worldcup$Team == paises.elegidos[1],]
 worldcup.pais2 = worldcup[worldcup$Team == paises.elegidos[2],]
 worldcup.pais3 = worldcup[worldcup$Team == paises.elegidos[3],]
@@ -120,7 +120,7 @@ dim(muestra.worldcup.pol)
 
 Cargar la libraría `reticulate` para conectar `R` con `python` indicando en donde está la versión de `python` que se va a utilizar
 
-```{r}
+```{r, cache=TRUE}
 ## R
 Sys.setenv(RETICULATE_PYTHON='~/anaconda3/bin/python3')
 library(reticulate)
@@ -128,7 +128,7 @@ library(reticulate)
 # https://stackoverflow.com/questions/50145643/unable-to-change-python-path-in-reticulate-r
 ```
 
-```{python}
+```{python, cache=TRUE}
 import random
 import pandas as pd
 ##
@@ -189,7 +189,7 @@ donde $\sigma_{\overline{X}}$ es el __error estándar__ de $\overline{X}$.
 
 Comprobar las propiedades mencionadas anteriormente generando 10000 muestras de tamaño 40 (con reposición) de las longitudes del pétalo (Petal.Length) del dataset `iris`.
 
-```{r}
+```{r, cache=TRUE}
 n = 40
 k = 10000
 ##
@@ -321,7 +321,7 @@ $$\frac{\widehat{p}_X-p_X}{\sqrt{\frac{p_X(1-p_X)}{n}}}\approx N(0,1)$$
 
 ### Demostración
 
-```{r}
+```{r, cache=TRUE}
 flores.elegidas = sample(1:150, 60, replace=TRUE)
 muestra.flores = iris[flores.elegidas,]
 # Proporción de
@@ -372,7 +372,7 @@ $$E\left(X_{\chi_n^2}\right)=n,\qquad Var\left(X_{\chi_n^2}\right)=2n$$
 
 * $\chi_n^2$ se aproxima a una distribución normal $N\left(n,\sqrt{2n}\right)$ para $n$ grande ($n>40$ o $50$).
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, cache=TRUE}
 library(latex2exp)
 n = c(1, 2, 3, 4, 5, 10)
 cols = c("black", "blue", "red", "yellow", "green", "orange")
@@ -398,44 +398,986 @@ El estimador no sesgado más eficiente del tamaño de la población $N$ es
 $$\widehat{N}=m+\frac{m-n}{n}$$
 
 
+# Intervalos de confianza
+
+## Para $\mu$ de una población normal
+
+### Con $\sigma$ conocida
+
+Sea $X\sim N(\mu,\sigma)$ con $\mu$ desconocida y $\sigma$ conocida.
+
+Tomando una m.a.s. de $X$ de tamaño $n$, con media $\overline X$.
+
+Un intervalo de confianza del $(1-\alpha)\cdot 100\%$ para $\mu$ es
+
+$$
+\left(
+ \overline X-z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}},\
+ \overline X+z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}
+\right)
+$$
+
+donde $z_{1-\frac{\alpha}{2}}$ es el cuantil $\left(1-\frac{\alpha}{2}\right)$ de la normal estándar $Z$ (es decir, $z_{1-\frac{\alpha}{2}}=F_Z^{-1}\left(1-\frac{\alpha}{2}\right)$, o $P\left(Z\leq z_{1-\frac{\alpha}{2}}\right)=1-\frac{\alpha}{2}$).
+
+También se puede escribir como
+
+$$
+\overline X \pm z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}
+$$
+
+Los cuantiles más usados son
+
+| confianza $(1-\alpha)$ | Significancia $(\alpha)$ | Cuantil $\left(z_{1-\frac{\alpha}{2}}\right)$ |
+| ----- | ----- | -------- |
+| 0.90  | 0.10  | 1.644854 |
+| 0.95  | 0.05  | 1.959964 |
+| 0.975 | 0.025 | 2.241403 |
+| 0.99  | 0.01  | 2.575829 |
+
+### Amplitud del intervalo de confianza
+
+La amplitud $A$ del intevalo de confianza a un nivel $(1-\alpha)\cdot 100\%$ de confianza será:
+
+$$
+A=
+ \overline{X}+z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}-\left(
+ \overline{X}-z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}\right)
+= 2\cdot z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}
+$$
+
+### Error máximo cometido
+
+El error máximo, al nivel de confianza $(1-\alpha)\cdot100\%$, que se comete al estimar $\mu$ por $\overline X$ es la mitad de la amplitud,
+
+$$
+z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}
+$$
+
+### con $\sigma$ desconocida
+
+$$
+\frac{\overline X-\mu}{\widetilde{S}_X/\sqrt{n}}
+$$
+
+y se distribuye como una $t$ de Student con $n-1$ grados de libertad.
+
+Sea $X\sim N(\mu,\sigma)$. Sea $X_1,X_2,\dots,X_n$ una m.a.s. de $X$, con media $\overline X$ y desviación típica muestral $\widetilde S_X$
+
+En estas condiciones, la v.a. $t=\frac{\overline X-\mu}{\widetilde S_X/\sqrt{n}}$, sigue una distribución $t$ de Student con $n-1$ grados de libertad, $t_{n-1}$.
+
+#### Propiedades de $t$
+
+* $E(t_\nu)=0\ $ si $\ \nu>1$
+* $Var(t_\nu)=\frac{\nu}{\nu-2}\ $ si $\ \nu>2$
+* Su fucnión de densidad es simétrica respecto de $E(t_\nu)=0$ (como la de una $N(0,1)$):
+
+$$
+P(t_\nu\leq-x)=
+P(t_\nu\geq x)=
+1-P(t_\nu\leq-x)
+$$
+
+* Si $\nu$ es grande, su distribución es aproximadamente la de $N(0,1)$ (pero con más varianza: un poco más aplastada)
+
+```{r, echo=F, cache=T}
+x = seq(from=-5, to=5, by=0.01)
+plot(x, dnorm(x), type='l', main="N(0, 1) vs t(n)", ylab="")
+lines(x, dt(x, 2), col="blue")
+lines(x, dt(x, 5), col="red")
+lines(x, dt(x, 10), col="green")
+legend("topright", legend=c("N(0,1)", "t(2)", "t(5)", "t(10)"), lwd=1,
+  col=c("black","blue","red","green"))
+```
+
+Se indica con $t_{\nu,q}$ el $q$-cuantil de una v.a. $X\sim t$:
+
+$$
+P(X\leq t_{\nu,q})=q
+$$
+
+Si $X\sim N(\mu,\sigma)$ con $\mu$ y $\sigma$ desconocidas, y $X_1,X_2,\dots,X_n$ es una m.a.s. de $X$ de tamaño $n$, con media $\overline X$ y varianza muestral $\widetilde S_X^2$.
+
+El intervalo de confianza para $\mu$ a un nivel de confianza del $(1-\alpha)\cdot 100\%$ es
+
+$$
+\left(
+ \overline X-t_{n-1,\ 1-\frac{\alpha}{2}}\cdot\frac{\widetilde S_X}{\sqrt{n}},\
+ \overline X+t_{n-1,\ 1-\frac{\alpha}{2}}\cdot\frac{\widetilde S_X}{\sqrt{n}}
+\right)
+$$
+
+#### Aproximación de una $t(\nu)$ a una $N(0,1)$
+
+Si $n$ es grande ($n\geq40$), entonces $t_{n-1,\ 1-\frac{\alpha}{2}}\approx z_{1-\frac{\alpha}{2}}$ y se puede **aproximar** el intervalo de confianza anterior mediante la expresión siguiente:
+
+$$
+\left(
+ \overline X-z_{1-\frac{\alpha}{2}}\cdot\frac{\widetilde S_X}{\sqrt{n}},\
+ \overline X+z_{1-\frac{\alpha}{2}}\cdot\frac{\widetilde S_X}{\sqrt{n}}
+\right)
+$$
+
+## Para $\mu$ de una población cualquiera
+
+### Con $n$ grande ($n\geq40$)
+
+Se puede tomar como intervalo de confianza del $(1-\alpha)\cdot100\%$ de confianza para el parámetro $\mu$ de una población cualquiera la siguiente expresión:
+
+#### Con $\sigma$ conocida
+
+$$
+\left(
+ \overline X-z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}},\
+ \overline X+z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}
+\right)
+$$
+
+#### Con $\sigma$ desconocida
+
+$$
+\left(
+ \overline X-z_{1-\frac{\alpha}{2}}\cdot\frac{\widetilde S_X}{\sqrt{n}},\
+ \overline X+z_{1-\frac{\alpha}{2}}\cdot\frac{\widetilde S_X}{\sqrt{n}}
+\right)
+$$
+
+### `t.test` en `R`
+
+```{r}
+muestra.iris = sample(1:150, 30, TRUE)
+long.petalo.iris = iris[muestra.iris,]$Petal.Length
+long.petalo.iris[1:10]
+t.test(long.petalo.iris, conf.level=0.95)$conf.int
+```
+
+### Cálculo en `python`
+
+```{python}
+import numpy as np
+from scipy.stats import t
+n = len(r["long.petalo.iris"])
+xbarra = np.mean(r["long.petalo.iris"])
+stilde = np.std(r["long.petalo.iris"], ddof=1)
+t.interval(
+  alpha = 0.95, # confidence level = 1 - alpha
+  df = n-1, # degrees freedom = n - 1
+  loc = xbarra, # mean = xbarra
+  scale = stilde/np.sqrt(n) # std = stilde/sqrt(n)
+)
+```
+
+## Para $p$ de una población Bernoulli
+
+```{r, cache=TRUE}
+muestra.flores = iris[sample(1:150, 60, replace=TRUE),]
+head(muestra.flores)
+n = nrow(muestra.flores)
+x = sum(muestra.flores$Species == "setosa")
+sprintf("n = %d, x = %d, x/n = %.2f", n, x, x/n)
+```
+
+
+### Clopper-Pearson (método "exacto")
+
+Un intervalo de confianza $(p_0,\ p_1)$ del $(1-\alpha)\cdot100\%$ nivel de confianza para $p$ de una población $X$ de Bernoulli se obtiene encontrando el $p_0$ más grande y el $p_1$ más pequeño tales que
+
+$$\sum_{k=x}^{n}{{n\choose{k}}\cdot{p}_0^k\cdot{(1-p_0)^{n-k}}}\leq\frac{\alpha}{2},\quad\sum_{k=0}^{x}{{n\choose{k}}\cdot{p}_1^k\cdot{(1-p_1)^{n-k}}}\leq\frac{\alpha}{2}$$
+
+Usando la función `binom.exact` del paquete `epitools` de `R`, se puede calcular el intervalo de confianza del $(1-\alpha)\cdot100\%$ nivel de confianza de la siguiente manera
+
+```{r, cache=TRUE}
+library(epitools)
+# x = número de éxitos (no la muestra)
+# n = tamaño de la muestra
+binom.exact(x, n, 0.95)
+```
+
+### Cuando $n$ es grande ($n\geq40$)
+
+$$
+Z=\frac{\widehat p_X-p}{\sqrt{\frac{p\cdot(1-p)}{n}}}\approx N(0,1)
+$$
+
+#### Método de Wilson
+
+$$
+\left(\frac{\widehat{p}_{X}+\frac{z_{1-{\alpha}/{2}}^2}{2n}-z_{1-{\alpha}/{2}}\sqrt{\frac{\widehat{p}_{X}\widehat{q}_{X}}{n}+\frac{z_{1-{\alpha}/{2}}^2}{4n^2}}}{1+\frac{z_{1-{\alpha}/{2}}^2}{n}}\right., \left.\frac{\widehat{p}_{X}+\frac{z_{1-{\alpha}/{2}}^2}{2n}+z_{1-{\alpha}/{2}}\sqrt{\frac{\widehat{p}_{X}\widehat{q}_{X}}{n}+\frac{z_{1-{\alpha}/{2}}^2}{4n^2}}}{1+\frac{z_{1-{\alpha}/{2}}^2}{n}}\right)
+$$
+
+Usando la función `binom.wilson` del paquete `epitools` de `R`, se puede calcular el intervalo de confianza del $(1-\alpha)\cdot100\%$ nivel de confianza de la siguiente manera
+
+```{r, cache=TRUE}
+library(epitools)
+# x = número de éxitos (no la muestra)
+# n = tamaño de la muestra
+binom.wilson(x, n, 0.95)
+```
+
+#### Método de Laplace
+
+Si $\ n\geq100\ $, $\ n\widehat p_X\geq10\ $ y $\ n(1-\widehat p_X)\geq10\ $, se puede usar esta fórmula
+
+$$
+\widehat{p}_{X}\pm z_{1-\frac{\alpha}{2}}\sqrt{\frac{\widehat{p}_{X}
+(1-\widehat{p}_{X})}{n}}
+$$
+
+Usando la función `binom.approx` del paquete `epitools` de `R`, se puede calcular el intervalo de confianza del $(1-\alpha)\cdot100\%$ nivel de confianza de la siguiente manera
+
+```r
+library(epitools)
+# x = número de éxitos (no la muestra)
+# n = tamaño de la muestra, n >= 100
+binom.approx(x, n, 0.95)
+```
+
+### Amplitud
+
+La **amplitud** del intervalo de confianza usando la fórmula de Laplace es:
+
+$$
+A=2\cdot z_{1-\frac{\alpha}{2}}\cdot\sqrt{\frac{\widehat p_X(1-\widehat p_X)}{n}}
+$$
+
+### Tamaño de $n$ a partir de la amplitud
+
+$$
+n\geq\left\lceil\left(\frac{z_{1-\frac{\alpha}{2}}}{A}\right)^2\right\rceil
+$$
+
+## Para $\sigma$ de una población normal
+
+Sea $X\sim N(0,1)$ con $\mu$ y $\sigma$ desconocidas, y sea $X_1,X_2,\dots,X_n$ una m.a.s. de $X$ y varianza muestral $\widetilde S_X^2$.
+
+En estas condiciones, se tiene que la v.a. $\frac{(n-1)\cdot \widetilde S_X^2}{\sigma^2}\sim\chi_{n-1}^2$.
+
+En las condiciones anteriores, un intervalo de confianza del $(1-\alpha)\cdot100\%$ de confianza para la varianza $\sigma^2$ de la población $X$ es:
+
+$$
+\left(
+ \frac{(n-1)\cdot\widetilde S_X^2}{\chi_{n-1,\ 1-\frac{\alpha}{2}}^2},\
+ \frac{(n-1)\cdot\widetilde S_X^2}{\chi_{n-1,\ \frac{\alpha}{2}}^2}
+\right)
+$$
+
+donde $\chi_{\nu,\ q}^2$ es el $q$-cuantil de la distribución $\chi_\nu^2$.
+
+### Cálculo con `R`
+
+Usando la función `varTest` del paquete `EnvStats` de `R`, se puede calcular el intervalo de confianza del $(1-\alpha)\cdot100\%$ nivel de confianza para la varianza de la siguiente manera
+
+```{r, message=FALSE, cache=TRUE}
+(amplitud.sepalo.muestra = muestra.flores$Sepal.Width)
+##
+n = length(amplitud.sepalo.muestra)
+stilde = var(amplitud.sepalo.muestra)
+alpha = 0.05
+##
+c(
+  ((n-1)*stilde)/qchisq(1-alpha/2,n-1),
+  ((n-1)*stilde)/qchisq(alpha/2,n-1)
+)
+##
+library(EnvStats)
+varTest(amplitud.sepalo.muestra, conf.level=1-alpha)$conf.int
+```
+
+
+# Contrastes de hipótesis
+
+* $H_0$: Hipótesis nula (se rechaza si se obtiene evidencia de $H_1$), y se define con $=$, $\leq$, o $\geq$.
+* $H_1$: Hipótesis alternativa (de la que se busca evidencia), se define con $>$, $<$, o $\neq$.
+
+## Tipos de errores
+
+| Decisión \\ Realidad | $H_0$ cierta | $H_0$ falsa |
+| --- | ---- | ---- |
+| No rechazar $H_0$   | Decisión correcta<br>(probabilidad = $1-\alpha$) | Error tipo II<br>(probabilidad = $\beta$) |
+| Rechazar $H_0$      | Error tipo I<br>(probabilidad = $\alpha$) | Decisión correcta<br>(probabilidad = $1-\beta$) |
+
+* $P(\text{Error tipo I})=P(\text{Rechazar } H_0\ |\ H_0 \text{ cierta})=\alpha$
+* $P(\text{Error tipo II})=P(\text{No rechazar } H_0\ |\ H_0 \text{ falsa})=\beta$
+
+Donde $\ \alpha\ $ es el __nivel de significancia del contraste__ y $\ 1-\beta\ $ es la __potencia del contraste__.
+
+La idea es que $\ \alpha\to0\ $ y que $\ 1-\beta\to1$.
+
+Cuando se hace disminuir $\ \alpha$, $\ \beta\ $ tiende a aumentar.
+
+Para que $\ \alpha\ $ y $\ \beta\ $ sean pequeños, lo que se suele hacer es:
+
+1. Encontrar una regla de decisión para un $\ \alpha\ $ máximo fijado.
+2. Si es posible, controlar el tamaño $\ n\ $ de la muestra para minimizar $\ \beta$.
+
+## Para $\mu$ de una población normal con $\sigma$ conocida
+
+Sea $\ X\sim N(\mu,\sigma)\ $ con $\ \mu\ $ desconocia y $\ \sigma\ $ conocida, y sea $\ X_1, X_2,\dots,X_n\ $ una m.a.s. de $\ X$, se plantea la siguiente hipótesis nula:
+
+$$H_0:\mu=\mu_0$$
+
+Si $\ H_0\ $ es verdadera, entonces
+
+$$Z=\frac{\overline X-\mu_0}{\frac{\sigma}{\sqrt{n}}}\sim N(0,1)$$
+
+### Cola derecha
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\mu=\mu_0 \\[2pt]
+  H_1:\mu>\mu_0
+ \end{array}
+\right.
+$$
+
+Se rechaza $\ H_0\ $ a favor de $\ H_1\ $ si $\ \overline X\ $ es "bastante más grande" que $\ \mu_0$.
+
+#### Regla 1 ($z$ crítico)
+
+La regla consiste en rechazar $H_0$ si el __estadístico de contraste__ $Z$ es mayor a un cierto umbral, que se determina con $\alpha$, el __nivel de significación del contraste__ o __error tipo I__.
+
+Por lo tanto, se __rechaza__ $H_0$ si $\displaystyle\frac{\overline X-\mu_0}{\frac{\sigma}{\sqrt{n}}}>z_{1-\alpha}$.
+
+```{r, echo=FALSE, cache=TRUE}
+library(latex2exp)
+x = seq(-3.2, 3.2, by=0.01)
+alpha = 0.05
+zcritical = qnorm(1-alpha)
+xmin = ceiling(min(x))
+xmax = floor(max(x))
+y = dnorm(x)
+plot(0, 0, type='n',
+  main=TeX('Región de rechazo de $H_0$'),
+  xaxt='n', yaxt='n',
+  xlab='z', ylab=TeX('$f_z(z)$'),
+  ylim=c(-0.1, 0.4), xlim=c(min(x),max(x)))
+axis(1, seq(xmin, xmax, by=1), seq(xmin, xmax, by=1))
+text(zcritical, -0.08, TeX(r'($z_{1-\alpha}$)'), col='red', pos=2)
+axis(2, seq(0, 0.4, by=0.1), seq(0, 0.4, by=0.1))
+polygon(c(min(x[x>zcritical]), x[x>zcritical], max(x[x>zcritical])),
+  c(0, dnorm(x[x>zcritical]), 0),
+  col='blue', border='blue')
+lines(x, y)
+abline(v=zcritical, lty='dashed', col='red')
+lines(c(min(x), zcritical), c(-0.04, -0.04))
+points(zcritical, -0.04, pch=16)
+points(zcritical, -0.08, pch=1, col='blue')
+lines(c(zcritical+0.04, max(x)), c(-0.08, -0.08), col='blue')
+text(0, 0.1, 'Región de\nno rechazo')
+text(2.5, 0.1, 'Región de\nrechazo', col='blue')
+text(-2.8, 0.2, TeX(r'($z = \frac{\bar{X}-\mu_0}{\sigma / \sqrt{n}}$)'), pos=4)
+```
+
+#### Regla 2 (intervalo de confianza)
+
+No se rechaza $H_0$ si el $\mu_0$ contrastado pertenece al intervalo de confianza
+
+$$\mu_0\in\left(\overline X-z_{1-\alpha}\cdot\frac{\sigma}{\sqrt{n}}, \ \infty\right)$$
+
+Por lo tanto, se __rechaza__ $H_0$ si $\mu_0\leq\overline X-z_{1-\alpha}\cdot\frac{\sigma}{\sqrt{n}}$
+
+### Cola izquierda
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\mu=\mu_0 \\[2pt]
+  H_1:\mu<\mu_0
+ \end{array}
+\right.
+$$
+
+Se rechaza $\ H_0\ $ a favor de $\ H_1\ $ si $\ Z=\displaystyle\frac{\overline{X}-\mu_0}{\frac{\sigma}{\sqrt{n}}}\ $ es inferior a cierto umbral que se determina con $\ \alpha$.
+
+#### Regla 1 ($z$ crítico)
+
+La regla consiste en rechazar $H_0$ si el __estadístico de contraste__ $Z$ es menor a un cierto umbral, que se determina con $\alpha$, el __nivel de significación del contraste__ o __error tipo I__.
+
+Por lo tanto, se __rechaza__ $H_0$ si $\displaystyle\frac{\overline X-\mu_0}{\frac{\sigma}{\sqrt{n}}}<z_{\alpha}$.
+
+```{r, echo=FALSE, cache=TRUE}
+library(latex2exp)
+x = seq(-3.2, 3.2, by=0.01)
+alpha = 0.05
+zcritical = qnorm(alpha)
+xmin = ceiling(min(x))
+xmax = floor(max(x))
+y = dnorm(x)
+plot(0, 0, type='n',
+  main=TeX('Región de rechazo de $H_0$'),
+  xaxt='n', yaxt='n',
+  xlab='z', ylab=TeX('$f_z(z)$'),
+  ylim=c(-0.1, 0.4), xlim=c(min(x),max(x)))
+axis(1, seq(xmin, xmax, by=1), seq(xmin, xmax, by=1))
+text(zcritical, -0.08, TeX(r'($z_{\alpha}$)'), col='red', pos=4)
+axis(2, seq(0, 0.4, by=0.1), seq(0, 0.4, by=0.1))
+polygon(c(min(x[x<zcritical]), x[x<zcritical], max(x[x<zcritical])),
+  c(0, dnorm(x[x<zcritical]), 0),
+  col='blue', border='blue')
+lines(x, y)
+abline(v=zcritical, lty='dashed', col='red')
+lines(c(min(x), zcritical-0.04), c(-0.08, -0.08), col='blue')
+points(zcritical, -0.08, pch=1, col='blue')
+points(zcritical, -0.04, pch=16)
+lines(c(zcritical, max(x)), c(-0.04, -0.04))
+text(0, 0.1, 'Región de\nno rechazo')
+text(-2.5, 0.1, 'Región de\nrechazo', col='blue')
+text(1.8, 0.2, TeX(r'($z = \frac{\bar{X}-\mu_0}{\sigma / \sqrt{n}}$)'), pos=4)
+```
+
+#### Regla 2 (intervalo de confianza)
+
+No se rechaza $H_0$ si el $\mu_0$ contrastado pertenece al intervalo de confianza
+
+$$\mu_0\in\left(-\infty,\ \overline X+z_{1-\alpha}\cdot\frac{\sigma}{\sqrt{n}}\right)$$
+
+Por lo tanto, se __rechaza__ $H_0$ si $\mu_0\geq\overline X+z_{1-\alpha}\cdot\frac{\sigma}{\sqrt{n}}$
+
+### Dos colas
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\mu=\mu_0 \\[2pt]
+  H_1:\mu\neq\mu_0
+ \end{array}
+\right.
+$$
+
+Se rechaza $\ H_0\ $ a favor de $\ H_1\ $ si $\ Z=\displaystyle\frac{\overline{X}-\mu_0}{\frac{\sigma}{\sqrt{n}}}\ $ está bastante lejos de $0$, y se determina con el valor de $\ \alpha$.
+
+#### Regla 1 ($z$ crítico)
+
+La regla consiste en rechazar $H_0$ si el __estadístico de contraste__ $Z$ es menor a un cierto umbral o es mayor a un cierto umbral, que se determina con $\alpha$, el __nivel de significación del contraste__ o __error tipo I__.
+
+Por lo tanto, se __rechaza__ $H_0$ si $\ \displaystyle\frac{\overline X-\mu_0}{\frac{\sigma}{\sqrt{n}}}<z_{\frac{\alpha}{2}}\ $ o $\ \displaystyle\frac{\overline X-\mu_0}{\frac{\sigma}{\sqrt{n}}}>z_{1-\frac{\alpha}{2}}$.
+
+```{r, echo=FALSE, cache=TRUE, fig.height=10, fig.width=10}
+# Dos colas
+mu0 = 20
+xbarra = 20.25
+sigma = 1.8
+n = 25
+alpha = 0.05
+# Gráficos
+library(latex2exp)
+#par(mar=c(5,5,3,2))
+# Usando método de la normal estándar
+par(fig=c(0,10,3.6,10)/10)
+x = seq(-3.2, 3.2, by=0.01)
+y = dnorm(x)
+zcritico = c(qnorm(alpha/2), qnorm(1-alpha/2))
+zcalc = (xbarra-mu0)/(sigma/sqrt(n))
+plot(0, 0, type='n',
+  main=TeX('Región de rechazo de $H_0$'),
+  xaxt='n', yaxt='n',
+  xlab='z', ylab=TeX('$f_z(z)$'),
+  ylim=c(-0.15, 0.4), xlim=c(min(x),max(x)))
+axis(1, zcritico[1], round(zcritico[1],4), col='red', col.axis='red')
+axis(1, zcritico[2], round(zcritico[2],4), col='red', col.axis='red')
+axis(1, zcalc, round(zcalc,4))
+text(zcritico[1], -0.12, TeX(r'($z_{\alpha/2}$)'), col='red', pos=4)
+text(zcritico[2], -0.12, TeX(r'($z_{1-\alpha/2}$)'), col='red', pos=2)
+text(zcalc, -0.12, TeX(r'($z = \frac{\bar{X}-\mu_0}{\sigma / \sqrt{n}}$)'), pos=2)
+polygon(
+  c(min(x[x<zcritico[1]]), x[x<zcritico[1]], max(x[x<zcritico[1]])),
+  c(0, dnorm(x[x<zcritico[1]]), 0),
+  col='blue', border='blue')
+polygon(
+  c(min(x[x>zcritico[2]]), x[x>zcritico[2]], max(x[x>zcritico[2]])),
+  c(0, dnorm(x[x>zcritico[2]]), 0),
+  col='blue', border='blue')
+lines(x, y)
+abline(v=zcritico, lty='dashed', col='red')
+abline(v=zcalc, lty='dashed')
+lines(c(-3.2,3.2), c(0,0))
+lines(c(min(x), zcritico[1]-0.04), c(-0.12, -0.12), col='blue')
+points(zcritico[1], -0.12, pch=1, col='blue')
+points(zcritico[1], -0.06, pch=16)
+lines(c(zcritico[1], zcritico[2]), c(-0.06, -0.06))
+points(zcritico[2], -0.06, pch=16)
+points(zcritico[2], -0.12, pch=1, col='blue')
+lines(c(zcritico[2]+0.04, max(x)), c(-0.12, -0.12), col='blue')
+text(0, 0.1, 'Región de\nno rechazo')
+text(-2.6, 0.1, 'Región de\nrechazo', col='blue')
+text(2.6, 0.1, 'Región de\nrechazo', col='blue')
+text(-3.2, 0.36, TeX(sprintf(r'($\bar{X} = %.2f$)', xbarra)), pos=4)
+text(-3.2, 0.33, TeX(sprintf(r'($\sigma = %.2f$)', sigma)), pos=4)
+text(-3.2, 0.3, TeX(sprintf(r'($n = %d$)', n)), pos=4)
+text(-3.2, 0.27, TeX(sprintf(r'($\mu_0 = %d$)', mu0)), pos=4)
+text(-3.2, 0.24, TeX(sprintf(r'($\alpha = %.2f$)', alpha)), pos=4)
+# Usando intervalos de confianza
+par(fig=c(0,10,0,3.6)/10, new=T)
+error = qnorm(1-alpha/2)*(sigma/sqrt(n))
+relacion = (3.2/qnorm(1-alpha/2))
+xmin=xbarra-error*relacion
+xmax=xbarra+error*relacion
+ic = c(xbarra-error, xbarra+error)
+plot(0, 0, main='Usando intervalos de confianza', xlim=c(xmin,xmax), ylim=c(0, 1.5), type='n', xaxt='n', yaxt='n', xlab='', ylab='')
+lines(c(xmin, ic[1]-0.01), c(0.3, 0.3), col='blue')
+points(ic[1], 0.3, pch=1, col='blue')
+points(ic[1], 0.7, pch=16)
+lines(ic, c(0.7,0.7))
+points(ic[2], 0.7, pch=16)
+points(ic[2], 0.3, pch=1, col='blue')
+lines(c(ic[2]+0.01, xmax), c(0.3, 0.3), col='blue')
+abline(v=ic, lty='dashed', col='red')
+abline(v=mu0, lty='dashed')
+axis(1, ic[1], round(ic[1],2), col='red', col.axis='red')
+axis(1, ic[2], round(ic[2],2), col='red', col.axis='red')
+axis(1, mu0, mu0)
+text(ic[1], 0.3, TeX(r'($\bar{X} - z_{1 - \alpha / 2}\cdot\frac{\sigma}{\sqrt{n}}$)'), col='red', pos=4)
+text(ic[2], 0.3, TeX(r'($\bar{X} + z_{1 - \alpha / 2}\cdot\frac{\sigma}{\sqrt{n}}$)'), col='red', pos=2)
+text(mu0, 0.3, TeX(r'($\mu_0$)'), pos=4)
+text(xbarra, 1.1, 'Región de\nno rechazo')
+text((ic[1]+xmin)/2, 1.1, 'Región de\nrechazo', col='blue')
+text((ic[2]+xmax)/2, 1.1, 'Región de\nrechazo', col='blue')
+```
+
+#### Regla 2 (intervalo de confianza)
+
+No se rechaza $H_0$ si el $\mu_0$ contrastado pertenece al intervalo de confianza
+
+$$\mu_0\in\left(X-z_{1-\alpha}\cdot\frac{\sigma}{\sqrt{n}},\ \overline X+z_{1-\alpha}\cdot\frac{\sigma}{\sqrt{n}}\right)$$
+
+Por lo tanto, se __rechaza__ $H_0$ si $\mu_0\geq\overline X+z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}$ o si $\mu_0\leq\overline X-z_{1-\frac{\alpha}{2}}\cdot\frac{\sigma}{\sqrt{n}}$
+
+
+
+Si $\sigma$ es desconocida, cuando $n$ es grande ($n\geq40$), entonces $Z=\displaystyle\frac{\overline{X}-\mu_0}{\frac{\widetilde{S}_X}{\sqrt{n}}}$
+
+
+
+Faltan apuntes de p-value
 
 
 
 
 
+Contraste para $\mu$ de normal con $\sigma$ desconocida
+
+Con un $n$ pequeño ($n<40$)
+
+
+$$T=\frac{\overline{X}-\mu_0}{\frac{\widetilde{S}_X}{\sqrt{n}}}\sim t_{n-1}$$
+
+
+Con la función `t.test(x=valores.muestra, mu=mu0)` de `R` se puede hacer una prueba de hiótesis para la media $\mu$ de una población normal con $\sigma$ desconocida.
+
+```r
+t.test(
+  x, # es el vector de datos que forma la muestra que analizamos
+  mu, # es el valor mu0 de la hipótesis nula H_0 : mu = mu0
+  alternative = "two.sided", # H_1 : "two.sided" !=, "less" < y "greater" >
+  conf.level = 0.95, # 1 - alpha
+  na.action = na.omit # na.omit, na.fail, na.pass
+)
+```
+
+Con la función `stats.ztest()` del paquete `statsmodels.api` de `python` se puede hacer una prueba de hiótesis para la media $\mu$ de una población normal con $\sigma$ conocida.
+
+```python
+import statsmodels as sm
+sm.stats.ztest(
+  x1, # es el arreglo de datos que forma la muestra que analizamos
+  value, # es el valor mu0 de la hipótesis nula H_0 : mu = mu0
+  alternative = 'two-sided' # H_1 : "two-sided" !=, "smaller" < y "larger" >
+)
+```
+
+También está la función `ttest_1samp()` del paquete `scipy.stats` en `python`, y la función `ztest()` del paquete `from statsmodels.stats import weightstats as stests` en `python`.
+
+### Pruebas de hipótesis para $\mu$
+
+| Población  | $\sigma$ | $n$ | Estadístico | `R` | `python` |
+| ---  | --- | --- | --- | --- | --- |
+| Normal | Conocido | | $z=\frac{\overline{X}-\mu_0}{\sigma/\sqrt{n}}$ | | `sm.stats.ztest()` |
+| Normal | Desconocido | $n<40$ | $t=\frac{\overline{X}-\mu_0}{\widetilde{S}_X/\sqrt{n}}$ | `t.test()` | |
+| Normal | Desconocido | $n\geq40$ | $t=\frac{\overline{X}-\mu_0}{\widetilde{S}_X/\sqrt{n}}$ | `t.test()` | |
+| Cualquiera | Desconocido | $n\geq40$ | $z=\frac{\overline{X}-\mu_0}{\widetilde{S}_X/\sqrt{n}}$ | | `sm.stats.ztest()` |
+
+## Para $p$ de una población Bernoulli
+
+Suponiendo que se tiene una m.a.s. de tamaño $n$ de una población Bernoulli de parámetro $p$.
+
+Se obtienen $x_0$ éxitos, de forma que la proporción muestral de éxitos será $\widehat{p}_X=x_0/n$.
+
+Considerando un contraste con hipótesis nula $H_0:p=p_0$
+
+Si $H_0$ es verdadera, el número de éxitos sigue una distribución $B(n, p_0)$.
+
+En `R` se puede hacer con la función `binom.test()`
+
+```r
+binom.test(
+  x, # número natural que indica el número de éxitos
+  n, # número natural que indica el tamaño de la muestra
+  p, # es la probabilidad de éxito p0 que se quiere contrastar,
+  alternative = "two.sided", # H_1 : "two.sided" !=, "less" < y "greater" >
+  conf.level = 0.95, # 1 - alpha
+)
+```
+
+Si $n$ es muy grande ($n\geq100$, $n\widehat{p}\geq10$ y $n(1-\widehat{p})\geq10$), se puede usar la función `prop.test()` de `R` que utiliza la aproximación de una binomial a una normal y hace el contraste de hipótesis
+
+En `python` se puede hacer usando la función `proportions_ztest()` del paquete `statsmodels.api`
+
+```python
+import statsmodels.api as sm
+sm.stats.proportions_ztest(
+    count, # número natural que indica el número de éxitos
+    nobs, # número natural que indica el tamaño de la muestra
+    alternative='two-sided' # H_1 : 'two.sided' !=, 'smaller' < y 'larger' >
+)
+```
+
+## Para $\sigma$ de una normal
+
+Si $X_1, X_2, \dots, X_n$ es una m.a.s. de una v.a. $X\sim N(\mu, \sigma)$, entonces el **estadístico** $\chi^2_{n-1}=\frac{(n-1)\widetilde{S}^2_X}{\sigma^2}$ sigue una distribución $\chi^2$ con $n-1$ grados de libertad
+
+Por lo tanto, si la hipótesis nula $H_0:\sigma=\sigma_0$ es verdadera, $\chi^2_{n-1}=\frac{(n-1)\widetilde{S}^2_X}{\sigma^2_0}$ tendrá una distribución $\chi^2$ con $n-1$ grados de libertad.
+
+Se calcula su valor $\chi^2_0=\frac{(n-1)\widetilde{S}^2_X}{\sigma^2_0}$ sobre la muestra
+
+| Contraste | Cola | p-value |
+| ------- | --- | --------- |
+| $\left\{\begin{array}{ll}H_0:&\sigma=\sigma_0 \quad(\text{o }\ \sigma\geq\sigma_0)\\[2pt]H_1:&\sigma<\sigma_0\end{array}\right.$ | Izquierda | $P\left(\chi^2_{n-1}\leq\chi^2_0\right)$ |
+| $\left\{\begin{array}{ll}H_0:&\sigma=\sigma_0 \quad(\text{o }\ \sigma\leq\sigma_0)\\[2pt]H_1:&\sigma>\sigma_0\end{array}\right.$ | Derecha | $P\left(\chi^2_{n-1}\geq\chi^2_0\right)$ |
+| $\left\{\begin{array}{ll}H_0:&\sigma=\sigma_0\\[2pt]H_1:&\sigma\neq\sigma_0\end{array}\right.$ | Ambas | $2\cdot\min\left\{P\left(\chi^2_{n-1}\leq\chi^2_0\right),\ P\left(\chi^2_{n-1}\geq\chi^2_0\right)\right\}$ |
+
+### Cálculo en `R`
+
+En `R`, este test se puede realizar usando la función `sigma.test()` del paquete `TeachingDemos`.
+
+```r
+sigma.test(
+  x, # Vector con los datos de la muestra
+  sigma = 1, # Desviación típica que se va a contrastar sigma0
+  sigmasq = sigma^2, # Varianza que se va a contrastar sigma0^2
+  alternative = "two.sided", # H_1 : "two.sided" !=, "less" < y "greater" >
+  conf.level = 0.95 # 1 - alpha
+)
+```
+
+## Para $\mu_1$ y $\mu_2$ independientes
+
+Si se tienen dos v.a. $X_1$ y $X_2$, de medias $\mu_1$ y $\mu_2$
+
+Se toma una m.a.s. de cada variable
+
+$$
+\begin{array}{ll}
+ X_{1,\ 1},\ X_{1,\ 2},\ \dots,\ X_{1,\ n_1} & \text{de } X_1 \\[2pt]
+ X_{2,\ 1},\ X_{2,\ 2},\ \dots,\ X_{2,\ n_2} & \text{de } X_2
+\end{array}
+$$
+
+Sean $\overline{X}_1$ y $\overline{X}_2$ sus medias, respectivamente.
+
+La hipótesis nula será del tipo:
+
+$$H_0:\mu_1=\mu_2 \text{, o, equivalentemente, } H_0:\mu_1-\mu_2=0$$
+
+### Cuando $\sigma_1$ y $\sigma_2$ son conocidas
+
+Si $X_1$ y $X_2$ son normales, o $n_1$ y $n_2$ son grandes ($n_1, n_2\geq30$ o $40$)
+
+Suponiendo además que se conocen las desviaciones típicas poblacionesles $\sigma_1$ y $\sigma_2$ de $X_1$ y $X_2$, respectivamente.
+
+En este caso el **estadístico de contraste** es $\displaystyle Z=\frac{\overline{X}_1-\overline{X}_2}{\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n2}}}$, que, si la hipótesis nula es cierta ($\mu_1=\mu_2$), se distribuye según una $N(0, 1)$.
+
+| Contraste | p-value | Intervalo de confianza |
+| --------- | ------- | ---------------------- |
+| $\left\{\begin{array}{ll}H_0:&\mu_1=\mu_2\\[2pt]H_1:&\mu_1<\mu_2\end{array}\right.$ | $P(Z\leq z_0)$ | $\displaystyle\left(-\infty,\ \overline{X}_1-\overline{X}_2+z_{1-\alpha}\sqrt{\frac{\sigma^2_1}{n_1}+\frac{\sigma^2_2}{n_2}}\right)$ |
+| $\left\{\begin{array}{ll}H_0:&\mu_1=\mu_2\\[2pt]H_1:&\mu_1>\mu_2\end{array}\right.$ | $P(Z\geq z_0)$ | $\displaystyle\left(\overline{X}_1-\overline{X}_2-z_{1-\alpha}\sqrt{\frac{\sigma^2_1}{n_1}+\frac{\sigma^2_2}{n_2}},\ \infty\right)$ |
+| $\left\{\begin{array}{ll}H_0:&\mu_1=\mu_2\\[2pt]H_1:&\mu_1\neq\mu_2\end{array}\right.$ | $2\cdot P(Z\geq|z_0|)$ | $\displaystyle\left(\overline{X}_1-\overline{X}_2\pm z_{1-\alpha/2}\sqrt{\frac{\sigma^2_1}{n_1}+\frac{\sigma^2_2}{n_2}}\right)$ |
+
+### Cuando $\sigma_1$ o $\sigma_2$ son desconocidas
+
+Si $X_1$ y $X_2$ son normales, o $n_1$ y $n_2$ son grandes ($n_1, n_2\geq40$)
+
+#### Si $\sigma_1=\sigma_2$
+
+El estadístico de contraste es
+
+$$T=\frac{\overline{X}_1-\overline{X}_2}{\sqrt{\left(\frac{1}{n_1}+\frac{1}{n_2}\right)\cdot\frac{(n_1-1)\widetilde{S}^2_1\ +\ (n_2-1)\widetilde{S}^2_2}{n_1+n_2-2}}}\sim t_{n_1+n_2-2}$$
+
+que, cuando $\mu_1=\mu_2$, tiene distribución (aproximadamente, en caso de muestras grandes) $t_{n_1+n_2-2}$.
+
+| Contraste | Intervalo de confianza |
+| ------- | ---------------------- |
+| $\left\{\begin{array}{ll}H_0:&\mu_1=\mu_2\\[2pt]H_1:&\mu_1<\mu_2\end{array}\right.$ | $\displaystyle\left(-\infty,\ \overline{X}_1-\overline{X}_2+ t_{1-\alpha}\cdot\sqrt{\frac{(n_1-1)\widetilde{S}^2_1+(n_2-1)\widetilde{S}^2_2}{n_1+n_2-2}\cdot\left(\frac{1}{n_1}+\frac{1}{n_2}\right)}\right)$ |
+| $\left\{\begin{array}{ll}H_0:&\mu_1=\mu_2\\[2pt]H_1:&\mu_1>\mu_2\end{array}\right.$| $\displaystyle\left(\overline{X}_1-\overline{X}_2- t_{1-\alpha}\cdot\sqrt{\frac{(n_1-1)\widetilde{S}^2_1+(n_2-1)\widetilde{S}^2_2}{n_1+n_2-2}\cdot\left(\frac{1}{n_1}+\frac{1}{n_2}\right)},\ \infty\right)$ |
+| $\left\{\begin{array}{ll}H_0:&\mu_1=\mu_2\\[2pt]H_1:&\mu_1\neq\mu_2\end{array}\right.$ | $\displaystyle\left(\overline{X}_1-\overline{X}_2\pm t_{1-\frac{\alpha}{2}}\cdot\sqrt{\frac{(n_1-1)\widetilde{S}^2_1+(n_2-1)\widetilde{S}^2_2}{n_1+n_2-2}\cdot\left(\frac{1}{n_1}+\frac{1}{n_2}\right)}\right)$ |
+
+#### Si $\sigma_1\neq\sigma_2$
+
+El estadístico de contraste es
+
+$$T=\frac{\overline{X}_1-\overline{X}_2}{\sqrt{\frac{\widetilde{S}^2_1}{n_1}+\frac{\widetilde{S}^2_2}{n_2}}}\sim t_f$$
+
+que, cuando $\mu_1=\mu_2$, tiene distribución (aproximadamente, en caso de muestras grandes) $t_f$ con
+
+$$f=\left\lfloor\frac{\left(\frac{\widetilde{S}^2_1}{n_1}+\frac{\widetilde{S}^2_2}{n_2}\right)^2}{\frac{1}{n_1-1}\left(\frac{\widetilde{S}^2_1}{n_1}\right)^2+\frac{1}{n_2-1}\left(\frac{\widetilde{S}^2_2}{n_2}\right)^2}\right\rfloor-2$$
+
+#### Cálculo con `R`
+
+Con la función `t.test()` del paquete `stats`, se puede hacer esta prueba
+
+```r
+t.test(
+  x, # vector de datos 1
+  y, # vector de datos 2
+  alternative = "two.sided", # H_1 : "two.sided" !=, "less" < y "greater" >
+  mu = 0, # mu0 donde mu1 - mu2 = mu0
+  var.equal = FALSE, # booleano que indica si las varianzas son iguales o no
+  conf.level = 0.95 # 1 - alpha
+)
+```
+
+### Cálculo con `python`
+
+Con la función `stats.ttest_ind()` del paquete `statsmodels.api`, se puede hacer esta prueba. (También existe en ese paquete el `stats.ztest()`).
+
+```python
+import statsmodels.api as sm
+sm.stats.ttest_ind(
+  x1, # vector de datos 1
+  x2, # vector de datos 2
+  alternative = 'two-sided', # H_1 : 'two-sided' !=, 'smaller' < y 'larger' >
+  value = 0 # mu0 donde mu1 - mu2 = mu0
+)
+```
+
+También está la función `ttest_ind()` del paquete `scipy.stats` en `python` y la función `ztest()` del paquete `from statsmodels.stats import weightstats as stests` en `python`
+
+## Para $p_1$ y $p_2$
+
+### Test de Fisher
+
+Si se tienes dos variables $X_1$ y $X_2$ Bernoulli de proporciones $p_1$ y $p_2$, y se toma una m.a.s. de cada una, se obtiene la siguiente tabla:
+
+|  | **$X_1$** | **$X_2$** | **Total** |
+| ----- | :-: | :-: | :-: |
+| **Éxitos** | $n_{11}$ | $n_{12}$ | $n_{1\bullet}$ |
+| **Fracasos** | $n_{21}$ | $n_{22}$ | $n_{2\bullet}$ |
+| **Total** | $n_{\bullet1}$ | $n_{\bullet2}$ | $n_{\bullet\bullet}$ |
 
 
 
 
 
+Sea $X\sim H(n_{1\bullet},n_{2\bullet},n_{\bullet1})$, entonces
+
+| Contraste | p-value |
+| ------- | ---------------------- |
+| $\left\{\begin{array}{ll}H_0:&p_1=p_2\\[2pt]H_1:&p_1<p_2\end{array}\right.$ | $P(X\leq{n}_{11})$ |
+| $\left\{\begin{array}{ll}H_0:&p_1=p_2\\[2pt]H_1:&p_1>p_2\end{array}\right.$| $P(X\geq{n}_{11})$ |
+| $\left\{\begin{array}{ll}H_0:&p_1=p_2\\[2pt]H_1:&p_1\neq{p_2}\end{array}\right.$ | $2\cdot\min\{P(X\leq{n}_{11}),P(X\geq{n}_{11})\}$ |
+
+#### Odds
+
+El **odds** de un suceso $A$ es el cociente
+
+$$\text{Odds}(A)=\frac{P(A)}{1-P(A)}$$
+
+```{r, echo=F, warning=F}
+library(latex2exp)
+x = seq(0, 1, by=0.002)
+par(bg='gray90')
+plot(x, x/(1-x), xlim=c(0,1), type='l', log='y',
+  xaxt='n', xlab=TeX(r'($P(A)$)'),
+  yaxt='n', ylab=TeX('Odds($A$)'),
+  panel.first=(
+    abline(v=0:10/10, h=c(0.01, 0.1, 1, 10, 100), col='gray80')
+  )
+)
+axis(1, 0:10/10, 0:10/10)
+axis(2, c(0.01, 0.1, 1, 10, 100), c(0.01, 0.1, 1, 10, 100))
+```
+
+
+#### Odds ratio
+
+$$\frac{\text{Odds}(A)}{\text{Odds}(B)}=\frac{p_A}{1-p_A}\left/\frac{p_A}{1-p_A}\right.$$
+
+| Si el I.C. | Entonces |
+| ---------- | -------- |
+| Contiene el $1$ | $p_1=p_2$ |
+| Es menor que $1$ | $p_1<p_2$ |
+| Es mayor que $1$ | $p_1>p_2$ |
+
+Si el intervalo de confianza para **odds ratio** no contiene el valor 1, se rechaza $H_0:p_1=p_2$,
+
+#### Cálculo en `R`
+
+En `R`, usando la función `fisher.test` del paquete `stats`, se puede realizar este contraste de hipótesis
+
+```r
+fisher.test(
+  x, # Matriz de datos, matrix(c(n11,n21,n12,n22), ncol=2)
+  alternative = "two.sided", # H_1 : "two.sided" !=, "less" < y "greater" >
+  conf.level = 0.95 # 1 - alpha
+)
+```
+
+### Para muestras grandes
+
+Si se tienen dos v.a. $X_1$ y $X_2$ de Bernoulli de parámetros $p_1$ y $p_2$, y se tiene una m.a.s. de cada v.a. de tamaños $n_1$ y $n_2$, respectivamente, grandes ($n_1,n_2\geq50$ o $100$):
+
+$$\begin{array}{ll}
+X_{1,1},\ X_{1,2},\ \dots,\ X_{1,n_1}&\text{de }X_1\\[2pt]
+X_{2,1},\ X_{2,2},\ \dots,\ X_{2,n_2}&\text{de }X_2
+\end{array}$$
+
+Sean $\widehat{p}_1$ y $\widehat{p}_2$ sus proporciones muestrales, y suponiendo que los números de éxitos y de fracasos en cada muestra son $\geq5$ o $10$.
+
+El **estadístico de contraste** $Z$ es:
+
+$$Z=\frac{\widehat{p}_1-\widehat{p}_2}{\displaystyle\sqrt{\left(\frac{n_1\widehat{p}_1+n_2\widehat{p}_2}{n_1+n_2}\right)\cdot\left(1-\frac{n_1\widehat{p}_1+n_2\widehat{p}_2}{n_1+n_2}\right)\cdot\left(\frac{1}{n_1}+\frac{1}{n_2}\right)}}$$
+
+que usando el _Teorema Central de Límite_ y suponiendo cierta la hipótesis nula $H_0:p_1=p_2$, tiene aproximadamente una distribución $N(0,1)$.
+
+Sea $z_0$ el valor del **estadístico de contraste** usando las proporciones muestrales $\widehat{p}_1$ y $\widehat{p}_2$.
+
+| Contraste | p-value |
+| --------- | --------- |
+| $\left\{\begin{array}{ll}H_0:&p_1=p_2\\[2pt]H_1:&p_1<p_2\end{array}\right.$ | $P(Z\leq{z_0})$ |
+| $\left\{\begin{array}{ll}H_0:&p_1=p_2\\[2pt]H_1:&p_1>p_2\end{array}\right.$| $P(X\geq{z_0})$ |
+| $\left\{\begin{array}{ll}H_0:&p_1=p_2\\[2pt]H_1:&p_1\neq{p_2}\end{array}\right.$ | $2\cdot P(Z\geq{|z_0|})$ |
+
+#### Cálculo en `R`
+
+En `R`, usando la función `prop.test` del paquete `stats`, se puede realizar este contraste de hipótesis
+
+```r
+prop.test(
+  x, # vector con el número de éxitos de las dos muestras c(x1,x2)
+  n, # vector con el tamaño de las dos muestras c(n1,n2)
+  alternative = "two.sided", # H_1 : "two.sided" !=, "less" < y "greater" >
+  conf.level = 0.95 # 1 - alpha
+)
+```
+
+## Para $\sigma_1^2$ y $\sigma_2^2$ de normales
+
+El estadístico de contraste es el siguiente
+
+$$F=\frac{\widetilde{S}^2_1}{\widetilde{S}^2_2}$$
+que, si las dos poblaciones son normales y la hipótesis nula $H_0:\sigma_1=\sigma_2$ es cierta, tiene una distribución $F$ de Fisher con grados de libertad $n_1-1$ y $n_2-1$.
+
+Sea $f_0$ el valor que toma usando las desviaciones típicas muestrales.
+
+
+| Contraste | p-value |
+| ----- | -------- |
+| $\left\{\begin{array}{ll}H_0:&\sigma_1=\sigma_2 \quad\left(\text{o }\ \frac{\sigma_1^2}{\sigma_2^2}=1\right)\\[2pt]H_1:&\sigma_1<\sigma_2\end{array}\right.$ | $P\left(F_{n_1-1,\ n_2-1}\leq{f_0}\right)$ |
+| $\left\{\begin{array}{ll}H_0:&\sigma_1=\sigma_2 \quad\left(\text{o }\ \frac{\sigma_1^2}{\sigma_2^2}=1\right)\\[2pt]H_1:&\sigma_1>\sigma_2\end{array}\right.$ | $P\left(F_{n_1-1,\ n_2-1}\geq{f_0}\right)$ |
+| $\left\{\begin{array}{ll}H_0:&\sigma_1=\sigma_2 \quad\left(\text{o }\ \frac{\sigma_1^2}{\sigma_2^2}=1\right)\\[2pt]H_1:&\sigma_1\neq\sigma_2\end{array}\right.$ | $2\cdot\min\left\{P\left(F_{n_1-1,\ n_2-1}\leq{f_0}\right),\ P\left(F_{n_1-1,\ n_2-1}\geq{f_0}\right)\right\}$ |
 
 
 
+Intervalo de confianza
+
+$$\left(\frac{\widetilde{S}^2_1}{\widetilde{S}^2_2}\cdot{F}_{n_1-1,\ n2-1,\ \frac{\alpha}{2}},\ \frac{\widetilde{S}^2_1}{\widetilde{S}^2_2}\cdot{F}_{n_1-1,\ n2-1,\ 1-\frac{\alpha}{2}}\right)$$
+
+#### Cálculo en `R`
+
+En `R`, usando la función `var.test` del paquete `stats`, se puede realizar este contraste de hipótesis
+
+```r
+var.test(
+  x, # vector de datos de la muestra de la v.a. X1
+  y, # vector de datos de la muestra de la v.a. X2
+  alternative = "two.sided", # H_1 : "two.sided" !=, "less" < y "greater" >
+  conf.level = 0.95 # 1 - alpha
+)
+```
+
+Cuando se duda de la normalidad de las poblaciones, se puede usar el **test de Fligner-Killeen**, que es un test no paramétrico y está implementado en la función `fligner.test()` del paquete `stats`
+
+```r
+##
+## H_0 : sigma1 = sigma2
+## H_1 : sigma1 ≠ sigma2
+##
+fligner.test(
+  x # lista con los vectores de datos de la muestra list(x1, x2)
+)
+```
+
+La ventaja de este test es que no se necesita la normalidad de las poblaciones, aunque su potencia es inferior al test de **Fisher**.
+
+## Para $\mu$ emparejadas
+
+En `python` se puede hacer el `ttest_rel()` del paquete `scipy.stats`
 
 
+## Para $p$ emparejadas
 
+Suponiendo que se evalúan dos características dicotómicas sobre una misma muestras de $n$ sujetos. Se resumen los resultados en la siguiente tabla
 
+<table>
+ <thead>
+  <tr>
+   <th rowspan="2" width="40%"><b>Característica 2</b></th>
+   <th colspan="2"><b>Característica 1</b></th>
+  </tr>
+  <tr>
+   <th width="30%"><b>Sí</b></th>
+   <th width="30%"><b>No</b></th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td><b>Sí</b></td>
+   <td>$a$</td>
+   <td>$b$</td>
+  </tr>
+  <tr>
+   <td><b>No</b></td>
+   <td>$c$</td>
+   <td>$d$</td>
+  </tr>
+ </tbody>
+</table>
 
+Se cumple que $a+b+c+d=n$. Llamando $p_1$ a la proporción poblacional de individuos con la característica 1 ($(a+c)/n$), y $p_2$ a la proporción poblacional de individuos con la característica 2 ($(a+b)/2$).
 
+$$\left\{\begin{array}{l}H_0:p_1=p_2\\[2pt]H_1:p_1\neq{p}_2\end{array}\right.$$
 
+Para realizar este contraste (o los unilaterales asociados), se requiere que $n$ sea grande ($n\geq$) y que el número de **casos discordantes** sea razonablemente grande ($b+c\geq20$). El **estadístico de contraste** es el siguiente
 
+$$Z=\frac{\frac{b}{n}-\frac{c}{n}}{\sqrt{\frac{b+c}{n^2}}}=\frac{b-c}{\sqrt{b+c}}\sim{N}(0,1)$$
 
+Sea $z_0$ el valor que toma sobre los valores muestrales. Por lo tanto, el p-value será: $p=2\cdot{P}(Z\geq|z_0|)$.
 
+### Cálculo en `R`
 
+En `R`, usando la función `mcnemar.test` del paquete `stats`, se puede realizar este contraste de hipótesis
 
+```r
+mcnemar.test(
+  x, # matriz de datos de la muestra matrix(c(a,b,c,d),byrow=T,nrow=2)
+)
+```
 
+### Otra forma de hacer el test
 
+Otra posibilidad para realizar un contraste de dos proporciones usando muestras emparejadas, que no requiere ninguna hipótesis sobre los tamaños de las muestras, es usar de manera adecuada la función `binom.test()`.
 
+Considerando la siguiente tabla, donde ahora se dan las probabilidades poblacionales de las cuatro combinaciones de resultados
 
+```{r}
+##                   Característica 1
+## Característica 2  Sí   No
+##               Sí  p11  p01
+##               No  p10  p00
+```
 
+La gracia ahora está en que si $H_0:p_{10}=p_{01}$ es cierta, entonces, el total de casos discordantes, el número de sujetos en los que la característica 1 da Sí y la característica 2 da No sigue una ley binomial con $p=0.5$. Por lo tanto, se puede realizar este contraste realizando un test binomial exacto tomando como muestra los casos discordantes de la muestra ($b+c$), como éxitos los sujetos que han dado Sí en la característica 1 y No en la característica 2 ($c$), y con proporción a contrastar $p=0.5$.
 
-
-
-
-
-
-
-
+La ventaja de este test es que su validez no requiere un tamaño de muestra específico, y su desventaja es que el intervalo de confianza será para $p_{10}/(p_{10}+p_{01})$ lo cual no es válido para el análisis que se está haciendo.
 
 
 

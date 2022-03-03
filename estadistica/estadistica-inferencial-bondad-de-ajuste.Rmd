@@ -1,0 +1,499 @@
+---
+title: "estadistica-inferencial-bondad-de-ajuste"
+author: "Andrés Aldana"
+date: "2/24/2022"
+output:
+  rmdformats::downcute:
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse=TRUE)
+```
+
+# Bondad de ajuste
+
+Una de las técnicas más conocidas para estudiar los **contrastes no paramétricos** son los **tests de bondad de ajuste** o **tests $\chi^2$**
+
+El contraste que se estudia es el siguiente:
+
+$$\left\{\begin{array}{l}H_0:\text{ La distribución de } X \text{ es del tipo } X_0\\[2pt]H_1:\text{ La distribución de } X \text{ no es del tipo } X_0\end{array}\right.$$
+
+Donde $X_0$ es un tipo de distribución conocida.
+
+## Pruebas gráficas
+
+Suponiendo que la v.a. $X_0$ es continua, se pueden realizar varias pruebas gráficas para "estimar" la función de densidad de la muestra y ver si dicha función de densidad se parece o no a la función de densidad de la v.a. $X_0$.
+
+Los datos que se usarán en los ejemplos son los siguientes
+
+```{r}
+datos = iris$Sepal.Width
+mu = mean(datos)
+sigma = sd(datos)
+```
+
+### Histograma
+
+```{r}
+plot(density(datos), main="Estimación de la densidad")
+curve(dnorm(x,mu,sigma),col="blue",add=T)
+#summary(density(datos)[])
+```
+
+### Q-Q-plot
+
+Este tipo de gráfico compara los **cuantiles observados de la muestra** con los **cuantiles teóricos de la distribución teórica**.
+
+Este gráfico se puede hacer en `R` usando la función `qqPlot()` del paquete `car`.
+
+```r
+library(car)
+qqPlot(
+  x, # vector de datos de la muestra
+  distribution="norm", # distribución teórica "t", "binom", "poisson", etc
+  parameters..., # mean=mean(data), sd=sd(data), df=n-1, n=lentgh(data), p=x/n, etc
+  id=FALSE, #
+  grid=FALSE,
+  line=none
+)
+```
+
+#### Ejemplo
+
+```{r, message=FALSE}
+library(car)
+qqPlot(datos, distribution="norm", mean=mu, sd=sigma)
+```
+
+Se observa que la mayoría de los valores de la muestra caen dentro de la franja del $95\%$ de confianza. Según esta prueba gráfica, "parece" que la distribución es normal, aunque se tienen dudas.
+
+## Contraste $\chi^2$ de Pearson
+
+Suponiendo que se tienen los valores de una muestra de tamaño $n$ de la v.a. $X$ que da los valores de la población $x_1,\ x_2,\ \dots,\ x_n$.
+
+Luego, se clasifican los valores $x_i$, $i=1,\dots,n$ en $k$ clases.
+
+Sean $n_1,n_2,\dots,n_k$, el número de valores de la muestra que están en cada una de las clases: $n_1$ sería el número de valores de la muestra que están en la clase $1$, $n_2$, el número de valores de la muestra que están en la clase $2$ y así sucesivamente hasta $n_k$.
+
+Se obtendría lo que se conoce como **tabla de frecuencias empíricas**
+
+| Clases | Clase $1$ | Clase $2$ | $\cdots$ | Clase $k$ | Total |
+| --- | --- | --- | --- | --- | --- |
+| Fracuencias empíricas | $n_1$ | $n_2$ | $\cdots$ | $n_k$ | $n$ |
+
+El siguiente paso es obtener la tabla de la función de probabilidad de la variable discreta $X_k$ de valores $\{1,2,\dots,k\}$ y con función de probabilidad $p_i=P(X_k=i)=P(X_0\in\text{Clase }i),\ i=1,2,\dots,k$.
+
+Esta función de probabilidad tiene que hallarse a partir del conocimiento de $X_0$. Si se desconocen los parámetros de los que depende $X_0$, se tendrán que estimar con técnicas de **estimación puntual**.
+
+La tabla de la función de probabilidad $X_k$ quedaría de la siguiente forma
+
+| $X_k$ | $1$ | $2$ | $\cdots$ | $k$ | Total |
+| --- | --- | --- | --- | --- | --- |
+| $P(X_k=i)$ | $P(X_k=1)$ | $P(X_k=2)$ | $\cdots$ | $P(X_k=k)$ | $1$ |
+
+Multiplicando la tabla anterior por $n$, se obtiene la siguiente **tabla de frecuencias teóricas**
+
+| Clases | Clase $1$ | Clase $2$ | $\cdots$ | Clase $k$ | Total |
+| --- | --- | --- | --- | --- | --- |
+| Frecuencias teóricas | $e_1$ | $e_2$ | $\cdots$ | $e_k$ | $n$ |
+
+Donde $e_i=n\cdot{P}(X_k=i)$ es la **frecuencia teórica** de la clase $i$-ésima. ($e$ de "esperada").
+
+## Contraste
+
+El **test $\chi^2$** o **test de bondad de ajuste** se basa en que, si la hipótesis nula es cierta, las **frecuencias empírias** y las **frecuencias teóricas** son "parecidas".
+
+Más concretamente, si la hipótesis nula es cierta, el estadístico siguiente
+
+$$\chi^2=\sum_{i=1}^{k}{\frac{(\text{frec. empíricas}_i-\text{frec. teóricas}_i)^2}{\text{frec. teóricas}_i}}=\sum_{i=1}^{k}{\frac{(n_i-e_i)^2}{e_i}}$$
+
+Sigue aproximadamente una distribución $\chi^2_{k-1}$ grados de libertad.
+
+Sea $\chi_0$ el valor del estadístico de contraste anterior para nuestra muestra. El p-value del contraste vale
+
+$$p=P(\chi^2_{k-1}>\chi_0)$$
+
+* Si $p<0.05$, se rechaza $H_0$.
+* Si $p>0.1$, no se tiene evidencia suficiente para rechazar $H_0$
+
+## Condiciones del test
+
+El test de **bondad de ajuste** está basado en el **estadístico $\chi^2$** que recordemos sigue aproximadamente una distribución $\chi^2_{k-1}$ grados de libertad
+
+Al estar basado en un **Teorema Límite**, para que dicha aproximación sea efectiva, las condiciones siguientes se tienen que verificar:
+
+* el tamaño de la muestra debe ser grande: $n\geq25$ o mejor $n\geq30$
+
+* las clases deben cubrir todos los resultados posibles (en la práctica $n=\sum_{i=1}^{k}{n_i}=\sum_{i=1}^{k}{e_i}$)
+
+* las **frecuencias teóricas** tienen que ser mayores o iguales que $5$, para todo $i=1,2,\dots,k$.
+
+## Cálculo en `R`
+
+Este test se puede hacer usando la función `chisq.test()` del paquete `stats` en `R`
+
+```r
+chisq.test(
+  x, # vector (o tabla, calculada con table()) de frecuencias absolutas observadas
+  p, # vector de probabilidades teóricas
+  rescale.p # convierte lo valores de e_i a probabilidades
+)
+```
+
+## Cálculo en `python`
+
+Este test se puede hacer usando la función `chisq.test()` del paquete `stats` en `R`
+
+```python
+from scipy.stats import chisquare
+chisquare(
+  f_obs, # (Frequency observed) vector de frecuencias observadas
+  f_exp # (Frequency expected) vector de frecuencias esperadas
+)
+```
+
+También puede revisar la función `chi2_contingency()` del paquete `scipy.tats`.
+
+## Ejemplo en `R`
+
+```{r}
+set.seed(2020)
+muestra.flores = sample(iris$Species, 10)
+chisq.test(table(muestra.flores), simulate.p.value = T)
+```
+
+## Test $\chi^2$ de Pearson con parámetros poblacionales desconocidos
+
+Cuando la v.a. $X_0$ de la población de contraste dependa de algunos parámetros desconocidos, se necesita conocer sus valores para poder calcular las frecuencias esperadas $e_i$.
+
+La manera de resolver este inconveniente, es estimar dichos parámetros usando el [**estimador máximo verosímil**](https://joanby.github.io/bookdown-estadistica-inferencial/estimaci%C3%B3n-puntual.html#estimadores-m%C3%A1ximo-veros%C3%ADmiles) correspondiente.
+
+Una vez estimados los parámetros de los que depende la v.a. de la población $X_0$, se puede realizar el **test de bondad de ajuste**, pero los grados de libertad de la distribución $\chi^2$ disminuyen, ahora serían $k-1-\text{número de parámetros estimados}$.
+
+Algunos estimadores de **m+aximo verosímiles**
+
+Poisson: $\widehat{\lambda}=\overline{X}$
+Exponencial: $\widehat{\lambda}=\frac{1}{\overline{X}}$
+
+## Ejemplo
+
+El siguiente ejemplo muestra una prueba de bondad de ajuste para una variable $\text{Po}(\lambda)$.
+
+```{r}
+merge.class = TRUE
+n = 576
+lambdagorro = (0*299+1*211+2*93+3*35+4*7+5*1)/n
+n.parametros = 1
+df = data.frame(
+  desde = c(0  , 1  , 2  , 3  , 4  , 5  ),
+  hasta = c(0  , 1  , 2  , 3  , 4  , 5  ),
+  o_i =   c(229, 211, 93 , 35 , 7  , 1  )
+)
+df$p_i = dpois(df$hasta,lambdagorro)
+df[nrow(df),]$p_i = 1-ppois(df[nrow(df),]$hasta-1,lambdagorro)
+df$e_i = n*df$p_i
+if (merge.class) {
+  j = 1
+  for (i in 1:nrow(df)) {
+    n = nrow(df)
+    if (df[j,]$e_i < 5) {
+      if (j > 1) {
+        if (j < n) {
+          if (df[j-1,]$e_i < df[j+1,]$e_i) { j = j-1 }
+        } else { j = j-1 }
+      }
+      df[j,]$hasta = df[j+1,]$hasta
+      df[j,]$o_i = sum(df[j:(j+1),]$o_i)
+      df[j,]$p_i = sum(df[j:(j+1),]$p_i)
+      df[j,]$e_i = sum(df[j:(j+1),]$e_i)
+      if (j+2 <= n) {
+        df = rbind(df[1:j,],df[(j+2):n,])
+      } else { df = df[1:j,] }
+    } else { j = j+1 }
+  }
+  rownames(df) = 1:nrow(df)
+}
+df[nrow(df),]$hasta = Inf
+df$chi_i = (df$o_i-df$e_i)^2/df$e_i
+##
+round(df, 2)
+##
+(chi0 = sum((df$o_i-df$e_i)^2/df$e_i))
+##
+(p.value = 1-pchisq(chi0,nrow(df)-1-n.parametros))
+##
+sum(df$e_i)
+```
+
+## Test de Kolmogorov-Smirnov (K-S)
+
+Se puede usar con muestras pequeñas ($n\geq5$), y la muestra no puede contener valores repetidos (si los contiene, la distribución del estadístico de contraste bajo la hipótesis nula no es la que predice la teoría sino que solo se aproxima a ella, y por lo tanto, los p-values que se obtienen son aproximados).
+
+El test K-S realiza un contraste en el que la hipótesis nula es que  la muestra proviene de una **distribución continua completamente especificada**.
+
+### Aplicación
+
+Sean $x_1,x_2,\dots,x_n$, con todos los valores diferentes, y se quiere contrastar si esos valores han sido producidos por una variable $X$ con distribución $F_X$.
+
+Para aplicar el test **K-S** se aplican los siguientes pasos:
+
+1. Se ordena la muestra de menos a mayor: $x_{(1)}<x_{(2)}<\cdots<x_{(n)}$.
+
+2. Se calcula la **función de ditribución muestral $F_n$** de esta muestra, definida de la siguiente forma:
+
+$$F_n(x)=\left\{\begin{array}{ll}0&\text{si } x<x_{(1)}\\[2pt]\frac{k}{n}&\text{si } x_{(k)}\leq x<x_{(k+1)}\\[2pt]1&\text{si } x_{(n)}\leq x\end{array}\right.$$
+
+```{r, echo=F}
+set.seed(10)
+n = 10
+x = sort(rnorm(n,10,2))
+```
+
+Por ejemplo, para el caso de que los valores de la muestra sean:
+
+$$x = \{`r round(x,2)`\}$$
+
+```{r, echo=F}
+n = length(x)
+plot(0, type='n', xlim=c(min(x)-0.5,max(x)+0.5), ylim=c(0,1),
+  xlab="x", ylab=expression(F[n]),
+  panel.first=(
+    abline(
+      h=seq(0,1,by=0.2),
+      v=seq(floor(min(x)-0.5),ceiling(max(x)+0.5),by=0.5),
+      col='gray80'
+    )
+  )
+)
+v = 0.022
+for (i in 1:(n-1)) {
+  lines(c(x[i],x[i+1]-v),rep(i/n,2))
+  lines(rep(x[i],2),c((i-1)/n+v,i/n),lty='dashed')
+  points(x[i],(i-1)/n,pch=1)
+  points(x[i],i/n,pch=16)
+}
+lines(c(x[1]-0.5,x[1]-v),c(0,0))
+points(x[n],(n-1)/n,pch=1)
+lines(rep(x[n],2),c((n-1)/n+v,1),lty='dashed')
+points(x[n],1,pch=16)
+lines(c(x[n],x[n]+0.5),c(1,1))
+```
+
+3. Se compara la **discrepancia** entre $F_n(x)$ con $F_X(x)$ con la siguiente fórmula:
+
+$$D_n(x_{(i)})=\max\left\{\left|F_X(x_{(i)})-\frac{i-1}{n}\right|,\ \left|F_X(x_{(i)})-\frac{i}{n}\right|\right\},\quad\text{para }\ i=1,2,\dots,n$$
+
+4. Por último, se calcula la discrepancia máxima
+
+$$D_n=\max\left\{D_n(x_{(i)})\ |\ i=1,2,\dots,n\right\}$$
+
+Se busca el p-value en una tabla de distribución de Kolmogorov-Smirnov y se compara con $D_n$ para saber si se rechaza o no $H_0$.
+
+### Cálculo en `R`
+
+Usando la función `ks.test()` del paquete `stats` en `R` se puede hacer esta prueba
+
+```r
+ks.test(
+  x, # muestra de una variable continua
+  y, # nombre de la función de distribución que se va a constrastar. Ej "pnorm"
+  params # parámetros de la distribución que se va a contrastar. Ej mean, sd
+)
+```
+
+## Tests de normalidad
+
+### Datos para ejemplos
+
+```{r}
+data = c(0.873, 0.121, 2.817, -0.945, -0.55, -1.436, 0.36, -1.478, -1.869, -1.637)
+```
+
+### Test de Kolmogorov-Smirnov-Lilliefors (K-S-L)
+
+Para realizar esta prueba se estiman los parámetros de $\mu$ y $\sigma$ utilizando los **estimadores máximo verosímiles**, es decir, **media muestral** para $\mu$ y **desviación típica muestral** para $\sigma$.
+
+Este método consiste en estimar dichos parámetros, calcular la **discrepancia máxima**, y para calcular el p-value, se usa ahora la **distribución de Lilliefors**, el contraste es más robusto.
+
+En `R` se puede usar la función `lillie.test()` del paquete `nortest`.
+
+```{r}
+library(nortest)
+lillie.test(
+  data # muestra de una variable continua
+)
+```
+
+Este test tiene un inconveniente: aunque es muy sensible a las diferencias entre la muestra y la distribución teórica alrededor de sus valores medios, le cuesta detectar diferencias prominentes en un extremo u otro de la distribución.
+
+Su potencia se ve afectada por dicho inconveniente.
+
+### Test de Anderson-Darling (A-D)
+
+Este test resuelve el inconveniente del **test K-S-L**, y se puede hacer en `R` usando la función `ad.test()` del paquete `nortest`.
+
+```{r}
+library(nortest)
+ad.test(
+  data # muestra de una variable continua
+)
+```
+
+Un inconveniente común de los **tests K-S-L y A-D** es que, si bien pueden usarse con muestras pequeñas (más de 5 elementos), se comportan mal con muestras grandes, de varios miles de elementos.
+
+En muestras grandes, cualquier pequeña divergencia de la normalidad se magnifica y en estos dos tests aumenta la probabilidad de errores tipo I.
+
+En `python` se puede realizar este test usando la función `anderson` del paquete `scipy.stats`
+
+```{python}
+from scipy.stats import anderson
+result = anderson(r.data) # data es el vector de datos
+result
+for i in range(len(result.critical_values)):
+  cv, sl = result.critical_values[i], result.significance_level[i]
+  if result.statistic < cv:
+    print("Probablemente Gaussiana a un nivel de significancia del %.3f" % (sl/100))
+  else:
+    print("Probablemente NO Gaussiana a un nivel de significancia del %.3f" % (sl/100))
+```
+
+### Test de Shapiro-Wilks (S-W)
+
+Este test resuelve el problema de los **tests de K-S-L y A-D**, está implementado en la función `shapiro.test()` del paquete `stats` en `R`.
+
+```{r}
+shapiro.test(
+  data # muestra de una variable continua
+)
+```
+
+Si la muestra tiene empates (valores repetidos), los p-values de los contrastes realizados con los tests **K-S-L**, **A-D** y **S-W** se pueden ver afectados hasta el punto de que, si hay muchos empates, su significado no tenga ningún sentido. Aunque el test menos afectado por los empates es el test de **S-W**
+
+En `python` se puede realizar este test usando la función `shapiro` del paquete `scipy.stats`
+
+```{python}
+from scipy.stats import shapiro
+stat, pv = shapiro(r.data) # data es el vector de datos
+[stat, pv]
+```
+
+### Test omnibus de D'Agostino-Pearson ($K^2$)
+
+Este test no es sensible a los empates (valores repetidos) como los tests **K-S-L**, **A-D** y **S-W**. Y lo que hace es cuantificar lo diferentes que son la asimetría y la curtosis de la muestra respecto de los esperados en una distribución normal, y resume esta discrepancia en un p-value con el significado usual.
+
+Para poder realizar este test, se requiere que la muestra sea grande ($n\geq20$).
+
+Este test se puede hacer en `R` usando la función `dagoTest` del paquete `fBasics`.
+
+```r
+library(fBasics)
+dagoTest(
+  x # muestra de una variable continua
+)
+```
+
+En `python` se puede realizar este test usando la función `normaltest` del paquete `scipy.stats`
+
+```{python}
+from scipy.stats import normaltest
+stat, pv = normaltest(r.data) # data es el vector de datos
+[stat, pv]
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```r
+## Densidades del paquete stats
+dbeta()
+dbinom()
+dcauchy()
+dchisq()
+#density()
+dexp()
+df()
+dgamma()
+dgeom()
+dhyper()
+dlnorm()
+dlogis()
+#dmultinom()
+dnbinom()
+dnorm()
+dpois()
+dsignrank()
+dt()
+dunif()
+dweibull()
+dwilcox()
+```
+
+```{r}
+x = seq(0,15,by=0.01)
+imin = 2; imax = 5;
+jmin = 2; jmax = 5;
+cols = c("orchid","seagreen","tomato","slateblue")
+plot(0, type='n', xlim=c(min(x),max(x)), ylim=c(0,0.5))
+for (i in imin:imax) {
+  #j = i
+  for (j in jmin:jmax) {
+    #lines(x, dbeta(x,i,j), col=paste(cols[i-1],j-1,sep=''))
+  }
+  lines(x, dgamma(x,i), col=paste(cols[i-1],j-1,sep=''))
+}
+#plot(rep(x,36),dbeta(x,0:5,0:5),type='l')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
