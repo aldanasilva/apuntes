@@ -316,6 +316,10 @@ Para realizar esta prueba se estiman los parámetros de $\mu$ y $\sigma$ utiliza
 
 Este método consiste en estimar dichos parámetros, calcular la **discrepancia máxima**, y para calcular el p-value, se usa ahora la **distribución de Lilliefors**, el contraste es más robusto.
 
+Este test tiene un inconveniente: aunque es muy sensible a las diferencias entre la muestra y la distribución teórica alrededor de sus valores medios, le cuesta detectar diferencias prominentes en un extremo u otro de la distribución.
+
+Su potencia se ve afectada por dicho inconveniente.
+
 En `R` se puede usar la función `lillie.test()` del paquete `nortest`.
 
 ```{r}
@@ -325,9 +329,15 @@ lillie.test(
 )
 ```
 
-Este test tiene un inconveniente: aunque es muy sensible a las diferencias entre la muestra y la distribución teórica alrededor de sus valores medios, le cuesta detectar diferencias prominentes en un extremo u otro de la distribución.
+En `python` se puede usar la función `lilliefors()` del paquete `statsmodels.stats.diagnostic`.
 
-Su potencia se ve afectada por dicho inconveniente.
+```python
+from statsmodels.stats.diagnostic import lilliefors
+lilliefors(
+  x, # muestra de una variable continua
+  dist='norm' # la distribución de contraste que puede ser 'norm' o 'exp'
+)
+```
 
 ### Test de Anderson-Darling (A-D)
 
@@ -401,9 +411,81 @@ stat, pv = normaltest(r.data) # data es el vector de datos
 [stat, pv]
 ```
 
+# Contrastes de Independencia y Homogeneidad
 
+## Tablas de contingencia
 
+Teniendo una muestra de $n$ individuos clasificados por dos criterios $X$ y $Y$. Sean $x_1,x_2,\dots,x_I$ los distintos **niveles** del criterio $X$ y $y_1,y_2,\dots,y_J$, los distintos **niveles** del criterio $Y$.
 
+Se define $n_{ij}$ como el número de individuos clasificados en el nivel $x_i$ según el criterio $X$ y clasificados en el nivel $y_j$ según el criterio $Y$. A partir de dicho valores se construye la **tabla de contingencia**:
+
+<div class="center">
+$X\text{\\}Y$ | $y_1$ | $\ldots$ | $y_j$ | $\ldots$| $y_J$ | $n_{i \bullet}$ |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|$x_1$ | $n_{11}$  | $\ldots$ | $n_{1j}$ | $\ldots$ | $n_{1J}$ | $n_{1\bullet}$ |
+|$\vdots$ | $\vdots$  | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ |
+|$x_i$ | $n_{i1}$ |  $\ldots$ | $n_{ij}$ | $\ldots$ | $n_{iJ}$ | $n_{i \bullet}$ |
+|$\vdots$ | $\vdots$  | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ |
+|$x_I$ | $n_{I1}$ | $\ldots$ | $n_{Ij}$ | $\ldots$ | $n_{IJ}$ | $n_{I \bullet}$ |
+$n_{\bullet j}$ | $n_{\bullet 1}$  | $\ldots$ | $n_{\bullet j}$ | $\ldots$ | $n_{\bullet J}$ | $n$ 
+</div>
+
+Donde $n_{i\bullet}$ es el número total de individuos clasificados en el nivel $x_i$ según el criterio $X$, y $n_{\bullet j}$ es el número total de individuos clasificados en el nivel $y_j$ según el criterio $Y$.
+
+El contraste que se plantea es el siguiente:
+
+$$
+\left\{
+ \begin{array}{ll}
+  H_0 :&\text{Los criterios de clasificación } X \text{ y } Y \text{ son independientes.} \\[2pt]
+  H_1 :&\text{Los criterios de clasificación } X \text{ y } Y \text{ no son independientes.}
+ \end{array}
+\right.
+$$
+
+Para poder realizar el contraste anterior, se plantea como un contraste de **bondad de ajuste**.
+
+Se define una variable "modelo" y, a partir de los datos empíricos, se contrasta si dichos datos siguen la variable "modelo" usando el test de la $\chi^2$ de la bondad de ajuste.
+
+La variable "modelo" será una v.a. discreta **bidimensional** $(X,Y)$ con dominio $\{(x_1,y_1), (x_2,y_2),\dots,(x_I,y_J)\}$, o, si se quiere $\{(x_i,y_j)\ |\ i=1,2,\dots,I,\ j=1,2,\dots,J\}$. Sería una variable con $I\cdot J$ valores.
+
+Para calcular la función de probabilidad de la variable $(X,Y)$, hay que suponer que la hipótesis nula $H_0$ es cierta o que los criterios $X$ y $Y$ son **independientes**. Por tanto:
+
+$$
+P((X,Y)=(x_i,y_j))=
+P(X=x_i)\cdot P(Y=y_j)=
+\frac{n_{i\bullet}}{n}\cdot\frac{n_{\bullet j}}{n}=
+\frac{n_{i\bullet}\cdot n_{\bullet j}}{n^2}
+$$
+
+$i=1,2,\dots,I,\ j=1,2,\dots,J$
+
+Los valores $n_ij$ serían los **valores empíricos** con los que hay que contrastar si siguen la distribución de la variable $(X,Y)$.
+
+El estadístico $\chi^2$ de contraste es el siguiente:
+
+$$
+\chi^2=
+\sum_{i=1}^{I}{\sum_{j=1}^{J}{\frac{\left(n_{ij}-n\cdot P\left((X,Y)=(x_i,y_j)\right)\right)^2}{n\cdot P\left((X,Y)=(x_i,y_j)\right)}}}=
+\sum_{i=1}^{I}{\sum_{j=1}^{J}{\frac{\left(n_{ij}-\frac{n_{i\bullet}\cdot n_{\bullet j}}{n}\right)^2}{\frac{n_{i\bullet}\cdot n_{\bullet j}}{n}}}}
+$$
+
+donde las frecuencias $n_{ij}$ serían las **frecuencias observadas** y $\frac{x_{i\bullet}\cdot y_{\bullet j}}{n}$ serían las **frecuencias esperadas**.
+
+Si $n$ es grande ($n\geq30$) y cada frecuencia esperada $\frac{x_{i\bullet}\cdot y_{\bullet j}}{n}$ es $\geq5$, este estadístico sigue aproximadamente una ley $\chi^2$ con $(I-1)\cdot(J-1)$ **grados de libertad**.
+
+Entonces, el p-value es $P\left(\chi^1_{(I-1)\cdot(J-1)}\geq\chi_0\right)$
+
+Este contraste se puede hacer en `R` usando la función `chisq.test()` del paquete `stats`.
+
+```r
+chisq.test(
+  x, # tabla de contingencia, frecuencias observadas
+  correct = TRUE # si TRUE, aplica la corrección por continuidad solo para tablas 2X2 (Corrección de Yates)
+)
+```
+
+Nota: si algunas frecuencias absolutas esperadas son inferiores a $5$, la aproximación del p-value por una distribución $\chi^2$ podría no ser adecuada. Si se da esta situación, lo mejor es recurrir a simular el p-value usando el parámetro `simulate.p.value=TRUE`.
 
 
 

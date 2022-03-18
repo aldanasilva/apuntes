@@ -1,0 +1,768 @@
+---
+title: "estadistica-inferencial-analisis-de-la-varianza-ANOVA"
+author: "Andrés Aldana"
+date: "3/9/2022"
+output:
+  rmdformats::downcute:
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE)
+```
+
+Estructura de los datos
+
+<style>
+div.center-header th {
+  text-align: center !important;
+}
+div.center-all th,
+div.center-all td {
+  text-align: center !important;
+  vertical-align: center !important;
+}
+</style>
+
+<div class="center-all">
+| $F_1$ | $F_2$ | $\cdots$ | $F_k$ |
+| ----- | ----- | ----- | ----- |
+| $X_{11}$ | $X_{21}$ | $\cdots$ | $X_{k1}$ |
+| $X_{12}$ | $X_{22}$ | $\cdots$ | $X_{k2}$ |
+| $\vdots$ | $\vdots$ | $\ddots$ | $\vdots$ |
+| $X_{1n_1}$ | $X_{2n_2}$ | $\cdots$ | $X_{kn_k}$ |
+</div>
+
+A partir de los datos de las muestras, se definen los siguientes estadísticos:
+
+* Suma total de los datos del nivel $i$-ésimo: $\displaystyle T_{i\bullet}=\sum_{j=1}^{n_i}{X_{ij}}$.
+
+* Media muestral por nivel $i$-esimo: $\displaystyle \overline{X}_{i\bullet}=\frac{T_{i\bullet}}{n_i}$.
+
+* Suma total de los datos: $\displaystyle T_{\bullet\bullet}=\sum_{i=1}^{k}{\sum_{j=1}^{n_i}{X_{ij}}}=\sum_{i=1}^{k}{T_{i\bullet}}$.
+
+* Media muestral de todos los datos: $\displaystyle\overline{X}_{\bullet\bullet}=\frac{T_{\bullet\bullet}}{N}$, donde $N=n_1+n_2+\cdots+n_k$
+
+Los parámetros que intervienen en el contraste son:
+
+* $\mu$: **media poblacional** del conjunto de la población (ignorando los niveles).
+
+* $\mu_i$: **media poblacional dentro del nivel $i$-ésimo**, $i=1,2,\dots,k$.
+
+Los estimadores de los parámetros son los siguientes:
+
+* De $\mu$, $\overline{X}_{\bullet\bullet}$.
+
+* De cada $\mu_i$, $\overline{X}_{i\bullet}$.
+
+Las suposiciones del modelo son:
+
+* Las $k$ muestras son m.a.s. **independientes** extraídas de $k$ poblaciones específicas con medias $\mu_1,\mu_2,\dots,\mu_k$.
+
+* Cada una de las $k$ poblaciones sigue una **ley normal**.
+
+* Todas estas poblaciones tienen la **misma varianza $\sigma^2$ (homocedasticidad)**.
+
+### Teorema
+
+$$\sum_{i=1}^{k}{\sum_{j=1}^{n_i}{\left(X_{ij}-\overline{X}_{\bullet\bullet}\right)^2}}=\sum_{i=1}^{k}{n_i\left(\overline{X}_{i\bullet}-\overline{X}_{\bullet\bullet}\right)^2}+\sum_{i=1}^{k}{\sum_{j=1}^{n_i}{\left(X_{ij}-\overline{X}_{i\bullet}\right)^2}}$$
+
+Donde
+
+$$
+\begin{array}{rclcll}
+ SS_{Total}&=&\displaystyle\sum_{i=1}^{k}{\sum_{j=1}^{n_i}{\left(X_{ij}-\overline{X}_{\bullet\bullet}\right)^2}}&=&\displaystyle{T}^{(2)}_{\bullet\bullet}-\frac{T^2_{\bullet\bullet}}{N}&\left(\text{Suma Total de Cuadrados}\right)\\[2pt]
+ SS_{Tr}&=&\displaystyle\sum_{i=1}^{k}{n_i\left(\overline{X}_{i\bullet}-\overline{X}_{\bullet\bullet}\right)^2}&=&\displaystyle\sum_{i=1}^{k}{\frac{T^2_{i\bullet}}{n_i}-\frac{T^2_{\bullet\bullet}}{N}}&\left(\begin{array}{l}\text{Suma de Cuadrados de los}\\[-2pt]\text{Tratamientos}\end{array}\right)\\[2pt]
+ SS_E&=&\displaystyle\sum_{i=1}^{k}{\sum_{j=1}^{n_i}{\left(X_{ij}-\overline{X}_{i\bullet}\right)^2}}&=&SS_{Total}-SS_{Tr}&\left(\begin{array}{l}\text{Suma de Cuadrados de los}\\[-2pt]\text{Residuos o Errores}\end{array}\right)
+\end{array}
+$$
+
+Los **estadísticos de contraste** son los siguientes:
+
+* Cuadrado medio de los tratamientos:
+
+$$MS_{Tr}=\frac{SS_{Tr}}{k-1},\qquad{E}(MS_{Tr})=\sigma^2+\sum_{i=1}^{k}{\frac{n_i(\mu_i-\mu)^2}{k-1}}$$
+
+* Cuadrado medio residual:
+
+$$MS_E=\frac{SS_E}{N-k},\qquad{E}(MS_E)=\sigma^2$$
+
+Si la hipótesis nula $H_0:\mu_1=\mu_2=\cdots=\mu_k=\mu$ es cierta, se tiene entonces la siguiente condición:
+
+$$\sum_{i=1}^{k}{\frac{n_i(\mu_i-\mu)^2}{k-1}}=0\implies{E}(MS_E)=E(MS_{Tr})\implies\frac{MS_{Tr}}{MS_E}\approx1$$
+
+y si $H_0$ no es cierta esta cantidad es estrictamente positiva, y se tendría que:
+
+$$\sum_{i=1}^{k}{\frac{n_i(\mu_i-\mu)^2}{k-1}}>0\implies{E}(MS_E)<E(MS_{Tr})\implies\frac{MS_{Tr}}{MS_E}>1$$
+
+Dado lo anterior, se considera como **estadístico de contraste** el cociente
+
+$$F=\frac{MS_{Tr}}{MS_E}$$
+
+que, si la hipótesis nula $H_0$ es cierta, se distribuye según una $F_{k-1,\ N-k}$ ($F$ de Fisher con $k-1$ y $N-k$ grados de libertad). Su valor será cercano a 1. Por tanto, se rechaza $H_0$ si $F$ es "bastante más grande" que 1.
+
+### Pasos para realizar en contraste ANOVA
+
+1. Calcular las **sumas de cuadrados**: $\ SS_{Total},\ SS_{Tr}\ $ y $\ SS_E$.
+
+2. Calcular los **cuadrados medios**: $\ MS_{Tr}=\frac{SS_{Tr}}{k-1},\ MS_E=\frac{SS_E}{N-k}$.
+
+3. Calcular el **estadístico de contraste $F$**: $\ F_0=\frac{MS_{Tr}}{MS_E}$.
+
+4. Calcular el **p-value del contraste**: $P(F_{k-1,\ N-k}\geq{F}_0)$.
+
+### Cálculo en `R`
+
+Este contraste se puede hacer en `R` usando la función `aov()` del paquete `stats`. Lo ideal es tener los datos en un `data.frame` con dos columnas, donde en la primera columna estén los valores numéricos de la muestra, y en la segunda columna estén los factores de dichos valores.
+
+```r
+summary(aov(X ~ F))
+## X = los valores X_ij
+## F = los niveles del factor
+```
+
+### Cálculo en `python`
+
+Este contraste se puede hacer en `python` usando la función `f_oneway()` del paquete `schipy.stats`. A diferencia de `R`, esta función recibe los arreglos por separado de cada una de las muestras que van al ANOVA.
+
+```python
+from scipy.stats import f_oneway
+f_oneway(x_1dot, x_2dot, ..., x_kdot)
+## x_idot = los valores de la muestra del factor i
+```
+
+## Comparaciones por parejas
+
+Si se ha rechazado la hipótesis nula $\ H_0:\mu_1=\mu_2=\cdots=\mu_k$, el siguiente paso es averiguar cuáles son los niveles diferentes, es decir, hallar aquellas parejas $(\mu_i,\mu_j)$ para las que se pueda decir que $\mu_i\neq\mu_j$.
+
+### Test T de Bonferroni
+
+Hay que realizar en total $\displaystyle{k\choose2}$ contrastes del tipo:
+
+$$\left\{\begin{array}{ll}H_0:&\mu_i=\mu_j\\[2pt]H_1:&\mu_i\neq\mu_j\end{array}\right.$$
+
+El estadístico de cada contraste es el siguiente:
+
+$$T=\frac{\overline{X}_{i\bullet}-\overline{X}_{j\bullet}}{\sqrt{MS_E\cdot\left(\frac{1}{n_i}+\frac{1}{n_j}\right)}}$$
+
+que, si la hipótesis nula $H_0$ es cierta, sigue una distribución $t$ de Student con $N-k$ grados de libertad, $t_{N-k}$.
+
+El **p-value** de cada contraste es $2\cdot{P}(t_{N-k}\geq|t_{i,j}|)$, donde $t_{i,j}$ es el valor que toma el estadístico.
+
+Nota: si se realizan $c$ contrastes a un nivel de significancia $\alpha$, la probabilidad de **Error de Tipo I** en al menos uno de ellos es mayor que $\alpha$. $P(\text{Error Tipo I}) = 1-(1-\alpha)^c$.
+
+Por tanto, el **nivel de significancia** de cada contraste deberá reducirse a $\alpha/c$ para que la probabilidad final de Error Tipo I sea $\alpha$.
+
+Este test se puede realizar en `R` usando la función `pairwise.t.test()` del paquete `stats`.
+
+```r
+pairwise.t.test(
+  X, # Los valores X_ij
+  F, # Los niveles del factor
+  p.adjust.method = "none" # si "bonferroni", entonces multiplica el p-value por c
+)
+```
+
+### Test T de Holm (más potente)
+
+Este método es más usado ya que tiene más potencia que el método de Bonferroni.
+
+#### Pasos para aplicar el test
+
+Sean $C_1,C_2,\dots,C_c$ los contrastes y $P_1,P_2,\dots,P_c$ los p-values correspondientes
+
+1. Ordenar los p-values en orden creciente $P_{(1)}\leq{P}_{(2)}\leq\cdots\leq{P}_{(c)}$ y reenumerar consistentemente los contrastes $C_{(1)},C_{(2)},\dots,C_{(c)}$.
+
+2. Calcular el p-value ajustado $\widetilde{P}_{(j)}=(c+1-j)P_{(j)}$ para cada $j=1,2,\ldots,c$.
+
+3. Rechazar la hipótesis nula del contraste $C_{(j)}$ si $\widetilde{P}_{(j)}<\alpha$.
+
+Este test se puede realizar en `R` usando la función `pairwise.t.test()` del paquete `stats`.
+
+```r
+pairwise.t.test(
+  X, # Los valores X_ij
+  F, # Los niveles del factor
+  p.adjust.method = "holm"
+)
+```
+
+### Contraste de Duncan
+
+#### Pasos para aplicar el test
+
+1. Ordenar en forma ascendente las $k$ medias muestrales.
+
+2. Considerar cada para $Y$ de medias muestrales y calcular el valor absoluto $D_Y$ de la diferencia entre las dos medias y el número $p$ de medias que hay entre las dos (incluyendo las dos medias que se están comparando). Se decide que existe diferencia entre esos dos niveles cuando
+
+$$D_Y>SSR_p=r_p\sqrt{\frac{MS_E(n_i+n_j)}{2n_in_j}}$$
+
+donde $n_i$ y $n_j$ son los tamaños de las subpoblaciones correspondientes a los dos niveles que se comparan y $r_p$ es el **menor rango significativo** con $N-k$ grados de libertad, ver [tabla del test de Duncan](https://www.google.com/search?q=tabla+del+test+de+duncan&sxsrf=APq-WBvV9JTzEE1NGbRpiG4T3NIoZD8siA:1647018990252&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjysOjux772AhVfQzABHf-XA78Q_AUoAXoECAMQAw&cshid=1647019053604371&biw=1310&bih=667&dpr=1).
+
+La primera columna de la tabla del test de Duncan corresponde a los graods de libretad del error $N-k$, y la primera fila, al valor $p$. Para calcular el valor $r_p$, se busca el valor $N-k$ en la primera columna y el valor $p$ en la primera fila y ver dónde se intersecan.
+
+Este test se puede realizar en `R` usando la función `duncan.test()` del paquete `agricolae`.
+
+```r
+library(agricolae)
+anova = aov(X~F)
+duncant.test(
+  anova, # resultado del ANOVA de partida
+  "factor", # el factor del ANOVA
+  group=TRUE # ver el resulado agrupado o detallado
+)
+```
+
+Si `group=TRUE`, se puede capturar el resultado con `duncan.test(...)$group`; si `group=FALSE`, se puede capturar el resultado con `duncan.test(...)$comparison`.
+
+### Contraste de Tukey
+
+Si la tabla de datos es balanceada, es decir, todas las submuestras correspondientes a cada uno de los niveles del factor tienen el mismo tamaño, el método más preciso de comparación de medias es el llamado **método de Tukey**
+
+Este test se puede realizar en `R` usando la función `TukeyHSD()` (_Honestly Significative Difference_) del paquete `stats`.
+
+```r
+TukeyHSD(aov(X~F))
+```
+
+Este test se puede realizar en `python` usando la función `pairwise_tukeyhsd()` (_Honestly Significative Difference_) del paquete `statsmodels.stats.multicomp`.
+
+```python
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+pairwise_tukeyhsd(
+  endog = X, # valores de las muestras
+  groups = F, # array de los factores asociados a los datos de X
+  alpha = 0.05 # nivel de significancia
+)
+```
+
+## Efectos aleatorios
+
+Cuando el número de niveles es muy grande, y se quiere averiguar si los niveles del factor tienen influencia en el valor medio del parámetro del contraste:
+
+$$\left\{\begin{array}{l}H_0:\text{Las medias de todos los niveles son iguales}\\[2pt]H_1:\text{No es cierto que todos los niveles tengan la misma media}\end{array}\right.$$
+
+una posibilidad es elegir una m.a.s. de niveles, $k$, y aplicar la técnica ANOVA a estos niveles.
+
+Este es el **modelo de efectos aleatorios**.
+
+Las suposiciones del modelo son:
+
+* Los $k$ niveles elegidos forman una m.a.s. del conjunto de niveles
+
+* Las medias $\mu_i$ de todos los niveles siguen una distribución normal con valor medio $\mu$ (el valor de la media poblacional) y desviación típica $\sigma_{Tr}$
+
+* Todas las poblaciones, para todos los niveles, siguen leyes normales
+
+* Todas las poblaciones, para todos los niveles, tienen la misma varianza $\sigma^2$ (**homocedasticidad**)
+
+* Las $k$ muestras son m.a.s. independientes extraídas de las $k$ poblaciones elegidas
+
+Una vez elegidsoa los $k$ niveles, calculamos $MS_{Tr}$ y $MS_E$ como antes. Con las hipótesis anteriores, en este caso
+
+* $\displaystyle{E(MS_{Tr})=\sigma^2+\frac{N-\sum_{i=1}^{k}{\frac{n_i^2}{N}}}{k-1}\cdot\sigma_{Tr}^2}$
+
+* $\displaystyle{E(MS_E)=\sigma^2}$
+
+Si la hipótesis nula $H_0$ es cierta, todas las medias de todos los niveles son iguales, es decir, $\sigma_{Tr}^2=0$, y por lo tanto $F=\frac{MS_{Tr}}{MS_e}\approx1$.
+
+Si la hipótesis nula $H_0$ es cierta, este estadístico $F$ tiene distribución $F_{k-1,\ N-k}$.
+
+Por lo tanto, el test ANOVA es el mismo que en el caso de efectos fijos, pero usando los niveles seleccionados.
+
+## Test de Homocedasticidad
+
+Para contrastar si las $k$ submuestras tienen la misma varianza, se usa el **test de Bartlett**.
+
+Sean $\mathbf{x}_i=(x_{i1}, x_{i2},\ldots,x_{in_i}),\ i=1,2,\ldots,k,\ k$ muestras aleatorias simples de tamaño $n_i$ para $i=1,2,\ldots,k$ de $k$ variables aleatorias **normales** $X_i$ de varianza $\sigma_i^2$, para $i=1,2,\ldots,k$.
+
+Se plantea el siguiente contraste de igualdad de varianzas:
+
+$$\left\{\begin{array}{l}H_0:\sigma^2_1=\sigma^2_2=\cdots=\sigma^2_k\\[2pt]H_1:\exists\ i,j\ |\ \sigma^2_i\neq\sigma^2_j\end{array}\right.$$
+
+Para realizar este contraste, se usa el **estadístico de Bartlett**:
+
+$$K^2=\frac{\displaystyle(N-k)\ln{\left(\widetilde{s}_p^2\right)}-\sum_{i=1}^{k}{(n_i-1)\ln{\left(\widetilde{s}_i^2\right)}}}{\displaystyle1+\frac{1}{3(k-1)}\left(\sum_{i=1}^{k}{\left(\frac{1}{n_i-1}\right)-\frac{1}{N-k}}\right)}$$
+
+donde
+
+$$N=\sum_{i=1}^{k}{n_i},\quad\widetilde{s}^2_p=\frac{\displaystyle\sum_{i=1}^{k}{(n_i-1)\widetilde{s}^2_i}}{\displaystyle{N-k}},\quad\widetilde{s}^2_i=\frac{\displaystyle\sum_{j=1}^{n_i}{(x_{ij}-\overline{x}_i)^2}}{\displaystyle{n_i-1}}$$
+
+El estadístico anterior sigue aproximadamente la distribución $\chi^2_{k-1}$ si la hipótesis nula es cierta.
+
+El p-value del contraste se calcula como
+
+$$p=P\left(\chi^2_{k-1}>K^2\right)$$
+
+Este test se puede realizar en `R` usando la función `bartlett.test()` del paquete `stats`.
+
+```r
+bartlett.test(X~F)
+```
+
+Este test se puede realizar en `python` usando la función `bartlett()` del paquete `scipy.stats`.
+
+```python
+from scipy.stats import bartlett
+bartlett(data...)
+# data..., arreglos con los datos de las subpoblaciones separados por comas
+```
+
+Revisar los siguientes tests para complementar los apuntes
+
+* test de Levene: `leveneTest()` del paquete `car` en `R`, o `levene()` del paquete `scipy.stats` en `python`.
+* test de Brown-Forsyth: `hov(X~F)` del paquete `HH` en `R`.
+* test de Fligner-Killeen: `fligner.test` del paquete `stats` en `R` (cuando no se cumple la normalidad).
+
+## Contraste de bloques completos aleatorios
+
+Se tiene una tabla de datos como en el caso del contraste ANOVA de un factor, pero se quiere estudiar si las medias de una variable $X$ segmentada en $k$ muestras definidas por los niveles de otra variable factor $F$ son iguales o no.
+
+La diferencia fundamental con respecto al ANOVA de un factor es que se sospecha que hay otra **variable extraña** que puede distorsionar los resultados.
+
+Por dicho motivo, se crean bloques a partir de dicha variable extraña para reducir su efecto.
+
+Suponiendo que se tienen $k$ tratamientos que se quieren comparar. Se escogen como **bloques** conjuntos de individuos $k$ relacionados (por ejemplo, $k$ copias del mismo individuo). Dentro de cada bloque, se asigna aleatoriamente a cada individuo un tratamiento. Estos bloque vienen a ser los emparejamientos de los datos en los **contrastes de medias dependientes**.
+
+En un contraste de **bloques completos aleatorios**
+
+* Se han emparejado individuos en **bloques**. (**bloques**)
+
+* Los tratamientos se asignan de manera aleatoria dentro de los **bloques**. (**aleatorios**)
+
+* Cada tratamiento se usa exactamente una vez dentro de cada **bloque**. (**completos**)
+
+* En cuanto a los tratamientos, es de **efectos fijos**. (la inferencia será válida solo para los tratamientos usados)
+
+* En cuanto a los bloques, puede ser de **efectos fijos** (se eligen todos los bloques adecuados) o **aleatorio**, en este último caso el modelo es **misxto**
+
+Los datos se presentan es una tabla de la siguiente forma
+
+<div class="center-all">
+| Bloques\\Tratamientos | Tratamiento $1$ | Tratamiento $2$ | $\cdots$ | Tratamiento $k$ |
+| -------- | ----- | ----- | ----- | ----- |
+| $1$ | $X_{11}$ | $X_{21}$ | $\cdots$ | $X_{k1}$ |
+| $2$ | $X_{12}$ | $X_{22}$ | $\cdots$ | $X_{k2}$ |
+| $\vdots$ | $\vdots$ | $\vdots$ | $\ddots$ | $\vdots$ |
+| $b$ | $X_{1b}$ | $X_{2b}$ | $\cdots$ | $X_{kb}$ |
+</div>
+
+La fija $j$-ésima de la tabla de datos corresponde a los datos de la variable $X$ para los individuos del bloque $j$-ésimo, y la columna $i$-ésima, a los datos de la variable $X$ para los individuos tratados con el tratamiento $i$-ésimo. Entonces $X_{ij}$ es el valor del tratamiento $i$-ésimo en el individuo correspondiente del bloque $j$-ésimo.
+
+El contraste que se quiere realizar es el siguiente:
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\mu_{1\bullet}=\mu_{2\bullet}=\cdots=\mu_{k\bullet}\\[2pt]
+  H_1:\exists\ i,j\ |\ \mu_{i\bullet}\neq\mu_{j\bullet}
+ \end{array}
+\right.
+$$
+
+donde cada $\mu_{i\bullet}$ representa la media del tratamiento $i$-ésimo.
+
+### Modelo
+
+La expresión matemática del modelo consiste en expresar los datos en 4 sumandos: la **media global**, las diferencias de las **medias de cada nivel** respecto de la **media global**, las diferencias de las **medias de cada bloque** respecto de la **media global** y los **errores residuales**
+
+$$X_{ij}=\mu+(\mu_{i\bullet}-\mu)+(\mu_{\bullet{j}}-\mu)+E_{ij},\quad{i}=1,2,\ldots,k,\quad{j}=1,2,\ldots,b$$
+
+donde
+
+* $X_{ij}$: valor del tratamiento $i$-ésimo en el bloque $j$-ésimo.
+
+* $\mu$: media global.
+
+* $\mu_{i\bullet}$: media del tratamiento $i$-ésimo.
+
+* $\mu_{\bullet{j}}$: media del bloque $j$-ésimo.
+
+* $\mu_{i\bullet}-\mu$: efecto del tratamiento $i$-ésimo. (**efecto tratamiento**)
+
+* $\mu_{\bullet{j}}-\mu$: efecto de pertenecer al bloque $j$-ésimo. (**efecto bloque**)
+
+* $E_{ij}$: error residual o aleatorio.
+
+### Suposiciones del modelo
+
+* Las $k\cdot{b}$ observaciones constituyen muestras aleatorias independientes, cada una de tamaño $1$, de $k\cdot{b}$ poblaciones.
+
+* Estas $k\cdot{b}$ poblaciones son todas normales y con la misma varianza $\sigma^2$.
+
+* El efecto de los bloques y los tratamientos es **aditivo**: no hay **interacción** entre los bloques y los tratamientos.
+
+### Estadísticos
+
+Se definen los siguientes estadísticos para realizar el estudio
+
+* $\displaystyle{T_{i\bullet}=\sum_{j=1}^{b}{X_{ij}}}$: suma total del tratamiento $i$-ésimo, $i=1,2,\ldots,k$.
+
+* $\displaystyle{\overline{X}_{i\bullet}=\frac{T_{i\bullet}}{b}}$: media muestral del tratamiento $i$-ésimo, $i=1,2,\ldots,k$.
+
+* $\displaystyle T_{\bullet j}=\sum_{i=1}^{k}{X_{ij}}$: suma total del bloque $j$-ésimo, $j=1,2,\ldots,b$.
+
+* $\displaystyle\overline{X}_{\bullet j}=\frac{T_{\bullet j}}{k}$: media muestral del bloque $j$-ésimo, $j=1,2,\ldots,b$.
+
+* $\displaystyle{T}_{\bullet\bullet}=\sum_{i=1}^{k}{\sum_{j=1}^{b}{X_{ij}}}=\sum_{i=1}^{k}{T_{i\bullet}}=\sum_{j=1}^{b}{T_{\bullet{j}}}$: suma total.
+
+* $\displaystyle\overline{X}_{\bullet\bullet}=\frac{T_{\bullet\bullet}}{k\cdot{b}}$: media muestral global.
+
+* $\displaystyle{T}_{\bullet\bullet}^{(2)}=\sum_{i=1}^{k}{\sum_{j=1}^{b}{X^2_{ij}}}$: suma total de cuadrados.
+
+### Teorema
+
+$$\begin{array}{rcl}\displaystyle\sum_{i=1}^{k}{\sum_{j=1}^{b}{\left(X_{ij}-\overline{X}_{\bullet\bullet}\right)^2}}&=&\displaystyle{b\sum_{i=1}^{k}{\left(\overline{X}_{i\bullet}-\overline{X}_{\bullet\bullet}\right)^2}}\\&&\displaystyle+k\sum_{j=1}^{b}{\left(\overline{X}_{\bullet{j}}-\overline{X}_{\bullet\bullet}\right)^2}\\&&\displaystyle+\sum_{i=1}^{k}{\sum_{j=1}^{b}{\left(X_{ij}-\overline{X}_{i\bullet}-\overline{X}_{\bullet{j}}+\overline{X}_{\bullet\bullet}\right)^2}}\end{array}$$
+
+Donde
+
+$$
+\begin{array}{rclcll}
+ SS_{Total}&=&\displaystyle\sum_{i=1}^{k}{\sum_{j=1}^{b}{\left(X_{ij}-\overline{X}_{\bullet\bullet}\right)^2}}&=&\displaystyle{T}^{(2)}_{\bullet\bullet}-\frac{T^2_{\bullet\bullet}}{k\cdot{b}}&\left(\text{Variabilidad total}\right)\\[2pt]
+ SS_{Tr}&=&\displaystyle{b}\sum_{i=1}^{k}{\left(\overline{X}_{i\bullet}-\overline{X}_{\bullet\bullet}\right)^2}&=&\displaystyle\sum_{i=1}^{k}{\frac{T^2_{i\bullet}}{b}-\frac{T^2_{\bullet\bullet}}{k\cdot{b}}}&\left(\begin{array}{l}\text{Variabilidad debida}\\[-2pt]\text{a los tratamientos}\end{array}\right)\\[2pt]
+ SS_{Bl}&=&\displaystyle{k}\sum_{j=1}^{b}{\left(\overline{X}_{\bullet{j}}-\overline{X}_{\bullet\bullet}\right)^2}&=&\displaystyle\sum_{j=1}^{b}{\frac{T_{\bullet{j}}^2}{k}}-\frac{T_{\bullet\bullet}^2}{k\cdot{b}}&\left(\begin{array}{l}\text{Variabilidad debida}\\[-2pt]\text{a los bloques}\end{array}\right)\\[2pt]
+ SS_{E}&=&\displaystyle\sum_{i=1}^{k}{\sum_{j=1}^{b}{\left(X_{ij}-\overline{X}_{i\bullet}-\overline{X}_{\bullet{j}}+\overline{X}_{\bullet\bullet}\right)^2}}&=&SS_{Total}-SS_{Tr}-SS_{Bl}&\left(\begin{array}{l}\text{Variabilidad debida}\\[-2pt]\text{a factores aleatorios}\end{array}\right)
+\end{array}
+$$
+
+Usando la notación definida, el teorema anterior puede escribirse de la siguiente forma
+
+$$SS_{Total}=SS_{Tr}+SS_{Bl}+SS_{E}$$
+
+### Estadísticos de contraste
+
+* Cuadrado medio de los tratamientos:
+
+$$MS_{Tr}=\frac{SS_{Tr}}{k-1},\qquad{E}(MS_{Tr})=\sigma^2+\frac{b}{k-1}\sum_{i=1}^{k}{(\mu_{i\bullet}-\mu)^2}$$
+
+* Cuadrado medio de los bloques:
+
+$$MS_{Bl}=\frac{SS_{Bl}}{b-1}$$
+
+* Cuadrado medio del error:
+
+$$MS_E=\frac{SS_E}{(b-1)(k-1)},\qquad{E}(MS_E)=\sigma^2$$
+
+Si $H_0:\mu_{1\bullet}=\mu_{2\bullet}=\cdots=\mu_{k\bullet}=\mu$ es cierta, se verificará que la siguiente cantidad será nula:
+
+$$\sum_{i=1}^{k}{(\mu_{i\bullet}-\mu)^2}=0$$
+
+y si $H_0$ no es cierta, dicha cantidad será positiva.
+
+
+Dado lo anterior, se considera como **estadístico de contraste** el cociente
+
+$$F=\frac{MS_{Tr}}{MS_E}$$
+
+que, si $H_0$ es cierta, se distribuye según una $F_{k-1,\ (k-1)(b-1)}$ ($F$ de Fisher con $k-1$ y $(k-1)(b-1)$ grados de libertad).
+
+El **p-value** del contraste es el siguiente
+
+$$p=P(F_{k-1,\ (k-1)(b-1)}\geq{F}_0)$$
+
+### Cálculo en `R`
+
+Este contraste se puede hacer en `R` usando la función `aov()` del paquete `stats`. Lo ideal es tener los datos en un `data.frame` con tres columnas, donde en la primera columna estén los valores numéricos de la muestra, y en la segunda y tercera columna estén los factores de dichos valores.
+
+```r
+summary(aov(X ~ Tr + Bl))
+## X = los valores X_ij
+## Tr = los niveles del factor Tratamientos
+## Bl = los niveles del factor Bloques
+```
+
+El test arroja dos p-values, pero el que interesa es el del tratamiento.
+
+> Nota: revisar siempre que los vectores `Tr` y `Bl` estén como factores para que el análisis esté bien hecho en `R`. Si no están como factores, se puede usar la función `as.factor()` para resolver este problema.
+
+### Efectividad del diseño por bloques
+
+Expresado en términos de la variabilidad, la efectividad del diseño por bloques significa que la variabilidad debida a los bloques, $SS_{Bl}$, explica una parte importante de la variabilidad total, $SS_{Total}$.
+
+En este caso, el valor de $SS_E$ disminuiría aumentando el valor del estadístico de contraste $F$, lo que haría más "difícil" aceptar la hipótesis nula, mejorando la potencia del contraste.
+
+La efectividad en la construcción de los bloques se estima con la **eficiencia relativa**, **RE**.
+
+Se interpreta como la relación entre el número de observaciones de un experimento completamente aleatorio (CA) y el número de observaciones de un experimento de bloques completo aleatorio (BCA) necesaria para obtener tests equivalentes.
+
+Por ejemplo, si $RE=3$, significa que el diseño CA requiete tres veces tantas observaciones como el diseño de BCA. En este caso, ha valido la pena el uso de bloques. En cambio, un valor de $RE=0.5$ significa que con un diseño CA hubiera bastado la mitad de observaciones que al diseño BCA, en este caso, no era aconsejable el uso de bloques.
+
+Para la estimación de la **eficiencia relativa $RE$**, se usa el siguiente estadístico:
+
+$$\widehat{RE}=c+(1-c)\frac{MS_{Bl}}{MS_E}\qquad\text{donde }\ c=\frac{b(k-1)}{bk-1}$$
+
+Por convenio, si $\widehat{RE}>1.25$, se entiende que la construcción de los bloques ha sido efectiva.
+
+## ANOVA de dos vías
+
+Para llevar a cabo el **ANOVA de dos vías**, se considera el caso más sencillo: **diseño completamente aleatorio** con **efectos fijos**:
+
+* Se usarán dos factores (_dos vías_)
+
+* Se usan todos los niveles de cada factor (_efectos fijos_)
+
+* Se toman muestras aleatorias independientes del mismo tamaño de cada combinación de niveles de los dos factores (**completamente aleatorio y balanceado**).
+
+Sean $A$ y $B$ los factores a partir de los cuales se van a segregar los datos de la variable cuyas medias de las subpoblaciones segregadas se quieren comparar.
+
+Suponiendo que el factor $A$ tiene $a$ niveles y el factor $B$ tiene $b$ niveles. Se toman $n$ observaciones para cada combinación de tratamientos. (**estudio balanceado**)
+
+Por tanto, el número total de observaciones será $n\cdot{a}\cdot{b}$.
+
+La v.a. $X_{ijk},\ i=1,2,\ldots,a,\ j=1,2,\ldots,b,\ k=1,2,\ldots,n$, da la respuesta de la $k$-ésima unidad experimental al nivel $i$-ésimo del factor $A$ y el nivel $j$-ésimo de factor $B$.
+
+La tabla de datos tendrá la siguiente estructura
+
+<div class="center-all">
+| Factor $B$\\Factor $A$ | $1$ | $2$ | $\cdots$ | $a$ |
+| -------- | ---- | ---- | ---- | ---- |
+| $1$ | $X_{111}$ | $X_{211}$ | $\cdots$ | $X_{a11}$ |
+| | $X_{112}$ | $X_{212}$ | $\cdots$ | $X_{a12}$ |
+| | $\vdots$ | $\vdots$ | $\ddots$ | $\vdots$ |
+| | $X_{11n}$ | $X_{21n}$ | $\cdots$ | $X_{a1n}$ |
+</div>
+
+<div class="center-all">
+| Factor $B$\\Factor $A$ | $1$ | $2$ | $\cdots$ | $a$ |
+| -------- | ---- | ---- | ---- | ---- |
+| $2$ | $X_{121}$ | $X_{221}$ | $\cdots$ | $X_{a21}$ |
+| | $X_{122}$ | $X_{222}$ | $\cdots$ | $X_{a22}$ |
+| | $\vdots$ | $\vdots$ | $\ddots$ | $\vdots$ |
+| | $X_{12n}$ | $X_{22n}$ | $\cdots$ | $X_{a2n}$ |
+</div>
+
+<div class="center-all">
+| Factor $B$\\Factor $A$ | $1$ | $2$ | $\cdots$ | $a$ |
+| -------- | ---- | ---- | ---- | ---- |
+| $\vdots$ | $X_{1b1}$ | $X_{2b1}$ | $\cdots$ | $X_{ab1}$ |
+| $b$ | $X_{1b2}$ | $X_{2b2}$ | $\cdots$ | $X_{ab2}$ |
+| | $\vdots$ | $\vdots$ | $\ddots$ | $\vdots$ |
+| | $X_{1bn}$ | $X_{2bn}$ | $\cdots$ | $X_{abn}$ |
+</div>
+
+### Suposiciones del modelo
+
+Para poder realizar un ANOVA de dos factores, se supone que los datos verifican las siguientes condiciones:
+
+* Las observaciones para cada combinación de niveles constituyen **muestras aleatorias simples independientes**, cada una de tamaño $n$, de poblaciones $a\cdot{b}$.
+
+* Cada una de las $a\cdot{b}$ poblaciones es normal.
+
+* Todas las $a\cdot{b}$ poblaciones tienen la misma varianza, $\sigma^2$. (**homocedasticidad**)
+
+### Estadísticos
+
+* $\mu$: media poblacional global.
+
+* $\mu_{i\bullet\bullet}$: media poblacional del nivel $i$-ésimo del factor $A$.
+
+* $\mu_{\bullet{j}\bullet}$: media poblacional del nivel $j$-ésimo del factor $B$.
+
+* $\mu_{ij\bullet}$: media poblacional de la combinación $(i,j)$ de niveles $A$ y $B$.
+
+### Modelo
+
+En este caso la expresión matemática del modelo consiste en separar los valores de la variable $X$ en $5$ sumandos:
+
+$$
+\begin{array}{c}
+ X_{ijk}=\mu+\alpha_i+\beta_j+(\alpha\beta)_{ij}+E_{ijk},\\[2pt]
+ i=1,2,\ldots,a,\ j=1,2,\ldots,b,\ k=1,2,\ldots,n
+\end{array}
+$$
+
+donde
+
+* $\mu$: es la **media global**.
+
+* $\alpha_i=\mu_{i\bullet\bullet}-\mu$: efecto al pertenecer al nivel $i$-ésimo del factor $A$.
+
+* $\beta_j=\mu_{\bullet{j}\bullet}-\mu$: efecto al pertenecer al nivel $j$-ésimo del factor $B$.
+
+* $(\alpha\beta)_{ij}=\mu_{ij\bullet}-\mu_{i\bullet\bullet}-\mu_{\bullet{j}\bullet}+\mu$: efecto de la **interacción** entre el nivel $i$-ésimo del factor $A$ y el nivel  $j$-ésimo del factor $B$.
+
+* $E_{ijk}=X_{ijk}-\mu_{ij\bullet}$: error residual o aleatorio.
+
+### Sumas y medias
+
+Se definen los siguientes estadísticos:
+
+* Suma y media de los datos para la combinación de niveles $i$ y $j$:
+
+$$T_{ij\bullet}=\sum_{k=1}^{n}{X_{ijk}},\quad\overline{X}_{ij\bullet}=\frac{T_{ij\bullet}}{n}$$
+
+* Suma y media de los datos para el nivel $i$-ésimo:
+
+$$T_{i\bullet\bullet}=\sum_{j=1}^{b}{\sum_{k=1}^{n}{X_{ijk}}}=\sum_{j=1}^{b}{T_{ij\bullet}},\quad\overline{X}_{i\bullet\bullet}=\frac{T_{i\bullet\bullet}}{bn}$$
+
+* Suma y media de los datos para el nivel $j$-ésimo:
+
+$$T_{\bullet{j}\bullet}=\sum_{i=1}^{a}{\sum_{k=1}^{n}{X_{ijk}}}=\sum_{i=1}^{a}{T_{ij\bullet}},\quad\overline{X}_{\bullet{j}\bullet}=\frac{T_{\bullet{j}\bullet}}{an}$$
+
+* Suma total de los datos:
+
+$$T_{\bullet\bullet\bullet}=\sum_{i=1}^{a}{\sum_{j=1}^{b}{\sum_{k=1}^{n}{X_{ijk}}}}=\sum_{i=1}^{a}{T_{i\bullet\bullet}}=\sum_{j=1}^{b}{T_{\bullet{j}\bullet}}$$
+
+* Media muestral de todos los datos:
+
+$$\overline{X}_{\bullet\bullet\bullet}=\frac{T_{\bullet\bullet\bullet}}{abn}$$
+
+* Suma de los cuadrados de los datos:
+
+$$T^{(2)}_{\bullet\bullet\bullet}=\sum_{i=1}^{a}{\sum_{j=1}^{b}{\sum_{k=1}^{n}{X_{ijk}^2}}}$$
+
+### Identidad de sumas de cuadrados
+
+En el caso de ANOVA de dos factores, la **variabilidad total de los datos** respecto de **la media global**, (**Suma Total de Cuadrados**) se separa en cuatro variables:
+
+* La **variabilidad de las medias de cada grupo del factor $A$** respecto de la **media global**.
+
+* La **variabilidad de las medias de cada grupo del factor $B$** respecto de la **media global**.
+
+* La **variabilidad de las medias de cada combinación de grupos de factores $A$ y $B$** respecto de la **media global**.
+
+* La **variabilidad debida a factores aleatorios**.
+
+Para estimar dichas variabilidades, se introducen las siguientes sumas sumas de cuadrados:
+
+* Estimación de la **variabilidad total de los datos** respecto de la **media global**
+
+$$SS_{Total}=\sum_{i=1}^{a}{\sum_{j=1}^{b}{\sum_{k=1}^{n}{\left(X_{ijk}-\overline{X}_{\bullet\bullet\bullet}\right)^2}}}=T^{(2)}_{\bullet\bullet\bullet}-\frac{T^2_{\bullet\bullet\bullet}}{abn}$$
+
+* Estimación de la **variabilidad de las medias de cada grupo del factor $A$** respecto de la **media global**
+
+$$SS_A=bn\sum_{i=1}^{a}{\left(\overline{X}_{i\bullet\bullet}-\overline{X}_{\bullet\bullet\bullet}\right)^2}=\frac{1}{bn}\sum_{i=1}^{a}{T^2_{i\bullet\bullet}}-\frac{T^2_{\bullet\bullet\bullet}}{abn}$$
+
+* Estimación de la **variabilidad de las medias de cada grupo del factor $B$** respecto de la **media global**
+
+$$SS_B=an\sum_{j=1}^{b}{\left(\overline{X}_{\bullet{j}\bullet}-\overline{X}_{\bullet\bullet\bullet}\right)^2}=\frac{1}{an}\sum_{j=1}^{b}{T^2_{\bullet{j}\bullet}}-\frac{T^2_{\bullet\bullet\bullet}}{abn}$$
+
+* Estimación de la **variabilidad de las medias de cada combinación de grupos de factores $A$ y $B$** respecto de la **media global** o **variabilidad debida a la interacción de los factores $A$ y $B$**
+
+$$SS_{AB}=n\sum_{i=1}^{a}{\sum_{j=1}^{b}{\left(\overline{X}_{ij\bullet}-\overline{X}_{i\bullet\bullet}-\overline{X}_{\bullet{j}\bullet}+\overline{X}_{\bullet\bullet\bullet}\right)^2}}=SS_{Tr}-SS_A-SS_B$$
+
+* Estimación de la **variabilidad que se tendría si se considera la combinación de los factores $A$ y $B$ como si fuera un solo factor**
+
+$$SS_{Tr}=n\sum_{i=1}^{a}{\sum_{j=1}^{b}{\left(\overline{X}_{ij\bullet}-\overline{X}_{\bullet\bullet\bullet}\right)^2}}=\frac{1}{n}\sum_{i=1}^{a}{\sum_{j=1}^{b}{T^2_{ij\bullet}}}-\frac{T^2_{\bullet\bullet\bullet}}{abn}$$
+
+* Estimación de la **variabilidad debida a factores aleatorios**
+
+$$SS_E=\sum_{i=1}^{a}{\sum_{j=1}^{b}{\sum_{k=1}^{n}{\left(X_{ijk}-\overline{X}_{ij\bullet}\right)^2}}}=SS_{Total}-SS_{Tr}$$
+
+El siguiente teorema da la descomposición mostrada anteriormente:
+
+**Teorema.** La **variabilidad total de los datos** se descompone en las variabilidades definidas anteriormente de la siguiente forma:
+
+$$SS_{Total}=SS_{Tr}+SS_E,\qquad\text{donde }\ SS_{Tr}=SS_A+SS_B+SS_{AB}$$
+
+### Cuadrados medios
+
+Para realizar el ANOVA de dos factores, se usan los siguientes **cuadrados medios**:
+
+* **Cuadrado medio del factor $A$**
+
+$$MS_A=\frac{SS_A}{a-1}$$
+
+* **Cuadrado medio del factor $B$**
+
+$$MS_B=\frac{SS_B}{b-1}$$
+
+* **Cuadrado medio de la interacción entre los factores $A$ y $B$**
+
+$$MS_{AB}=\frac{SS_{AB}}{(a-1)(b-1)}$$
+
+* **Cuadrado medio de los tratamientos**
+
+$$MS_{Tr}=\frac{SS_{Tr}}{ab-1}$$
+
+* **Cuadrado medio residual**
+
+$$MS_E=\frac{SS_E}{ab(n-1)}$$
+
+### Contrastes a realizar
+
+En una ANOVA de dos vías, pueden interesar los siguientes cuatro contrastes
+
+#### **Contraste de medias del factor $A$**
+
+Se contrasta si hay diferencias entre los niveles del factor $A$
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\mu_{1\bullet\bullet}=\mu_{2\bullet\bullet}=\cdots=\mu_{a\bullet\bullet}\\[2pt]
+  H_1:\exists\ i,i'\ |\ \mu_{i\bullet\bullet}\neq\mu_{i'\bullet\bullet}
+ \end{array}
+\right.
+$$
+
+El **estadístico de contraste** es $F=\frac{MS_A}{MS_E}$, que, si la hipótesis nula $H_0$ es cierta, tiene una distribución $F$ de Fisher con $a-1$ y $ab(n-1)$ grados de libertad y valor próximo a $1$.
+
+#### **Contraste de medias del factor $B$**
+
+Se contrasta si hay diferencias entre los niveles del factor $B$
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\mu_{\bullet1\bullet}=\mu_{\bullet2\bullet}=\cdots=\mu_{\bullet{b}\bullet}\\[2pt]
+  H_1:\exists\ j,j'\ |\ \mu_{\bullet{j}\bullet}\neq\mu_{\bullet{j'}\bullet}
+ \end{array}
+\right.
+$$
+
+El **estadístico de contraste** es $F=\frac{MS_B}{MS_E}$, que, si la hipótesis nula $H_0$ es cierta, tiene una distribución $F$ de Fisher con $b-1$ y $ab(n-1)$ grados de libertad y valor próximo a $1$.
+
+#### **Contraste de los tratamientos**
+
+Se contrasta si hay diferencias entre las parejas (nivel $i$ de $A$, nivel $j$ de $B$)
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\forall\ i,j,i',j'\ |\ \mu_{ij\bullet}=\mu_{i'j'\bullet}\\[2pt]
+  H_1:\exists\ i,j,i',j'\ |\ \mu_{ij\bullet}\neq\mu_{i'j'\bullet}
+ \end{array}
+\right.
+$$
+
+El **estadístico de contraste** es $F=\frac{MS_{Tr}}{MS_E}$, que, si la hipótesis nula $H_0$ es cierta, tiene una distribución $F$ de Fisher con $ab-1$ y $ab(n-1)$ grados de libertad y valor próximo a $1$.
+
+#### **Contraste de no interacción**
+
+Se contrasta si hay interacción entre los factores $A$ y $B$
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\forall\ i,j\ |\ (\alpha\beta)_{ij}=0\\[2pt]
+  H_1:\exists\ i,j\ |\ (\alpha\beta)_{ij}\neq0
+ \end{array}
+\right.
+$$
+
+El **estadístico de contraste** es $F=\frac{MS_{AB}}{MS_E}$, que, si la hipótesis nula $H_0$ es cierta, tiene una distribución $F$ de Fisher con $(a-1)(b-1)$ y $ab(n-1)$ grados de libertad y valor próximo a $1$.
+
+En los cuatro casos el p-value es
+
+$$p=P(F_{x,\ y}\geq{F})$$
+
+donde $F_{x,\ y}$ representa la distribución $F$ de Fisher con los grados de libertad que correspondan.
+
+### Cálculo en `R`
+
+Este contraste se puede hacer en `R` usando la función `aov()` del paquete `stats`. Lo ideal es tener los datos en un `data.frame` con tres columnas, donde en la primera columna estén los valores numéricos de la muestra, y en la segunda y tercera columna estén los factores de dichos valores.
+
+```r
+summary(aov(X ~ A * B))
+## X = los valores X_ijk
+## A = los niveles del factor A
+## B = los niveles del factor B
+```
+
+El test anterior arroja resultados de los factores $A$, $B$ e interacción, pero no arroja los resultados para los tratamientos, para obtener dichos resultados, se repite el uso de la función pero la fórmula a usar es ahora `X ~ A : B`.
+
+> Nota: revisar siempre que los vectores `A` y `B` estén como factores para que el análisis esté bien hecho en `R`. Si no están como factores, se puede usar la función `as.factor()` para resolver este problema.
+
+
+
