@@ -1,0 +1,1182 @@
+---
+title: "estadistica-inferencial-regresion-lineal"
+author: "Andrés Aldana"
+date: "3/18/2022"
+output:
+  rmdformats::downcute:
+    downcute_theme: "chaos"
+    use_bookdown: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Regresión lineal
+
+El problema de **regresión** consiste en hallar la mejor **relación funcional** entre dos variables $X$ y $Y$.
+
+Más concretamente, dada una muestra de las dos variables $X,Y$, $(x_i,y_i)\ i=1,2,\ldots,n$, se quiere estudiar cómo sepende el valor de $Y$ en función del valor de $X$.
+
+La variable aleatoria $Y$ es la variable **dependiente** o **de respuesta**.
+
+La variable (no necesariamente aleatoria) $X$ es la variable **de control**, **independiente** o **de regresión**. Por ejemplo, en un experimento donde la variable $X$ es la que controla el experimentador y la variable $Y$ es el valor que se obtiene del experimento.
+
+El problema de **regresión** es encontrar la mejor **relación funcional** que explique la variable $Y$ conocidas las observaciones de la variable $X$.
+
+Si dicha **relación funcional** es una recta, $Y=\beta_0+\beta_1x$, la **regresión** se denomina **regresión lineal**.
+
+En la **regresión lineal**, se hace la siguiente suposición:
+
+$$\mu_{Y|x}=\beta_0+\beta_1x$$
+
+donde $\mu_{Y|x}$ es el valor esperado de la variable aleatoria $Y$ cuando la variable $X$ vale $x$. Dicho valor esperado es una función lineal de $X$ con **término independiente** $\beta_0$ y **pendiente** $\beta_1$. Dichos valores son dos parámetros que se deben estimar.
+
+Las estimaciones de $\beta_0$ y $\beta_1$ se llaman $b_0$ y $b_1$, respectivamente y se tienen que realizar a partir de la muestra $(x_i,y_i)\ i=1,2,\ldots,n$.
+
+Una vez halladas las estimaciones $b_0$ y $b_1$, se obtendrá la **recta de regresión** para la muestra:
+
+$$\widehat{y}=b_0+b_1x$$
+
+que dado un valor $x_0$ de $X$, estimará el valor $\widehat{y}_0=b_0+b_1x_0$ de la variable $Y$.
+
+## Mínimos cuadrados
+
+Dada una observación cualquiera de la muestra, $(x_i,y_i)$, se puede separar la componente $y_i$ como la suma de su **valor predicho por el modelo** y el error cometido:
+
+$$y_i=\beta_0+\beta_1x+\varepsilon_i\implies\varepsilon_i=y_i-(\beta_0+\beta_1x)$$
+
+Se llama **error cuadrático teórico** de este modelo a la suma al cuadrado de todos los errores cometidos por los valores de la muestra:
+
+$$SS_\varepsilon=\sum_{i=1}^{n}{\varepsilon_i^2}=\sum_{i=1}^{n}{(y_i-\beta_0-\beta_1x_i)^2}$$
+
+La **regresión lineal por mínimos cuadrados** consiste en hallar los estimadores $b_0$ y $b_1$ de $\beta_0$ y $\beta_1$ que minimicen dicho **error cuadrático teórico** $SS_\varepsilon$.
+
+**Observación:** los errores cometidos pueden ser positivos o negativos. Entonces, para asegurarse de penalizar siempre los errores, se elevan éstos al cuadrado y de esta forma, siempre se suman y no pueden anularse.
+
+Para hallar el mínimo del **error cuadrático teórico**, $(b_0,b_1)$, hay que derivar respecto las variables $\beta_0$ y $\beta_1$ e igualar a $0$ dichas derivadas:
+
+$$
+\begin{array}{ll}
+ \dfrac{\partial SS_\varepsilon}{\partial\beta_0}_{|\beta_0=b_0,\beta_1=b_1}=&-2\sum\limits_{i=1}^n (y_i -b_0-b_1 x_i)=0,\\[1ex]
+ \dfrac{\partial SS_\varepsilon}{\partial\beta_1}_{|\beta_0=b_0,\beta_1=b_1}=&-2\sum\limits_{i=1}^n (y_i -b_0-b_1 x_i) x_i =0.
+\end{array}
+$$
+
+La solución del sistema anterior es:
+
+$$
+\begin{array}{rcl}
+ b_1=&\dfrac{n\sum\limits_{i=1}^{n}{x_iy_i}-\sum\limits_{i=1}^{n}{x_i}\sum\limits_{i=1}^{n}{y_i}}{n\sum\limits_{i=1}^{n}{x_i^2}-\left(\sum\limits_{i=1}^{n}{x_i}\right)^2}&=\dfrac{\widetilde{s}_{xy}}{\widetilde{s}^2_x}\\[6pt]
+ b_0=&\dfrac{\sum\limits_{i=1}^{n}{y_i}-b_1\sum\limits_{i=1}^{n}{x_i}}{n}&=\overline{y}-b_1\overline{x}
+\end{array}
+$$
+
+Dado un valor $x$ de la variable $X$, se llama $\widehat{y}$ a la expresión $\widehat{y}=b_0+b_1x$ al **valor estimado** de $Y$ cuando $X=x$.
+
+Dada una observación $(x_i,y_i)$, se llama **error** de la observación $e_i$ a la expresión $e_i=y_i-\widehat{y}_i=y_i-b_0-b_1x_i$.
+
+En `R` se puede hacer este cálculo utilizando la función `lm` del paquete `stats`.
+
+```r
+lm(y~x)
+```
+
+En `python` se puede hacer este cálculo usando las funciones que se muestran a continuación.
+
+```python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+X = pd.DataFrame(x)
+reg = LinearRegression().fit(X, y)
+b0, b1 = reg.intercept_, reg.coef_
+fv = reg.predict(X)
+```
+
+### Propiedades de la recta de regresión
+
+La **recta de regresión** hallada por el **método de los mínimos cuadrados** verifica las siguientes propiedades:
+
+* La **recta de regresión** pasa por el vector medio $(\overline{x},\overline{y})$ de la muestra de datos $(x_i,y_i)$, $i=1,\ldots,n$:
+
+$$\overline{y}=b_0+b_1 \overline{x}$$
+
+* La media de los valores estimados a partir de la **recta de regresión** es igual a la media de los observados $y_i$, $\overline{y}$. Es decir:
+
+$$\overline{\widehat{y}}=\frac{1}{n}\sum_{i=1}^{n}{\widehat{y}_i}=\frac{1}{n}\sum_{i=1}^{n}{(b_0+b_1x_i)}=b_0+b_1\overline{x}=\overline{y}$$
+
+* Los errores $(e_i)_{i=1,\ldots,n}$ tienen media 0:
+
+$$\overline{e}=\frac{1}{n}\sum_{i=1}^{n}{e_i}=\frac{1}{n}\sum_{i=1}^{n}{(y_i-b_0-b_1x_i)}=\frac{1}{n}\sum_{i=1}^{n}{(y_i-\widehat{y}_i)}=0$$
+
+|           Se llamará **suma de cuadrados de los errores** a la siguiente cantidad:
+
+$$SS_E=\sum_{i=1}^{n}{e^2_i}$$
+
+|           Usando que los errores $(e_i)_{i=1,\ldots,n}$ tienen media $0$, su varianza será:
+
+$$s_e^2=\frac1{n}\left(\sum_{i=1}^{n}{e^2_i}\right)-\overline{e}^2=\frac{SS_E}{n}-0=\frac{SS_E}{n}$$
+
+Se definen las variables aleatorias $E_{x_i}$ como $E_{x_i}=y_i-b_0-b_1\cdot{x}_i$ donde $(x_i,y_i)$ es un valor de la muestra y $b_0$ y $b_1$ son los estimadores obtenidos por el **método de los mínimos cuadrados**. Entonces, 
+
+**Teorema.** Si las variables aleatorias error $E_{x_i}$ tienen todas media $0$ y la misma varianza $\sigma^2_E$ y, dos a dos, tienen covarianza $0$, entonces:
+
+* $b_0$ y son $b_1$ los estimadores lineales no sesgados óptimos (más eficientes) de  $\beta_0$ y $\beta_1$, respectivamente.
+
+y un **estimador no sesgado de $\sigma_E^2$** es el siguiente: $S^2=\frac{SS_E}{n-2}$.
+
+Si, además, las variables aleatorias error $E_{x_i}$ son **normales**, entonces $b_0$ y son $b_1$ los estimadores máximo verosímiles de $\beta_0$ y $\beta_1$, respectivamente.
+
+### Coeficiente de determinación $R^2$
+
+Una forma de medir si la aproximación hallada $\widehat{y}=b_0+b_1x$ a la nube de puntos $(x_i,y_i),\ i=1,2,\ldots,n$ ha sido suficientemente buena es con el **coeficiente de determinación $R^2$** que estima cuánta **variabilidad** de los valores $y_i$ heredan los valores estimados $\widehat{y}_i$.
+
+Para definir $R^2$, se necesita introducir las siguientes **variabilidades**:
+
+* **Variablidad total** o suma total de cuadrados
+
+$$SS_T=\sum_{i=1}^{n}{\left(y_i-\overline{y}\right)^2}=(n-1)\cdot\widetilde{s}_y^2$$
+
+* **Variabilidad de la regresión** o suma de cuadrados de la regresión
+
+$$SS_R=\sum_{i=1}^{n}{\left(\widehat{y}_i-\overline{y}\right)^2}=(n-1)\cdot\widetilde{s}_{\widehat{y}}^2$$
+
+* **Variabilidad del error** o suma de cuadrados del error
+
+$$SS_E=\sum_{i=1}^{n}{\left(y_i-\widehat{y}_i\right)^2}=(n-1)\cdot\widetilde{s}_e^2$$
+
+**Teorema.** En una regresión lineal usando el método de los mínimos cuadrados, se cumple la siguiente relación entre las **variabilidades**:
+
+$$SS_T=SS_R+SS_E$$
+
+o equivalentemente,
+
+$$\tilde{s}^2_y=\tilde{s}^2_{\widehat{y}}+\tilde{s}^2_e$$
+
+Entonces, cuántas más "próximas" estén las **variabilidades** $SS_T$ y $SS_R$, o, si se quiere, $\tilde{s}^2_y$ y $\tilde{s}^2_{\widehat{y}}$, más efectiva habrá sida la regresión, ya que la regresión habrá heredado mucha variabilidad de los datos $y_i$, $i=1,\ldots,n$ y la variabilidad del error, $SS_E$ será pequeña.
+
+**Definición.** Se define el **coeficiente de determinación $R^2$** en la regresión por el método de los mínimos cuadrados como
+
+$$R^2=\frac{SS_R}{SS_T}=\frac{\widetilde{s}_\widehat{y}^2}{\widetilde{s}_y^2}$$
+
+**Observación:** el **coeficiente de determinación $R^2$** es la fracción de la variabilidad de las componentes y que queda explicada por la variabilidad de las estimaciones correspondientes $\widehat{y}$.
+
+* El **coeficiente de determinación** es una cantidad entre $0$ y $1$: $0\leq{R}^2\leq1$. Entonces, cuánto más próximo a $1$ esté dicho coeficiente, más precisa será la recta de regresión.
+
+* El **coeficiente de determinación** se puede expresar en función de la **variabilidad del error** de la siguente forma:
+
+$$R^2=\frac{SS_T-SS_E}{SS_T}=1-\frac{SS_E}{SS_T}=1-\frac{\tilde{s}_e^2}{\tilde{s}_y^2}$$
+
+* Se define el **coeficiente de correlación lineal** $r_{xy}$ como $r_{xy}=\dfrac{\tilde{s}_{xy}}{\tilde{s}_x\cdot\tilde{s}_y}$. Entonces, el **coeficiente de determinación** $R^2$ es el cuadrado del **coeficiente de correlación lineal**: $R^2 = r_{xy}^2$.
+
+En `R` se puede calcular el coeficiente de determinación utilizando la función `lm()` del paquete `stats`.
+
+```r
+summary(lm(y~x))$r.squared
+```
+
+En `python` se puede hacer este cálculo usando las funciones que se muestran a continuación.
+
+```python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+X = pd.DataFrame(x)
+reg = LinearRegression().fit(X, y)
+R2 = reg.score(X, y)
+```
+
+### Intervalos de confianza
+
+Para poder hallar los intervalos de confianza al $100\cdot(1-\alpha)\%$ de confianza sobre los parámetros $\beta_0$ y $\beta_1$, se necesitan los siguientes supuestos:
+
+Para cada valor $x_i$ de la variable $X$, las variables aleatorias $E_{x_i}$ siguen una distribución normal con media $\mu_{E_{x_i}}=0$ y varianza $\sigma_E^2$ constante independiente del valor $x_i$. También se supone que dados $x_i$ y $x_j$ dos valores distintos de la variable $X$, la covarianza entre las variables $E_{x_i}$ y $E_{x_j}$ es nula: $\sigma(E_{x_i},E_{x_j})=0$.
+
+Bajo las hipótesis anteriores se tienen los dos siguientes resultados:
+
+**Teorema.** Los errores estándar de los estimadores $b_1$ y $b_0$ son, respectivamente,
+
+$$\frac{\sigma_E}{\tilde{s}_x\sqrt{n-1}}\quad\mbox{ y }\quad \sigma_E\sqrt{\frac{1}{n}+\frac{\overline{x}^2}{(n-1)\tilde{s}_x^2}}$$
+donde, para estimar $\sigma_E$, se usa el estimador $S=\sqrt{S^2}$.
+
+**Teorema.** Las variables aleatorias
+
+$$\frac{b_1-\beta_1}{\frac{S}{\tilde{s}_x\sqrt{n-1}}}\quad\mbox{ y }\quad\frac{b_0-\beta_0}{S\sqrt{\frac{1}{n}+\frac{\overline{x}^2}{(n-1)\tilde{s}_x^2}}}$$
+
+siguen leyes $t$ de Student con $n-2$ grados de libertad.
+
+Entonces bajo el supuesto anterior, los **intervalos de confianza** para los parámetros $\beta_1$ y $\beta_0$ al $100\cdot(1-\alpha)\%$ de confianza son los siguientes:
+
+* $\displaystyle\beta_1:\space{b}_1\pm{t}_{n-2,\space1-\frac{\alpha}2}\cdot\frac{S}{\tilde{s}_x\sqrt{n-1}}$.
+
+* $\displaystyle\beta_0:\space{b}_0\pm{t}_{n-2,\space1-\frac{\alpha}2}\cdot{S}\cdot\sqrt{\frac{1}{n}+\frac{\overline{x}^2}{(n-1)\tilde{s}_x^2}}$.
+
+En `R` se pueden calcular estos intervalos de confianza utilizando la función `confint()` del paquete `stats`.
+
+```r
+confint(lm(y~x), level=0.95)
+```
+
+### Fijado un valor $x_0$ de la variable $X$
+
+Los intervalos anteriores ayudan a estudiar cómo se comporta la regresión cuando el valor de la variable $X$ vale un determinado valor $x_0$. En este caso se pueden considerar dos parámetros a estudiar:
+
+* el valor medio de la variable aleatoria $Y|x_0,\ \mu_{Y|x_0}$.
+
+* el valor estimado $y_0$ por la recta de regresión.
+
+Los estimadores de los parámetros anteriores, $\mu_{Y|x_0}$ y $y_0$ son el mismo: $\widehat{y}_0=b_0+b_1\cdot{x}_0$ pero los errores estándar cambian dependiendo del parámetro que se considere como indican los dos siguientes resultados:
+
+**Teorema.** El error estándar del estimador $\widehat{y}_0$ del parámetro $\mu_{Y|x_0}$ es:
+
+$$\sigma_E\sqrt{\frac{1}{n}+\frac{(x_0-\overline{x})^2}{(n-1)\widetilde{s}^2_x}}$$
+
+Usando este resultado, se tiene que la variable aleatoria:
+
+$$\frac{\widehat{y}_0-\mu_{Y/x_0}}{S\sqrt{\frac1{n}+\frac{(x_0-\overline{x})^2}{(n-1) \tilde{s}^2_x}}}$$
+
+sigue una ley $t$ de Student con $n-2$ grados de libertad.
+
+**Teorema.** El error estándar del estimador $\widehat{y}_0$ del parámetro $y_0$ es:
+
+$$\sigma_E\sqrt{1+\frac{1}{n}+\frac{(x_0-\overline{x})^2}{(n-1)\tilde{s}^2_x}}$$
+
+Usando este resultado, se tiene que la variable aleatoria:
+
+$$\frac{\widehat{y}_0-y_0}{S\sqrt{1+\frac1{n}+\frac{(x_0-\overline{x})^2}{(n-1) \tilde{s}^2_x}}}$$
+
+sigue una ley $t$ de Student con $n-2$ grados de libertad.
+
+A partir de los teoremas anteriores, se pueden hallar los intervalos de confianza para los parámetros $\mu_{Y|x_0}$ y $y_0$ al $100\cdot (1-\alpha)\%$ de confianza:
+
+$$
+\begin{array}{rl}
+ \mu_{Y|x_0}:&\displaystyle\widehat{y}_0\pm{t}_{n-2,1-\frac{\alpha}{2}}\cdot{S}\sqrt{\frac{1}{n}+\frac{(x_0-\overline{x})^2}{(n-1)\tilde{s}^2_x}}\\[6pt]
+ y_0:&\displaystyle\widehat{y}_0\pm{t}_{n-2,1-\frac{\alpha}{2}}\cdot{S}\sqrt{1+\frac{1}{n}+\frac{(x_0-\overline{x})^2}{(n-1)\tilde{s}^2_x}}
+\end{array}
+$$
+
+Estos intervalos de confianza se pueden calcular con `R` usando la función `predict.lm()` del paquete `stats` ajustando el parámetro `interval="confidence"` para $\mu_{Y|x_0}$, o `interval="predict"` para $Y|x_0$.
+
+```r
+newdata = data.frame(x=x0)
+predict.lm(lm(y~x), newdata, interval="confidence", level=0.95)
+```
+
+### Contraste de hipótesis sobre $\beta_1$
+
+Cuando se plantea  hacer una regresión de la variable $Y$ sobre la variable $X$, se está suponiendo que la variable $X$ influye en la variable $Y$. Es decir, que si cambia el valor de la variable $X$, habrá un cambio en la variable $Y$.
+
+Decir que la variable $X$ influye en la variable $Y$ en el contexto de la **regresión lineal** es equivalente a decir que $\beta_1\neq0$ ya que si $\beta_1=0$, se tendría que la variación de la variable $Y$ sólo se debería a fluctuaciones aleatorias.
+
+Por tanto, es interesante plantearse el siguiente **contraste de hipótesis** sobre el parámetro **pendiente de la recta de regresión**: $\beta_1$:
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\beta_1=0\\
+  H_1:\beta_1\neq0
+ \end{array}
+\right.
+$$
+En el supuesto de que las variables aleatorias $E_{x_i}$ son normales $N(0,\sigma_E^2)$, el **estadístico de contraste** para realizar este contraste es:
+
+$$T=\frac{b_1}{\frac{S}{\tilde{s}_x\sqrt{n-1}}}$$
+
+que, suponiendo que la hipótesis nula es cierta, se distribuye según una t de Student con $n-2$ grados de libertad.
+
+Si $t_0$ es el valor del estadístico de contraste para los valores de la muestra, el p-value del contraste es el siguiente:
+
+$$p=2\cdot P(t_{n-2}>|t_0|)$$
+
+con el significado usual.
+
+Otra forma de realizar este contraste es observar el intervalo de confianza para $\beta_1$ y ver si contiene el valor $0$.
+
+En caso de contener el valor $0$, la regresión no tendría sentido para el nivel de confianza de $100\cdot(1-\alpha)\%$ ya que no se rechaza que $\beta_1=0$ y en caso de no contener el valor $0$, la regresión sí tendría sentido al nivel de confianza anterior.
+
+Este contraste se tiene en `R` cuando se aplica la función `summary(lm(y~x))` del paquete `stats`.
+
+## Regresión lineal múltiple
+
+Suponiendo que se tiene una **variable dependiente** $Y$ y $k$ **variables independientes o de control** $X_1,X_2,\ldots, X_k$.
+
+De forma similar a la **regresión lineal simple**, se supone que la relación de la media de la variable aleatoria $Y$, fijados $k$ valores de las variables  $X_1,X_2,\ldots,X_k$, $x_1,x_2,\ldots,x_k$, es la siguiente:
+
+$$\mu_{Y|x_1,x_2,\ldots,x_k}=\beta_0+\beta_1x_1+\beta_2x_2+\cdots+\beta_kx_k$$
+
+Es decir, la media de la variable aleatoria $Y_{x_1,x_2,\ldots,x_k}$ es una función lineal de los valores $x_1,x_2,\ldots,x_k$.
+
+Los valores $\beta_0,\beta_1,\ldots,\beta_k$ son los llamados **parámetros de regresión** y se tienen que estimar a partir de una muestra de las variables consideradas:
+
+$$(x_{i1},x_{i2},\ldots,x_{ik},y_i)_{i=1,2,\ldots,n}$$
+
+Para que dichas estimaciones se puedan realizar, hay que suponer que $n>k$ ya que en caso contrario se tendría un problema *subestimado*: se tendrían más parámetros que valores en la muestra.
+
+Se denotará el vector $\underline{x}_i$ al conjunto de los $k$ valores del individuo $i$-ésimo: $\underline{x}_i=(x_{i1},x_{i2},\ldots,x_{ik})$.
+
+Se escribe el modelo de **regresión lineal múltiple** de la siguiente forma:
+
+$$Y|x_1,x_2,\ldots,x_k=\beta_0+\beta_1x_1+\beta_2x_2+\cdots+\beta_{k}x_k+E_{x_1,x_2,\ldots,x_k}$$
+
+donde
+
+* $Y|x_1,x_2,\ldots,x_k$ es la v.a. que da el valor de $Y$ cuando cada $X_i$ vale $x_i$, $X_i=x_i$,
+
+* $E_{x_1,x_2,\ldots,x_k}$ son las v.a. error, o residuales, y representan el error aleatorio del modelo asociado a $(x_1,x_2,\ldots,x_k)$.
+
+### Modelo
+
+A partir de una muestra
+
+$$(\underline{x}_{i},y_i)_{i=1,2,\ldots,n}$$
+
+se van a obtener estimaciones $b_0,b_1,\ldots,b_k$ de los **parámetros de regresión** $\beta_0,\beta_1,\ldots,\beta_k$.
+
+Una vez obtenidas las estimaciones $b_0,b_1,\ldots,b_k$, se pueden definir los siguientes valores:
+
+$$
+\begin{array}{l}
+ \widehat{y}_i=b_0+b_1x_{i1}+b_2x_{i2}+\cdots+b_{k}x_{ik}\\
+ y_i=b_0+b_1x_{i1}+b_2x_{i2}+\cdots+b_{k} x_{i k}+e_i
+\end{array}
+$$
+
+donde
+
+* $\widehat{y}_i$ es el valor predicho de $y_i$ a partir de $\underline{x}_{i}$.
+
+* $e_i$ estima el error $E_{\underline{x}_{i}}$: $e_i=y_i-\widehat{y}_i$.
+
+Para simplificar la notación, se escriben los datos de la muestra en forma matricial.
+
+En primer lugar, se definen los siguientes vectores:
+
+$$\mathbf{y}=\left(\begin{array}{l}y_1\\y_2\\\vdots\\y_n\end{array}\right),\space\mathbf{b}=\left(\begin{array}{l}b_0\\b_1\\\vdots\\b_k\end{array}\right),\space\mathbf{\widehat{y}}=\left(\begin{array}{l}\widehat{y}_1\\\widehat{y}_2\\\vdots\\\widehat{y}_n\end{array}\right),\space\mathbf{e}=\left(\begin{array}{l}e_1\\e_2\\\vdots\\e_n\end{array}\right)$$
+
+Se define la matriz $\mathbf{X}$ a partir de los datos de la muestra de las variables $X_i$, $i=1,2,\ldots,k$:
+
+$$\mathbf{X}=\left(\begin{array}{lllll}1&x_{11}&x_{12}&\ldots&x_{1k}\\1&x_{21}&x_{22}&\ldots&x_{2k}\\\vdots&\vdots&\vdots&\ddots&\vdots\\1&x_{n1}&x_{n2}&\ldots&x_{nk}\end{array}\right)$$
+
+Las ecuaciones
+
+$$\begin{array}{l}\widehat{y}_i=b_0+b_1x_{i1}+b_2x_{i2}+\cdots+b_{k}x_{ik}\\y_i=b_0+b_1x_{i1}+b_2x_{i2}+\cdots+b_{k}x_{ik}+e_i\end{array}$$
+
+se escriben en forma matricial de la siguiente forma:
+
+$$\begin{array}{l}\mathbf{\widehat{y}}=\mathbf{X}\cdot\mathbf{b}\\\mathbf{y}=\mathbf{X}\cdot\mathbf{b}+\mathbf{e}\end{array}$$
+
+### Método de los mínimos cuadrados
+
+Se define el **error cuadrático** $SS_E$ cómo:
+
+$$SS_E=\sum_{i=1}^{n}{e^2_i}=\sum_{i=1}^{n}{(y_i-\widehat{y}_i)^2}=\sum_{i=1}^{n}{(y_i-b_0-b_1x_{i1}-b_2x_{i2}-\cdots-b_kx_{ik})^2}$$
+
+Los **estimadores** de los **parámetros** $\beta_0,\beta_1,\ldots,\beta_k$ por el método de **mínimos cuadrados** serán los valores $b_0,b_1,\ldots,b_k$ que minimicen $SS_E$.
+
+Para calcularlos, se calculan las derivadas parciales del error cuadrático $SS_E$ respecto cada $b_i$, se igualan a $0$, se resuelven, y se comprueba que la solución $(b_0,b_1,\ldots,b_k)$ encontrada corresponde a un mínimo.
+
+El siguiente teorema da la expresión de dichos **estimadores**:
+
+**Teorema.** Los **estimadores** por el método de los **mínimos cuadrados** de los parámetros $\beta_0,\beta_1,\ldots,\beta_k$ a partir de la muestra $(\underline{x}_{i},y_i)_{i=1,2,\ldots,n}$ son los siguientes:
+
+$$\mathbf{b}=\left(\mathbf{X}^\top\cdot\mathbf{X}\right)^{-1}\cdot\left(\mathbf{X}^\top\cdot\mathbf{y}\right)$$
+
+Este cálculo se puede realizar en `R` con la función `lm()` del paquete `stats`.
+
+```r
+lm(y ~ x1+x2+...+xk)
+```
+
+Nota: con `$coefficients` se obtienen los valores de los estimadores $b_0,b_1,\cdots,b_k$.
+
+### Propiedades
+
+* La **función de regresión** pasa por el vector medio $(\overline{x}_1,\overline{x}_2,\ldots,\overline{x}_k,\overline{y})$:
+
+$$\overline{y}=b_0+b_1\overline{x}_1+\cdots+b_k\overline{x}_k$$
+
+* La media de los valores estimados se igual a la media de los observados:
+
+$$\overline{\widehat{y}}=\overline{y}$$
+
+* Los errores $(e_i)_{i=1,2,\ldots,n}$  tienen media $0$ y varianza:
+
+$$\tilde{s}_e^2=\frac{SS_E}{n-1}$$
+
+### Coeficiente de determinación
+
+El **coeficiente de determinación** es una de las formas en las que se puede medir lo efectiva que ha sido la regresión.
+
+Se introducen las siguientes **variabilidades**:
+
+* **Variabilidad total** o suma total de cuadrados
+
+$$SS_T=\sum_{i=1}^{n}{\left(y_i-\overline{y}\right)^2}=(n-1)\cdot\tilde{s}_y^2$$
+
+* **Variabilidad de la regresión** o suma de cuadrados de la regresión
+
+$$SS_R=\sum_{i=1}^{n}{\left(\widehat{y}_i-\overline{y}\right)^2}=(n-1)\cdot\tilde{s}_{\widehat{y}}^2$$
+
+* **Variabilidad del error** o suma de cuadrados del error
+
+$$SS_E=\sum_{i=1}^{n}{(y_i-\widehat{y}_i)^2}=(n-1)\cdot\tilde{s}_e^2$$
+
+La **variabilidad total** se puede descomponer como la suma de la **variabilidad de la regresión** y la **variabilidad del error**.
+
+**Teorema.** En una regresión lineal múltiple usando el método de los mínimos cuadrados, se cumple la siguiente relación entre las **variabilidades**:
+
+$$SS_T=SS_R+SS_E$$
+
+o equivalentemente
+
+$$\tilde{s}^2_y=\tilde{s}^2_{\widehat{y}}+\tilde{s}^2_e$$
+
+En este caso, cuanto más "próximas" estén las **variabilidades** $SS_T$ y $SS_R$, o, si se quiere, $\tilde{s}^2_y$ y $\tilde{s}^2_{\widehat{y}}$, más efectiva habrá sido la regresión, ya que la regresión habrá heredado mucha variabilidad de los datos $y_i,\ i=1,2,\ldots,n$ y la variabilidad del error, $SS_E$ será pequeña.
+
+Se define el **coeficiente de determinación** en una **regresión lineal múltiple** como:
+
+$$R^2=\frac{SS_R}{SS_T}=\frac{\tilde{s}^2_{\widehat{y}}}{\tilde{s}^2_y}$$
+
+y representa la fracción de la variabilidad de $y$ que queda explicada
+por la variabilidad del modelo de regresión lineal.
+
+De la misma manera, se define el **coeficiente de correlación múltiple** de $y$ respecto de $x_1,x_2,\ldots,x_k$ como $R=\sqrt{R^2}$.
+
+#### Propiedades
+
+El **coeficiente de determinación** verifica las dos siguientes propiedades:
+
+* El **coeficiente de determinación** es una cantidad entre $0$ y $1$: $0\leq{R}^2\leq1$. Entonces, cuánto más próximo a $1$ esté dicho coeficiente, más precisa será la recta de regresión.
+
+* El **coeficiente de determinación** se puede expresar en función de la **variabilidad del error** de la siguiente forma:
+
+$$R^2=\frac{SS_T-SS_E}{SS_T}=1-\frac{SS_E}{SS_T}=1-\frac{\tilde{s}_e^2}{\tilde{s}_y^2}$$
+
+En `R` se puede calcular el **coeficiente de determinación** usando la función `lm()` del paquete `stats`.
+
+```r
+summary(lm(y ~ x1+x2+...+xk))$r.squared
+```
+
+### Coeficiente de determinación ajustado
+
+El **coeficiente de determinación** definido anteriormente aumenta si aumenta el número de variables independientes $k$, incluso si éstas aportan información redundante o poca información.
+
+Para evitar este problema o para penalizar el aumento de variables independientes se usa en su lugar el **coeficiente de regresión ajustado**:
+
+$$R^2_{adj}=\frac{MS_T-MS_E}{MS_T}$$
+
+donde
+
+$$MS_T=\frac{SS_T}{n-1},\quad MS_E=\frac{SS_E}{n-k-1}$$
+
+Si aumenta $k$, el valor de $MS_E$ aumenta y el valor de $R^2_{adj}$ disminuirá. Por tanto, con el $R^2_{adj}$ se penaliza el aumento de variables independientes.
+
+Si aumenta el número de variables independientes con variables explicativas que aporten mucha información a la regresión, el valor de $SS_E$ disminuirá haciendo que se mantenga estable el valor de $MS_E$ y el valor de $R^2_{adj}$ no disminuirá.
+
+La relación entre el **coeficiente de determinación ajustado** y el **coeficiente de determinación** es la siguiente:
+
+$$R^2_{adj}=1-(1-R^2)\frac{n-1}{n-k-1}$$
+
+Esta relación significa que $0\leq{R}^2_{adj}<R^2\leq1$, lo que permite concluir que para el **coeficiente de determinación ajustado**, es más difícil obtener un valor cercano a $1$ que para el **coeficiente de determinación**.
+
+El **coeficiente de determinación ajustado** se puede calcular en `R` usando la función `lm()` del paquete `stats` y extrayendo de ella el parámetro `$adj.r.squared`.
+
+```r
+summary(lm(y ~ x1+x2+...+xk))$adj.r.squared
+```
+
+### Comparación de modelos
+
+Suponiendo que se tiene el modelo
+
+$$Y_{|x_1,x_2,\ldots,x_k}=\beta_0+\beta_1x_1+\beta_2x_2+\cdots+\beta_kx_k+E_{x_1,x_2,\ldots,x_k}$$
+
+y se añade una nueva variable independiente $x_{k+1}$. Entonces, se tiene otro modelo:
+
+$$Y_{|x_1,x_2,\ldots,x_k,x_{k+1}}=\beta_0+\beta_1x_1+\beta_2x_2+\cdots+\beta_kx_k+\beta_{k+1}x_{k+1}+E_{x_1,x_2,\ldots,x_k,x_{k+1}}$$
+
+¿Cómo se pueden comparar estos dos modelos?
+
+O, dicho en otras palabras, ¿cómo decidir si la nueva variable introducida $x_{k+1}$ aporta información relevante?
+
+#### Método del $R^2_{adj}$
+
+Una manera de realizar dicha comparación es usando el **coeficiente de regresión ajustado** $R^2_{adj}$: el modelo que tenga mayor $R^2_{adj}$ es el mejor. 
+
+Por tanto, si el valor del **coeficiente de regresión ajustado** del segundo modelo supera el **coeficiente de regresión ajustado** del primero, se dice que la nueva variable $x_{k+1}$ aporta información relevante y hay que tenerla en cuenta.
+
+#### Método de AIC (_Akaike's Information Criterion_)
+
+El método **AIC** cuantifica cuánta información de $Y$ se pierde con el modelo y cuántas variables se usan: el mejor modelo es el que tiene un valor de **AIC** más pequeño. Concretamente, se calcula la siguiente cantidad: $AIC=n\ln(SS_E/n)+2k$ y el modelo con menor **AIC** es el más adecuado.
+
+El cálculo del **AIC** se puede hacer en `R` con la función `AIC` del paquete `stats`.
+
+```r
+AIC(lm(y ~ x1+x2+...+xk))
+```
+
+#### Método de BIC (_Bayesian Information Criterion_)
+
+El método **BIC** cuantifica cuánta información de $Y$ se pierde con el modelo y cuántas variables y datos se usan: el mejor modelo es el que tiene un valor de **BIC** más pequeño. Para saber si un modelo es mejor que otro, hay que calcular la siguiente cantidad:
+$BIC=n\ln(SS_E/n)+k\ln(n)$ y, el modelo con menor **BIC** es el más adecuado.
+
+El cálculo del **BIC** se puede hacer en `R` con la función `BIC` del paquete `stats`.
+
+```r
+BIC(lm(y ~ x1+x2+...+xk))
+```
+
+### Intervalos de confianza
+
+Para calcular los intervalos de confianza para los $k+1$ parámetros del modelo $\beta_0,\beta_1,\ldots,\beta_k$ se supone que las variables aleatorias error $E_i=E_{\underline{x}_{i}}$ son incorreladas, es decir, la covarianza entre un par de ellas cualesquiera es cero y todas normales de media $0$ y de misma varianza $\sigma_E^2$.
+
+Antes de dar los intervalos de confianza, se necesita conocer las propiedades sobre los estimadores de los parámetros anteriores, es decir, si son insesgados, cómo estimar la varianza común $\sigma_E^2$ y sus errores estándar.
+
+Dichas propiedades vienen dadas en los siguientes teoremas.
+
+**Teorema.** Bajo las hipótesis anteriores, los estimadores $b_0,b_1,\ldots,b_k$ de los parámetros
+$\beta_0,\beta_1,\ldots,\beta_k$ son máximo verosímiles y además no sesgados.
+
+**Teorema.** Bajo las hipótesis anteriores
+
+$$\mathrm{Cov}(b_0,b_1,\ldots,b_k)=\sigma_E^2\cdot\left(\mathbf{X}^\top\cdot\mathbf{X}\right)^{-1}$$
+
+donde $\mathrm{Cov}(b_0,b_1,\ldots,b_k)$ es la matriz de covarianzas de los estimadores $b_0,b_1,\ldots{b}_k$ de los parámetros $\beta_0,\beta_1,\ldots,\beta_k$ de componentes $\mathrm{Cov}(b_0,b_1,\ldots,b_k)_{ij}=\mathrm{Cov}(b_i,b_j),\space{i},j=0,1\ldots,k$ y un estimador no sesgado de la varianza común $\sigma_E^2$ es $S^2=\frac{SS_E}{n-k-1}$.
+
+
+**Teorema.** Bajo las hipótesis anteriores, el error estándar de cada estimador $b_i$ vale
+
+$$\sqrt{\left(\sigma_E^2\cdot\left(\mathbf{X}^\top\mathbf{X}\right)^{-1}\right)_{ii}}$$
+
+la raíz cuadrada de la $i$-ésima entrada de la diagonal de la matriz $\sigma_E^2\cdot (\mathbf{X}^\top \mathbf{X})^{-1}$ empezando por $i=0$.
+
+**Teorema.** Bajo las hipótesis anteriores 
+
+* la variable aleatoria
+
+$$\frac{\beta_i-b_i}{\sqrt{(S^2\cdot(\mathbf{X}^\top\mathbf{X})^{-1})_{ii}}}$$
+
+|           sigue una ley $t$ de Student con $n-k-1$ grados de libertad.  &nbsp;  
+
+* un intervalo de confianza del $(1-\alpha)\cdot 100\%$ de confianza para el parámetro $\beta_i$ es
+
+$$b_i\pm{t}_{n-k-1,1-\frac{\alpha}2}\cdot\sqrt{\left(S^2\cdot\left(\mathbf{X}^\top\mathbf{X}\right)^{-1}\right)_{ii}}$$
+
+Estos **intervalos de confianza** se pueden calcular en `R` usando la función `confint()` del paquete `stats`.
+
+```r
+confint(lm(y ~ x1+x2+...+xk))
+```
+
+### Fijados unos valores $\underline{x}_0$
+
+Los intervalos anteriores ayudan a estudiar cómo se comporta la regresión cuando el valor de las variables $(X_1,X_2,\ldots,X_k)$ valen un determinado valor $\underline{x}_0$. En este caso se pueden considerar dos parámetros a estudiar:
+
+* el valor medio de la variable aleatoria $Y|x_{10},x_{20},\ldots,x_{k0}$, $\mu_{Y|x_{10},x_{20},\ldots,x_{k0}}$.
+
+* el valor estimado $y_0=b_0+b_1\cdot{x}_{10}+b_2\cdot{x}_{20}+\cdots+b_k\cdot{x}_{k0}$ por la función de regresión.
+
+Los estimadores de los parámetros anteriores, $\mu_{Y|x_{10},x_{20},\ldots,x_{k0}}$ y $y_0$ son el mismo: $\hat{y}_0=b_0+b_1x_1+b_2x_2+\cdots+b_kx_k$ pero los errores estándar cambian dependiendo del parámetro que se considere como indican los dos siguientes resultados:
+
+**Teorema.** El error estándar del estimador $\widehat{y}_0$ del parámetro $\mu_{Y|\underline{x}_0}$ es:
+
+$$S\sqrt{\mathbf{x}_0\cdot\left(\mathbf{X}^\top\cdot\mathbf{X}\right)^{-1}\cdot\mathbf{x}_0^\top}$$
+
+Usando este resultado, se tiene que la variable aleatoria:
+
+$$\frac{\mu_{Y|\underline{x}_0}-\widehat{y}_0}{S\sqrt{\mathbf{x}_0\cdot \left(\mathbf{X}^\top\cdot\mathbf{X}\right)^{-1}\cdot\mathbf{x}_0^\top}}$$
+
+sigue una ley $t$ de Student con $n−k-1$ grados de libertad.
+
+**Teorema.** El error estándar del estimador $\widehat{y}_0$ del parámetro $y_0$ es:
+
+$$S\sqrt{1+\mathbf{x}_0\cdot\left(\mathbf{X}^\top\cdot\mathbf{X}\right)^{-1}\cdot\mathbf{x}_0^\top}$$
+
+donde $\mathbf{x}_0=(1,\underline{x}_0)=(1,x_{01},x_{02},\ldots,x_{0k})$.
+
+Usando este resultado, se tiene que la variable aleatoria:
+
+$$\frac{y_0-\widehat{y}_0}{S\sqrt{1+\mathbf{x}_0\cdot\left(\mathbf{X}^\top\cdot\mathbf{X}\right)^{-1}\cdot\mathbf{x}_0^\top}}$$
+
+sigue una ley $t$ de Student con $n−k-1$ grados de libertad.
+
+A partir de los teoremas anteriores, se pueden hallar los intervalos de confianza para los parámetros $μ_{Y|x_{10},x_{20},\ldots,x_{k0}}$ y $y_0$ al $100⋅(1−\alpha)\%$ de confianza:
+
+* $\mu_{Y|x_{10},x_{20},\ldots,x_{k0}}:\space\hat{y}_0\pm{t}_{n-k-1,1-\frac{\alpha}{2}}\cdot{S}\sqrt{\mathbf{x}_0\cdot\left(\mathbf{X}^\top\cdot\mathbf{X}\right)^{-1}\cdot\mathbf{x}_0^\top}$.
+
+* $y_0:\space\hat{y}_0\pm{t}_{n-k-1,1-\frac{\alpha}{2}}\cdot{S}\sqrt{1+\mathbf{x}_0\cdot\left(\mathbf{X}^\top\cdot\mathbf{X}\right)^{-1}\cdot\mathbf{x}_0^\top}$.
+
+
+Estos intervalos de confianza se pueden calcular con `R` usando la función `predict.lm()` del paquete `stats` ajustando el parámetro `interval="confidence"` para $\mu_{Y|\underline{x}_0}$, o `interval="predict"` para $y_0$.
+
+```r
+newdata = data.frame(x1=x10,x2=x20,...,xk=xk0)
+predict.lm(lm(y~x1+x2+...+xk), newdata, interval="confidence", level=0.95)
+```
+
+Nota: Los nombres de las variables en `newdata` deben ser los mismos del `lm()`.
+
+
+### Contrastes de hipótesis sobre los parámetros $\beta_i$
+
+En el caso de la **regresión lineal múltiple** se puede plantear el siguiente contraste de hipótesis:
+
+$$
+\left\{
+ \begin{array}{l} 
+  H_0: \beta_1=\beta_2=\cdots=\beta_k=0 \\[2pt]
+  H_1: \mbox{existe algún $i$ tal que }\beta_i\neq0
+ \end{array}
+\right.
+$$
+
+Es decir, se quiere contrastar si la **regresión lineal múltiple** realizada tiene sentido ya que la hipótesis nula equivale a decir que ninguna variable independiente $X_i,\space{i}=1,2,\ldots,k$ tiene efecto sobre la variable $Y$ y como consecuencia, la regresión no ha tenido sentido.
+
+Este contraste se puede plantear como un contraste **ANOVA** donde las subpoblaciones consideradas serían las variables $Y|\underline{x}_1,Y|\underline{x}_2,\ldots,Y|\underline{x}_n$ siendo $\underline{x}_1,\underline{x}_2,\ldots,\underline{x}_n$, $n$ valores concretos de las variables independientes $(X_1,X_2,\ldots,X_k)$.
+
+Si la hipótesis nula $H_0$ es cierta, es decir $\beta_1=\beta_2=\cdots=\beta_k=0$, entonces los valores medios de las variables anteriores serían los mismos ya que se supone que:
+
+$$\mu_{Y|\underline{x}}=\beta_0+\beta_1\cdot{x}_1+\beta_2\cdot{x}_2+\cdots+\beta_k\cdot{x}_k=\beta_0$$
+
+para todo valor de $\underline{x}$.
+
+Por tanto, el contraste original sería equivalente a realizar el siguiente contraste **ANOVA**:
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\mu_{Y|\underline{x}_1}=\mu_{Y|\underline{x}_2}=\cdots=\mu_{Y|\underline{x}_n}\\[2pt]
+  H_1:\mbox{existen $i$ y $j$ tales que }\mu_{Y|\underline{x}_i}\neq\mu_{Y|\underline{x}_j}
+ \end{array}
+\right.
+$$
+
+Para que el modelo de **regresión lineal múltiple** tenga sentido de debe rechazar la hipótesis nula anterior.
+
+La **tabla ANOVA** es la siguiente:
+
+|Origen variación|Grados de libertad|Sumas de cuadrados | Cuadrados medios|Estadístico de contraste|p-valor|
+|:---|:---:|:---:|:---:|:---:|:---:|
+|Regresión|$k$|$SS_R$|$MS_R=\frac{SS_R}{k}$|$F=\frac{MS_R}{MS_E}$|p-valor|
+|Error|$n-k-1$|$SS_E$|$MS_E=\frac{SS_E}{n-k-1}$| | |
+
+donde el **estadístico de contraste** $F=\frac{MS_R}{MS_E}$, suponiendo la hipótesis nula cierta, sigue la distribución $F$ de $k$ y $n-k-1$ grados de libertad.
+
+El p-valor del contraste anterior vale $p=P(F_{k,n-k-1}\geq f_0),$
+siendo $f_0$ el valor del estadístico de contraste $F$ para los datos que se tienen.
+
+Para calcular la tabla ANOVA en `R` de una **regresión lineal múltiple** hay que usar la función `anova` del paquete `stats`.
+
+```r
+anova(lm(y ~ Xd))
+```
+
+donde `Xd` es una matriz cuyas columnas son los valores de las variables independientes $x_1,x_2,\ldots,x_k$.
+
+Otro tipo de contrastes que se puede plantear sobre los parámetros del modelo $\beta_i$ es, si fijado $i$, $\beta_i$ aporta algo al modelo, o, si la variable $x_i$ es **significativa**.
+
+Concretamente, fijado $i$, se plantea el siguiente contraste:
+
+$$
+\left\{
+ \begin{array}{l}
+  H_0:\beta_i=0\\[2pt]
+  H_1:\beta_i\neq0
+ \end{array}
+\right.
+$$
+usando como **estadístico de contraste**
+
+$$\frac{\beta_i-b_i}{\sqrt{\left(S^2\cdot\left(\mathbf{X}^\top \mathbf{X}\right)^{-1}\right)_{ii}}}$$
+
+que sigue una ley $t$ de Student con $n-k-1$ grados de libertad. 
+
+El p-valor del contraste anterior es $p=2\cdot{P}(t_{n-k-1}>|t_0|)$, donde $t_0$ es el valor obtenido por el estadístico de contraste usando los datos que se tienen.
+
+Para que la variable $x_i$ sea **significativa** o para que aporte información relevante al modelo de **regresión lineal múltiple**, se debe rechazar la hipótesis nula en el contraste anterior u obtener un p-valor pequeño.
+
+Estos contrastes de hipótesis aparecen en `R` la usar la función `lm()` del paquete `stats`.
+
+```r
+summary(lm(y ~ x1+x2+...+xk))
+```
+
+## Diagnósticos. Estudio de los residuos
+
+Para que el **modelo de regresión lineal** tanto **simple** como **múltiple** sea fiable en las conclusiones derivadas de las estimaciones e inferencias (intervalos de confianzas, contrastes de hipótesis) que se realizan a partir de dicho modelo, se tienen que verificar unas hipótesis.
+
+Las tareas que realizan dichas verificaciones se denominan **diagnósticos de regresión**.
+
+Los **diagnósticos de regresión** se clasifican en tres categorías:
+
+* *Errores*: los errores tienen que seguir una $N(0,\sigma)$, con la misma varianza, y ser incorrelados.
+
+* *Modelo*: los puntos se tienen que ajustar a la estructura lineal considerada.
+
+* *Observaciones anómalas*: a veces unas cuántas observaciones no se ajustan al modelo y hay que detectarlas.
+
+### Tipos de diagnósticos de regresión
+
+Hay dos métodos usados en los **diagnósticos de regresión**:
+
+* *Métodos gráficos*: son métodos muy flexibles pero difíciles de interpretar.
+
+* *Métodos numéricos*: son métodos de utilidad más limitada con respecto a los métodos gráficos pero con interpretación inmediata.
+
+## Homocedasticidad
+
+### Métodos gráficos
+
+#### Distribución de los errores
+
+Uno de los problemas que puede sufrir el modelo es que la varianza de los residuos no sea constante.
+
+```{r,echo=FALSE,fig.align='center',fig.height=4,fig.width=8}
+set.seed(2020)
+x<-runif(100)
+y=1-2*x+0.3*x*rnorm(100)
+par(mfrow=c(1,2))
+plot(x,y)
+r=lm(y~x)
+abline(r,col="red")
+plot(r$res~r$fitted.values,xlab="Valores ajustados",ylab="Residuos del modelo")
+mtext("No homocedástica",line=-2.8,outer=TRUE,cex=1.5)
+```
+
+En el gráfico anterior, se observa una distribución "triangular" o "en forma de cuña" donde a medida que aumenta el valor ajustado de los puntos, disminuye la dispersión o la variación de los errores, hecho que detecta que dicho modelo es anómalo en el sentido de no ser **homocedástico**.
+
+En cambio, como muestra el siguiente gráfico, si el modelo fuese **homocedástico**, es decir, que la varianza de los residuos fuese la misma para cualquier valor $x$, se observaría una distribución de puntos uniforme, o lo que coloquialmente se llama un "cielo estrellado".
+
+```{r,echo=FALSE,fig.align='center',fig.height=4,fig.width=8}
+set.seed(2020)
+x<-runif(100)
+y=1-2*x+0.2*rnorm(100)
+par(mfrow=c(1,2))
+plot(x,y)
+r=lm(y~x)
+abline(r,col="red")
+plot(r$res~r$fitted.values,xlab="Valores ajustados",ylab="Residuos del modelo")
+mtext("Homocedástica",line=-2.8,outer=TRUE,cex=1.5)
+```
+
+### Métodos numéricos
+
+#### Test de White (homocedasticidad de los errores)
+
+Para aplicar el **Test de White**, hay que seguir los siguiente pasos:
+
+* Obtener los $\{e_i\}_{i=1,2,\ldots,n}$ residuos de la regresión lineal inicial.
+
+* Calcular el coeficiente de determinación $R^2$ de la regresión lineal de los $e_i^2$ respecto de las variables iniciales, sus cuadrados y los productos cruzados dos a dos. Es decir, calcular el coeficiente de determinación del siguiente modelo de regresión: 
+
+$$
+\begin{array}{rcl}
+ \mu_{E^2|x_1,x_2,\ldots,x_k,x_1^2,x_2^2,\ldots,x_k^2,x_ix_j(i,j=1,2,\ldots,n,i<j)}&=&\beta_{0}+\beta_1x_1+\cdots+\beta_kx_k+\\&&\beta_{1}^{(2)}x_1^2+\cdots+\beta_k^{(2)}x_k^2+\\&&\beta_{12}x_1x_2+\cdots+\beta_{k-1,k}x_{k-1}x_k.
+\end{array}
+$$
+
+* Calcular el **estadístico** $X_0=nR^2$, el cual, suponiendo que la varianza es constante, sigue una $\chi^2_q$, donde $q$ es el número de variables independientes de la regresión del paso anterior.
+
+$$q=\left\{\begin{array}{ll}2k&\text{si}\space\space{k=1}\\2k+{k\choose2}&\text{si}\space\space{k>1}\end{array}\right.$$
+
+* Calcular el p-valor  $P(\chi_q^2\geq X_0)$ con el significado usual.
+
+Este test se puede hacer en `R` usando la función `bptest` del paquete `lmtest`.
+
+```r
+library(lmtest)
+bptest(lm1, ~ X + I(X^2))
+```
+
+donde `lm1` es el objeto de `R` donde se ha guardado la información de la regresión original y `X` es la matriz que contiene los valores de la muestra de las variables independientes.
+
+Nota: este test tiene sentido si $q<n$.
+
+#### Test de Breusch-Pagan (homocedasticidad de los errores)
+
+Este test es muy parecido al **Test de White** pero evita los términos de segundo orden en la regresión auxiliar.
+
+Para aplicar el **Test de Breusch-Pagan**, hay que seguir los siguientes pasos:
+
+* Obtener los $\{e_i\}_{i=1,2,\ldots,n}$  residuos de la regresión lineal inicial.
+
+* Calcular el coeficiente de determinación $R^2$ de la regresión lineal de los $e_i^2$ respecto de las variables iniciales. Es decir, calcular el coeficiente de determinación del siguiente modelo de regresión:
+
+$$\mu_{E^2|x_1,x_2,\ldots,x_k}=\beta_{0}+\beta_{1}x_1+\cdots+\beta_kx_k$$
+
+* Calcular el **estadístico** $X_0=nR^2$, el cual, suponiendo que la varianza es constante, sigue una $\chi^2_k$.
+
+* Calcular el p-value $P(\chi_k^2\geq X_0)$ con el significado usual.
+
+Este test se puede hacer en `R` usando la función `bptest` del paquete `stats`.
+
+```r
+library(lmtest)
+bptest(lm1))
+```
+
+donde `lm1` es el objeto de `R` donde está guardada la información de la regresión original.
+
+## Correlación de los errores
+
+### **Test de Durbin-Watson (correlación de los errores)**
+
+Otra de las hipótesis que se deben verificar para que el análisis de regresión sea correcto es la incorrelación de los residuos.
+
+La autocorrelación de los residuos puede ser de dos tipos:
+
+* _Autocorrelación positiva_: un valor positivo (negativo) de un error genera una sucesión de residuos positivos (negativos).
+* _Autocorrelación negativa_: los residuos van alternando de signo. 
+
+Para comprobar si se satisface que los residuos no presenten correlación, se puede aplicar el **Test de Durbin-Watson**.
+
+Sean $\{e_i\}_{i=1,2,\ldots,n}$ los residuos de la regresión. 
+
+Sean $E_i$ y las $E_{i-1}$ variables aleatorias error (trasladadas en un índice) y la recta de regresión de $E_i$ con respecto a $E_{i-1}$: $E_i=\beta_1E_{i-1}+\beta_0$.
+
+Se plantea el siguiente contraste:
+
+$$\left\{\begin{array}{ll}H_0:\beta_1=0\\[2pt]H_1:\beta_1\neq0\end{array}\right.$$
+
+con el siguiente **estadístico de contraste**:
+
+$$d=\frac{\sum\limits^n_{i=2}{(e_i-e_{i-1})^2}}{\sum\limits_{i=1}^n{e_i^2}}$$
+
+El valor de este estadístico es aproximadamente $2(1-b_1)$ donde $b_1$ es una estimación de $\beta_1$. 
+
+Si la hipótesis nula $H_0$ es cierta, su distribución es la de una cierta combinación lineal de $\chi^2$.
+
+El test necesita de una tabla de valores críticos para tomar la decisión final. Esta tabla se encuentra en google imágenes como [test de Durbin Watson](https://www.statology.org/wp-content/uploads/2019/01/durbinWatson2.png).
+
+Concretamente, $d$ se tiene que comparar con dos valoras críticos $d_{L,\alpha}$ y $d_{U,\alpha}$, donde  $\alpha$ es el nivel de significación que depende de $n$ y de $k$.
+
+Se decide si hay autocorrelación positiva:
+
+* Si $d<d_{L,\alpha}$, hay autocorrelación positiva.
+* Si $d>d_{U,\alpha}$, no hay autocorrelación positiva.
+* De lo contrario, es está en la zona de penumbra.
+
+Se decide si hay autocorrelación negativa:
+
+* Si $4-d<d_{L,\alpha}$, hay autocorrelación negativa.
+* Si $4-d>d_{U,\alpha}$, no hay autocorrelación negativa.
+* De lo contrario, se está en la zona de penumbra.
+
+Este test se puede hacer en `R` usando la función `dwtest` del paquete `lmtest`.
+
+El parámetro `alternative` indica si se testea que la autocorrelación es positiva (`greater`) o negativa (`less`):
+
+```r
+dwtest(r,alternative=...)
+```
+
+donde en `r` es el resultado de la regresión usando `lm(y ~ x1+x2+...+xk)`.
+
+## Aditividad y linealidad
+
+Cuando se plantea un modelo lineal, se supone implícitamente las siguientes condiciones:
+
+* _Aditividad_: para cada variable independiente $X_i$, la variación de asociada $\mu_{Y|x_1,x_2,\ldots,x_k}$ con un aumento en $X_i$ (manteniendo las otras variables constantes) es la misma sean cuales sean los valores de las otras variables independientes. Dicho de otra forma: $$\begin{array}{rcl}\mu_{Y|x_1,\ldots,x_i+\Delta{x}_i,\ldots,x_k}-\mu_{Y|x_1,\ldots,x_i,\ldots,x_k}&=&\beta_0+\beta_1x_1+\cdots+\beta_i(x_i+\Delta{x}_i)+\cdots+\beta_kx_k-\\&&(\beta_0+\beta_1x_1+\cdots+\beta_ix_i+\cdots+\beta_kx_k)\\&=&\beta_i\Delta{x}_i\end{array}$$ La variación en el parámetro $\mu_{\ldots}$ es independiente de los valores de $x_1,\ldots,x_{i-1},x_{i+1},\ldots,x_k$.
+
+* _Linealidad_:  para cada variable independiente $X_i$, la variación de asociada $\mu_{Y|x_1,\ldots,x_k}$ con un aumento en $X_i$ (manteniendo las otras variables constantes) es la misma sea cual sea el valor de $X_i$.<br>Dicho de otra forma, mirando la expresión anterior, la  variación en el parámetro $\mu_{\ldots}$ es independiente de los valores de $x_i$.
+
+### Aditividad: test de Tukey
+
+Se puede comprobar la **aditividad** con el **test de Tukey**, usando los llamados **gráficos de residuos parciales para la linealidad**.
+
+La idea principal es verificar que no haya **interacción** entre las variables independientes y así, cada una tendrá un efecto aditivo en el modelo. 
+
+Si existe la **interacción**, algunos términos cuadráticos tendrán peso en el modelo. Esta es la base del **Test de Tukey**:  
+
+* Se obtienen los valores ajustados $\{\hat{y}_i\}$ por la regresión lineal inicial.
+
+* Se lleva a cabo una segunda regresión lineal incluyendo como nueva variable independiente los $\hat{y}_i^2$. Sea $\beta$ el coeficiente de esta nueva variable.
+
+* Se testea si la variable $\hat{y}^2$ es significativa en la segunda regresión. Es decir, se realiza el contraste $$\left\{\begin{array}{l}H_0:\beta=0\\[2pt]H_1:\beta\neq0\end{array}\right.$$ Si no se puede descartar la hipótesis nula, la variable de los $\hat{y}_i^2$ no es significativa y el modelo es aditivo.<br>El p-value del test se puede obtener usando `summary(lm(y~x1+...+xk+ygorro2))$coefficients` en `R`, el p-value que interesa es el de `ygorro2`.
+
+Este test se puede hacer en `R` usando la función `residualPlots` del paquete `car`.
+
+```r
+residualPlots(r,plot=...)
+```
+
+donde `r` es el resultado de la regresión lineal original `lm(y~x1+x2+...+xk)` y `plot` es un parámetro que si vale `TRUE` (valor por defecto) dibuja los gráficos de los residuos frente a las variables regresoras y frente a los valores estimados junto con una curva de color azul indicando su tendencia y si vale `FALSE` simplemente da el valor del estadístico de Tukey y su p-valor.
+
+Si se opta por ver los gráficos, no debe mostrarse ningún tipo de estructura, todos ellos deben parecer "cielos estrellados".
+
+### Linealidad: gráficos de residuos parciales
+
+Los gráficos de residuos parciales son una herramienta útil para detectar la no linealidad en una regresión. 
+
+Se definen los **residuos parciales** $e_{ij}$ para la variable independiente $X_j$ como
+
+$$e_{ij}=e_i+b_jx_{ij}$$
+
+donde $e_i$ es el residuo $i$-ésimo de la regresión lineal, $b_j$ es el coeficiente de $X_j$ en la regresión original y $x_{ij}$ es la observación $j$-ésima del individuo $i$-ésimo. 
+
+Los residuos parciales se dibujan contra los valores de $x_j$ y se hace su recta de regresión. 
+
+Si ésta no se ajusta a la curva dada por una regresión no paramétrica suave (las variables independientes no están predeterminadas y se construyen con los datos), el modelo no es lineal. 
+
+Estos gráficos se pueden realizar en `R` usando la función `crPlots` del paquete `car`.
+
+```r
+library(car)
+crPlots(lm(y~x1+x2+...+xk))
+```
+
+## Observaciones anómalas
+
+Las observaciones anómalas pueden provocar que se malinterpreten patrones en el conjunto de datos. Además, puntos aislados pueden tener una gran influencia en el modelo de regresión dando resultados completamente diferentes.
+
+Por ejemplo, pueden provocar que un modelo no capture características importantes de los datos.
+
+Por dichos motivos, es importante detectarlas.
+
+En el siguiente gráfico se puede observar cómo la presencia de un valor anómalo distorsiona completamente el modelo.
+
+```{r,echo=FALSE,fig.align='center'}
+x=seq(from=60,to=80,by=2)
+y=x+rnorm(length(x))*0.5
+x2=c(x,160)
+y2=c(y,60)
+par(mfrow=c(1,2))
+plot(x,y,main="Sin observación anómala")
+abline(lm(y~x),col="red")
+plot(x2,y2,main="Con observación anómala")
+abline(lm(y2~x2),col="red")
+```
+
+Existen tres tipos de observaciones anómalas:
+
+* **Outliers de regresión**: son observaciones que tiene un valor anómalo de la variable dependiente $Y$, condicionado a los valores de sus variables independientes $X_i$. Tendrá un residuo muy alto pero puede no afectar demasiado a los coeficientes de la regresión.
+
+* **Leverages**: son observaciones con un valor anómalo de las variables independientes $X_i$. No tiene porqué afectar los coeficientes de la regresión.
+
+* **Observaciones influyentes**: son aquellas que tienen un **leverage** alto, son **outliers de regresión** y afectan fuertemente a la regresión.
+
+En el siguiente gráfico se muestra un ejemplo de un **outlier**, un **leverage** y una **observación anómala**.
+
+```{r,echo=FALSE,fig.align='center'}
+x=seq(from=60,to=80,by=2)
+y=x+rnorm(length(x))*0.5
+x2=c(x,65)
+y2=c(y,50)
+x3=c(x,160)
+y3=c(y,162)
+x4=c(x,160)
+y4=c(y,60)
+
+par(mfrow=c(1,3))
+plot(x2,y2,main="Outlier")
+points(65,50,pch=19,col="blue",cex=2)
+abline(lm(y2~x2),col="red")
+plot(x3,y3,main="Leverage")
+abline(lm(y3~x3),col="red")
+points(160,162,pch=19,col="blue",cex=2)
+plot(x4,y4,main="Punto influyente")
+abline(lm(y4~x4),col="red")
+points(160,60,pch=19,col="blue",cex=2)
+```
+
+### Leverages
+
+Para hallar las observaciones que son **leverages**, en primer lugar, se necesita definir la **matriz Hat** como:
+
+$$\mathbf{H}=\mathbf{X}(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top$$
+
+Esta matriz es simétrica ($\mathbf{H}^\top=\mathbf{H}$) e idempotente ($\mathbf{H}^2=\mathbf{H}$). 
+
+Además,	es fácil comprobar que 
+
+$$\hat{y}=\mathbf{X}b=\mathbf{X}(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top{y}=\mathbf{H}y$$ 
+
+usando la expresión dada anteriormente que halla los valores estimados $\hat{y}$, y así se tiene que
+
+$$\hat{y}_{j}=h_{1j}y_1+h_{2j}y_2+\ldots+h_{nj}y_n=\sum_{i=1}^n{h_{ij}y_i}\qquad\text{para }\ j=1,2,\ldots,n$$
+
+Si la componente $(i,j)$ de la **matriz Hat**, $h_{ij}$ es grande, la observación $i$-ésima tiene un impacto sustancial en el valor predicho $j$-ésimo.
+
+Se define el **leverage** de la observación $i$-ésima $h_i$ como su **valor hat**
+
+$$h_i=\sum\limits_{j=1}^n{h_{ij}^2}$$
+
+y así, el **valor hat** $h_i$ mide el **leverage potencial** de $y_i$ en todos los valores predichos.
+
+#### Propiedades
+
+* El **valor hat** medio es
+
+$$\overline{h}=\frac{1}{n}\sum_{i=1}^n h_i=\frac{k+1}{n}$$
+
+* Los **valores hat** satisfacen
+
+$$\frac1{n}\leq h_i\leq1$$
+
+* En la regresión lineal simple, los **valores hat** miden la distancia de $x_i$ a la media de $X$:
+
+$$h_i=\frac1{n}+\frac{(x_i-\overline{x})^2}{\sum\limits_{j=1}^n{(x_j-\overline{x})^2}}$$
+
+* En la regresión múltiple, $h_i$ mide la distancia de una observación al vector medio de $X$ de una forma parecida a la anterior.
+
+Basándose en las propiedades anteriores, la regla de decisión que dirá si una observación tiene leverage grande (y por lo tanto, tiene que ser considerada con cuidado) es cuando su **valor hat** cumpla:
+
+$$h_i>2\frac{k+1}{n}$$
+
+Este cálculo se puede hacer en `R` usando la función `hatvalues` del paquete `stats`.
+
+```r
+hatvalues(r)
+```
+
+donde `r` es el resultado de la regresión original obtenido con `lm(y ~ x1+x2+...+xk)`.
+
+### Outliers
+
+La estrategia para determinar qué observaciones son susceptibles de ser outliers se basan en los llamados **residuos estunderizados**.
+
+Se basan en recalcular el modelo después de eliminar la observación $i$-ésima  y hallar el correspondiente $(MSE)_i$.
+
+Los **residuos estunderizados** se definen como:
+
+$$E_i^\star=\frac{e_i}{\sqrt{(MSE)_i(1-h_i)}}$$
+
+y, si el modelo es correcto, la variable anterior sigue una distribución $t$ de Student con $n-k-2$ grados de libertad.
+
+Para detectar los **outliers** se siguen los siguientes pasos:
+
+* Para cada observación $i$-ésima, se calcula el **residuo estunderizado** $E_i^\star$.
+
+* A continuación, se realiza una corrección de Bonferroni al p-valor multiplicándolo por $n$ y así, el p-valor ajustado es
+
+$$2nP(t_{n-k-2}\geq E_i^\star)$$
+
+* Se van considerando por orden decreciente los p-valores de las observaciones hasta que se encuentra una observación que ya no sea un **outlier**.
+
+Este cálculo se puede hacer con `R` usando la función `outlierTest` del paquete `car`.
+
+```r
+outlierTest(r)
+```
+
+donde `r` es el resultado de la regresión original obtenido con `lm(y ~ x1+x2+...+xk)`.
+
+### Observaciones influyentes: Distancia de Cook
+
+Una observación influyente es aquella que combina **discrepancia** con **leverage**.
+
+Una forma de determinarlas es examinar cómo cambian los coeficientes de la regresión si se elimina una observación en concreto.
+
+La medida para evaluar este cambio es la llamada **distancia de Cook**:
+
+$$D_i=\frac{e^2_{S_i}}{k+1}\cdot\frac{h_i}{1-h_i}$$
+
+dónde $h_i$ es el **leverage** y es $e_{S_i}$ el llamado **residuo estandarizado**, dado por
+
+$$e_{S_i}=\frac{e_i}{\sqrt{MSE(1-h_i)}}$$
+
+El primer factor en la expresión de la **distancia de Cook** $\left(\frac{e^2_{S_i}}{k+1}\right)$ mide el grado de ser **outlier** mientras que el segundo $\left(\frac{h_i}{1-h_i}\right)$ mide el grado de **leverage**.
+
+Una regla para determinar qué observaciones son influyentes es
+
+$$D_i>\frac4{n-k-1}$$
+
+Este cálculo se puede hacer en `R` usando la función `cooks.distance` del paquete `car`.
+
+```r
+cooks.distance(r)
+```
+donde `r` es el resultado de la regresión original obtenido con `lm(y ~ x1+x2+...+xk)`.
+
+### Tratamiento de las observaciones anómalas
+
+El tratamiento de las observaciones anómalas es bastante complejo.
+
+Se debe estudiar si se deben a errores en la entrada o recogida de los datos y si éste es el caso, se debían de eliminar.
+
+Pero también pueden explicar que no se ha considerado alguna variable independiente que afecta al conjunto de observaciones anómalas.
+
+Las más peligrosas son las influyentes.
+
+En el supuesto de que se determine que se pueden eliminar, se tienen que eliminar de una a una, actualizando el modelo cada vez.
+
+## Simplificación de los modelos
+
+El modelo de regresión lineal no es el único que se puede usar. Existen otros modelos como los polinómicos o los logarítmicos que podrían ajustar mejor la tabla de datos.
+
+El modelo puede ser más eficaz si se añaden otras variables, o puede ser igual de eficaz si se eliminan variables redundantes.
+
+Puede haber dependencias lineales entre las variables que las haga redundantes. Se pueden detectar dichas dependencias con la matriz de covarianzas entre las variables regresoras o independientes.
+
+En `R` existe la función `step` que, a partir del método `AIC` da el mejor modelo desde en el sentido de buscar un equilibrio entre la simplicidad y la adecuación.
+
+```r
+step(r)
+```
+
+donde `r` es el resultado de la regresión original obtenido con `lm(y ~ x1+x2+...+xk)`.
+
+El método consiste en eliminar, en cada iteración, la variable independiente que tenga el menor índice `AIC` menor que el menor `AIC` anterior.
+
+## RMSE
+
+El $RMSE$ (_Root Mean Squared Error_) es una métrica que se usa para la comparación de modelos.
+
+$$RMSE=\sqrt{\frac{\sum\limits_{i=1}^{n}{\left(y_i-\hat{y}_i\right)^2}}{n}}$$
+
+Este cálculo se puede hacer en `python` como se muestra a continuación.
+
+```python
+from sklearn.metrics import mean_squared_error
+mean_squared_error(yhat, y)**0.5
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
