@@ -40,8 +40,13 @@ $ sudo apt-get install -y zsh
 $ sudo dnf install -y zsh
 ```
 
-###### Resource:
+### Set as default
+
+You can set `zsh` as default shell executing `chsh -s $(which zsh)`. If this does not work, you can execute `zsh` adding the line `exec zsh` below top of the `~/.bashrc` file.
+
+###### Resources:
 * https://www.zsh.org/
+* https://askubuntu.com/questions/131823/how-to-make-zsh-the-default-shell
 
 ### Oh My Zsh
 
