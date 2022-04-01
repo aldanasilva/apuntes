@@ -1,0 +1,570 @@
+---
+title: "estadistica-inferencial-clustering"
+author: "Andrés Aldana"
+date: "3/29/2022"
+output:
+  rmdformats::downcute:
+    downcute_theme: "chaos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style>
+div.center-header th {
+  text-align: center !important;
+}
+div.center-all th,
+div.center-all td {
+  text-align: center !important;
+  vertical-align: center !important;
+}
+</style>
+
+# Clustering
+
+## Introducción
+
+Uno de los problemas que más se presentan en el ámbito del **machine learning** es la clasificación de objetos.
+
+Más concretamente, se plantea el siguiente problema: dado un conjunto de objetos, clasificarlos en grupos (*clusters*) basándose en sus parecidos y diferencias.
+
+Algunas aplicaciones del **clustering** son las siguientes:
+
+* En Biología: clasificación jerárquica de organismos (relacionada con una filogenia), agrupamiento de genes y agrupamiento de proteínas por parecido estructural.
+
+* En Marketing: identificación de individuos por comportamientos similares (de compras, ocio, etc.)
+
+* En Tratamiento de imágenes (en particular imágenes médicas): eliminación de ruido, detección de bordes, etc.
+
+* En Biometría: identificación de individuos a partir de sus caras, huellas dactilares, etc.
+
+### Principios básicos
+
+Los **algoritmos de clasificación o clustering** deben verificar dos principios básicos:
+
+* **Homogeneidad**: los **clusters** deben ser homogéneos en el sentido de que objetos dentro de un mismo **cluster** tienen que ser **próximos o parecidos**.
+
+* **Separación**: los objectos que pertenezcan a **clusters** diferentes tienen que estar **alejados**.
+
+### Tipos de algoritmos de clustering
+
+Existen dos tipos de **algoritmos de clustering**:
+
+* **De partición:** el número de clusters con los que se va a clasificar el conjunto de objetos es un valor conocido y prefijado de entrada.
+
+* **Jerárquico**: el **algoritmo de clustering** se compone de un número finito de pasos donde usualmente dicho número coincide con el número de objetos menos uno. 
+
+Los métodos **jerárquicos** a su vez se subclasifican en dos tipos más:
+
+* **métodos aglomerativos**, donde en el paso inicial todos los objetos están separados y forman un cluster de un sólo objeto y en cada paso, se van agrupando aquellos objetos o clusters más **próximos** hasta llegar a un único cluster formado por todos los objetos.
+
+* **métodos divisivos**, donde en el paso inicial existe un único cluster formado por todos los objetos y en cada paso se van dividiendo aquellos clusters más heterogéneos hasta llegar a tantos clusters como objetos existían inicialmente. 
+
+Los métodos **jerárquicos** tanto **aglomerativos** como **divisivos** producen un árbol binario de clasificación donde cada nodo de dicho árbol indica una **agrupación** de un cluster en dos en el caso de los métodos **aglomerativos** y una **partición** de un cluster en dos en el caso de los métodos **divisivos**.
+
+
+## Métodos de partición
+
+### Algoritmo de las $k$-medias (*$k$-means*)
+
+El **algoritmos de las $k$-medias** o *$k$-means* en inglés es el algoritmo de **partición** más conocido y más usado.
+
+Al ser un **algoritmo de partición**, el número de clusters $k$ se ha prefijado de entrada.
+
+Dicho algoritmo busca una **partición** del conjunto de objetos, donde se supone que se conoce un conjunto de características o variables que tienen valores continuos. 
+
+Concretamente, se tiene una tabla de datos de $n$ filas y $m$ columnas, donde cada fila representa un objeto u individuo y cada columna representa una característica de dicho individuo.
+
+<div class="center-all">
+|Individuos\\Variables| $X_1$|$X_2$|$\ldots$|$X_m$|
+|:---:|:---:|:---:|:---:|:---:|
+|1|$x_{11}$|$x_{12}$|$\ldots$|$x_{1m}$|
+|2|$x_{21}$|$x_{22}$|$\ldots$|$x_{2m}$|
+|$\vdots$|$\vdots$|$\vdots$|$\ddots$|$\vdots$|
+|$i$|$x_{i1}$|$x_{i2}$|$\ldots$|$x_{im}$|
+|$\vdots$|$\vdots$|$\vdots$|$\ddots$|$\vdots$|
+|$n$|$x_{n1}$|$x_{n2}$|$\ldots$|$x_{nm}$|
+</div>
+
+Por tanto, se puede identificar el individuo $i$-ésimo con un vector
+
+$$\mathbf{x}_i =(x_{i1},x_{i2},\ldots,x_{im})\quad\text{de}\quad\mathbb{R}^m$$
+
+El **algoritmo de las $k$-medias** va a clasificar los $n$ individuos usando la información de la tabla anterior, es decir, la información de las $m$ variables continuas.
+
+Para realizar dicha clasificación, se necesita definir cuándo dos objetos están **próximos**.
+
+Una manera de definir la proximidad entre dos individuos, (no es la única) es a partir de la **distancia euclídea**.
+
+Dados dos objetos $\mathbf{x}$ y $\mathbf{y}$ en $\mathbb{R}^m$, se define la **distancia euclídea** entre los dos como:
+
+$$\|\mathbf{x}-\mathbf{y}\|=\sqrt{\sum_{i=1}^{m}{(x_i-y_i)^2}}$$
+
+Para $m=2$ o $m=3$, la **distancia euclídea** es la longitud del segmento que une los puntos $\mathbf{x}$ e $\mathbf{y}$.
+
+Por tanto, dos objectos estarán más **próximos**, cuánto más pequeña sea la **distancia euclídea** entre ambos.
+
+El objetivo del **algoritmo de las $k$-medias** es, a partir de la tabla de datos anterior, hallar $k$ puntos $\mathbf{c}_1,\ldots,\mathbf{c}_k\in\mathbb{R}^n$ que minimicen
+
+$$SS_C(\mathbf{x}_1,\ldots,\mathbf{x}_n;k)=\sum_{i=1}^{n}{\min_{j=1,\ldots,k} \|\mathbf{x}_i-\mathbf{c}_j\|^2}$$
+
+La cantidad $SS_C$ se denomina suma de cuadrados dentro de los clusters.
+
+Estos $k$ puntos $\mathbf{c}_1,\ldots,\mathbf{c}_k$ serán los centros de los clusters $C_1,\ldots,C_k$ que se quieren hallar.
+
+Una vez hallados dichos centros $\mathbf{c}_1,\ldots,\mathbf{c}_k$, los clusters quedan definidos por:
+
+$$C_j=\{\mathbf{x}_i\mbox{ tal que }\|\mathbf{x}_i-\mathbf{c}_j\|<\|\mathbf{x}_i-\mathbf{c}_l\|\mbox{ para todo }l\neq j\}$$
+
+Es decir, el cluster $i$-ésimo estará formado por los objetos $\mathbf{x}_l$ más próximos al centro $\mathbf{c}_i$.
+
+Desgraciadamente, el problema anterior es un **problema abierto**, es decir, no se sabe hallar la solución para cualquier tabla de datos.
+
+El **algoritmo de las $k$-medias** es un intento de hallar una solución local del mismo. Es decir, halla unos centro $\mathbf{c}_1,\ldots,\mathbf{c}_k$ que solucionan el problema parcialmente pero no se tiene asegurado que los centros que halla el algoritmo minimicen globalmente $SS_C$.
+
+Una vez establecidos las bases y el objetivo del algoritmo, se explican los pasos de los que consta.
+
+Existen bastantes variantes del **algoritmo de las $k$-medias**, básicamente se diferencian en cómo se inicia el algoritmo.
+
+#### **Algoritmo de Lloyd**
+
+* Paso 1: escoger aleatoriamente los centros $\mathbf{c}_1,\ldots,\mathbf{c}_k$.
+
+* Paso 2: para cada $i=1,\ldots,n$, asignar el individuo $i$-ésimo, $\mathbf{x}_i$, al cluster $C_j$ definido por el centro $\mathbf{c}_j$ más próximo. Dicho en otras palabras, definir los clusters a partir de los centros como se ha explicado antes.
+
+* Paso 3: una vez hallados los clusters, se hallan los nuevos centros $\mathbf{c}_j$ calculando el valor medio de los objetos que forman el cluster $C_j$: $$\mathbf{c}_j=\left(\sum_{\mathbf{x}_i\in{C}_j}\mathbf{x}_i\right)/|C_j|$$
+
+* Paso 4: se repiten los pasos $2$ y $3$ hasta que los clusters estabilizan, o se llega a un número prefijado de iteraciones ya que el algoritmo anterior puede entrar en un "bucle infinito".
+
+**Observación:** el resultado final, es decir, los clusters obtenidos, depende de cómo se inicialice el algoritmo, es decir, de cómo se definan los centros iniciales $\mathbf{c}_1,\ldots,\mathbf{c}_k$.
+
+Como ya se comentó, el algoritmo anterior no tiene porque dar un clustering óptimo, es decir, los centros obtenidos $\mathbf{c}_1,\ldots,\mathbf{c}_k$ no tienen por qué minimizar la suma de cuadrados de los clusters $SS_C$. Por este motivo, conviene repetirlo varias veces con diferentes inicializaciones.
+
+#### **Algoritmo de Hartigan-Wong**
+
+Este algoritmo empieza igual que el de **Lloyd**: se escogen $k$ centros, se calculan las distancias euclídeas de cada punto a cada centro, y se asigna a cada centro el cluster de puntos que están más cerca de él que de los otros centros. A continuación, en pasos sucesivos se itera el bucle 1–5 siguiente hasta que en una iteración del mismo los clusters no cambian:
+
+1. Se sustituye cada centro por el punto medio de los puntos asignados a su cluster.
+
+2. Se calculan las distancias euclídeas de cada punto a cada centro.
+
+3. Se asigna (temporalmente) a cada centro el cluster formado por los puntos que están más cerca de él que de los otros centros.
+
+4. Si en esta asignación algún punto ha cambiado de cluster, por ejemplo, el punto $\mathbf{x}_i$ se ha incorporado al cluster $C_j$ de centro $\mathbf{c}_j$, entonces:
+
+    * Se calcula el valor $SSE_j$ que se obtiene multiplicando la suma de cuadrados de cada cluster $$SS_{C_j}=\sum\limits_{l=1}^{n_j} \|\mathbf{x}_{jl}-\mathbf{c}_j\|^2$$ donde $\mathbf{x}_{jl}$ son los puntos del cluster $C_j$, para $l=1,\ldots,n_j$, por $n_j/(n_j−1)$ (donde $n_j$ indica el número de elementos del cluster $C_j$).
+
+    * Se calcula, para todo otro cluster $C_k$, el correspondiente valor $SSE_{i,k}$ como si $\mathbf{x}_i$ hubiera ido a parar a $C_k$.
+
+    * Si algún $SSE_{i,k}$ resulta menor que $SSE_j$, $\mathbf{x}_i$ se asigna definitivamente al cluster $C_k$ que da valor mínimo de $SSE_{i,k}$.
+
+5.Una vez realizado el procedimiento anterior para todos los puntos que han cambiado de cluster, éstos se asignan a sus clusters definitivos y se da el bucle por completado.
+
+#### **Algoritmo de MacQueen**
+
+Es el mismo método que el de **Lloyd** salvo por el hecho de que no se recalculan todos los clusters y sus centros de golpe, sino elemento a elemento. Es decir, se empieza igual que en los dos algoritmos anteriores: se escogen $k$ centros, se calculan las distancias euclídeas de cada punto a cada centro, se asigna a cada centro el cluster de puntos que están más cerca de él que de los otros centros, y se sustituye cada centro por el punto medio de los puntos asignados a su cluster. A partir de aquí, en pasos sucesivos se itera el bucle siguiente (recordemos que los puntos a clasificar son $\mathbf{x}_1,\ldots,\mathbf{x}_n$, y los supondremos ordenados por su fila en la tabla de datos):
+
+* Para cada $i=1,\ldots,n$, se mira si el punto $\mathbf{x}_i$ está más cerca del centro de otro cluster que del centro del cluster al que está asignado.
+
+* Si no lo está, se mantiene en su cluster y se pasa al punto siguiente, $\mathbf{x}_{i+1}$. Si se llega al final de la lista de puntos y todos se mantienen en sus clusters, el algoritmo se para.
+
+* Si $\mathbf{x}_i$ está más cerca de otro centro, se traslada al cluster definido por este centro, se recalculan los centros de los dos clusters afectados (el que ha abandonado $\mathbf{x}_i$ y aquél al que se ha incorporado), y se reinicia el bucle, empezando de nuevo con $\mathbf{x}_1$.
+
+El clustering resultante está formado por los clusters existentes en el momento de parar.
+
+#### **Algoritmo de $k$-medias con `R`**
+
+Para ejecutar este algoritmo con `R`, hay que usar la función `kmeans` del paquete `stats`.
+
+```r
+kmeans(x, centers=..., iter.max=..., algorithm =...)
+```
+
+donde:
+
+* `x` es la matriz o el data frame cuyas filas representan los objetos; en ambos casos, todas las variables han de ser numéricas.
+
+* `centers` sirve para especificar los centros iniciales, y se puede usar de dos maneras: igualado a un número $k$, `R` escoge aleatoriamente los $k$ centros iniciales, mientras que igualado a una matriz de $k$ filas y el mismo número de columnas que `x`, `R` toma las filas de esta matriz como centros de partida.
+
+* `iter.max` permite especificar el número máximo de iteraciones a realizar; su valor por defecto es $10$. Al llegar a este número máximo de iteraciones, si el algoritmo aún no ha acabado porque los clusters aún no hayan estabilizado, se para y da como resultado los clusters que se han obtenido en la última iteración.
+
+* `algorithm` indica el algoritmo a usar. Los algoritmos pueden ser `Hartigan-Wong`, `Lloyd`, `Forgy` o `MacQueen`.
+
+La salida del algoritmo de $k$-medias con `R` tiene las siguientes componentes:
+
+* `$size`: da los números de objetos, es decir, los tamaños de cada cluster.
+
+* `$cluster`: dice qué cluster pertenece cada uno de los objetos de la tabla de datos.
+
+* `$centers`: da los centros de cada cluster en filas. Es decir, la fila $1$ sería el centro del cluster $1$, la fila $2$, del cluster $2$ y así sucesivamente.
+
+* `$withinss`: da las sumas de cuadrados de cada cluster, lo que antes se ha denominado $SS_{C_j}$, para $j=1,\ldots,k$.
+
+* `$tot.withinss`: la suma de cuadrados de todos los clusters, lo que antes se ha denominado $SS_C$. También se puede calcular sumando las sumas de los cuadrados de cada cluster: `sum(resultado.km$withinss)`.
+
+* `$totss`: es la suma de los cuadrados de las distancias de los puntos en su punto medio de todos estos puntos. Es decir, sería la suma de los cuadrados $SS_C$ pero suponiendo que hubiera un sólo cluster.
+
+* `$betweenss`: es la diferencia entre `$totss` y `$tot.withinss` y puede demostrarse (es un cálculo bastante tedioso) que es igual a la suma, ponderada por el número de objetos del cluster correspondiente, de los cuadrados de las distancias de los centros de los clusters al punto medio de todos los puntos.<br>Es decir:
+
+    * sean $n_1,\ldots, n_k$ los números de objectos de los clusters $C_1,\ldots, C_k$,
+
+    * sean $\mathbf{x}_{i1},\ldots,\mathbf{x}_{in_i}$ los objectos pertenecientes al cluster $C_i$,
+
+    * sean $\mathbf{\overline{x}}_1,\ldots,\mathbf{\overline{x}}_k$, los centros de los clusters $C_1,\ldots,C_k$: $$\mathbf{\overline{x}}_i =\frac{1}{n_i}\sum\limits_{j=1}^{n_i}\mathbf{x}_{ij},\ i=1,\ldots,k,$$
+
+    * sea $\overline{\mathbf{x}}$ el punto medio de todos los puntos: $$\overline{\mathbf{x}}=\frac{1}{n}\sum\limits_{i=1}^k\sum\limits_{j=1}^{n_i} \mathbf{x}_{ij}$$<br>Entonces: $$\verb+$betweenss+=\sum_{i=1}^{k} n_i \|\mathbf{\overline{x}}_i-\overline{\mathbf{x}}\|^2$$
+
+    Se podría considerar la medida anterior como una medida de dispersión de los centros o una medida de cuan separados están los clusters ya que cuanto mayor sea `$betweenss` más separados estarán los centros del punto medio global de todos los puntos y mayor separación habrá entre los clusters.<br>Entonces, interesa el cociente `$betweenss/$totss`, que mide la fracción de la variabilidad de los datos que explican los clusters. Cuanto mayor mejor.
+
+#### **Algoritmo de $k$-medias con `python`**
+
+Para ejecutar este algoritmo con `python`, hay que usar la función `KMeans` del paquete `sklearn.cluster`.
+
+```python
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=k, init="k-means++", max_iter=300, n_init=10)
+y_kmeans = kmeans.fit_predict(X)
+```
+
+donde:
+
+* `X` es un arreglo de $n$ filas por $m$ columnas, cuyas filas representan los objetos; en ambos casos, todas las variables han de ser numéricas.
+
+* `n_clusters` sirve para especificar el número de clusters $k$ que se desean.
+
+* `init` especifica el método de selección de los baricentros de los clústers.
+
+* `max_iter` permite especificar el número máximo de iteraciones a realizar; su valor por defecto es $300$. Al llegar a este número máximo de iteraciones, si el algoritmo aún no ha acabado porque los clusters aún no hayan estabilizado, se para y da como resultado los clusters que se han obtenido en la última iteración.
+
+* `n_init` la inicialización aleatoria.
+
+## Métodos Jerárquicos
+
+Este tipo de clustering, en lugar de dar los clusters de la partición de objetos, va a dar un árbol binario que indica cómo se van agrupando los objetos de la tabla de datos.
+
+Los métodos de **clustering jerárquico** dan el árbol binario de clasificación a partir de una matriz de distancias entre los objetos de la tabla de datos, no a partir de la tabla de datos misma, tal como se hace con el **algoritmo de $k$-medias**.
+
+La matriz $\mathbf{D}$ de distancias entre los $n$ objetos de la tabla de datos tiene la siguiente forma.
+
+$$
+\mathbf{D}=\left(\begin{array}{cccc}
+d_{11} & d_{12} & \ldots & d_{1n}\\
+d_{21} & d_{22} & \ldots & d_{2n}\\
+\vdots & \vdots & \ddots & \vdots\\
+d_{n1} & d_{n2} & \ldots & d_{nn}
+\end{array}
+\right),
+$$
+
+dónde cada $d_{ij}$ es la distancia o el parecido entre el objeto $i$ y lo objeto $j$.
+
+**Definición.** Una **distancia** sobre un conjunto $X$ de objetos es una aplicación $d:X\times X\to [0,\infty)$ que satisface las siguientes condiciones:
+
+* **Separación**: $d(x,y)=0$ si, y sólo si, $x=y$.
+
+* **Simetría**: dados dos objectos cualesquiera $x,y\in X$, $d(x,y)=d(y,x)$.
+
+* **Desigualdad triangular**: dados tres objectos cualesquiera $x,y,z\in X$, se verifica $d(x,z)\leq d(x,y)+d(y,z)$.
+
+Se dice que dos objetos $x,y$ son más parecidos o más cercanos cuanto más pequeña es $d(x,y)$, la distancias entre ellos.
+
+Si se tiene una tabla de datos, el conjunto $X$ será un conjunto finito formado por los $n$ objetos o las $n$ filas de la tabla de datos: $X=\{\mathbf{x}_1,\ldots,\mathbf{x}_n\}$.
+
+Por tanto, dar una distancia sobre $X$ es equivalente a dar una matriz $\mathbf{D}$ de $n$ filas y $n$ columnas, donde la componente $i,j$ de dicha matriz, $d_{ij}=d(\mathbf{x}_i,\mathbf{x}_j)$, sería la distancia entre el objeto $i$ y el objeto $j$-ésimo.
+
+Usando la definición de distancia vista anteriormente, se tiene que dicha matriz $\mathbf{D}$ debe ser 
+
+* simétrica: $d(\mathbf{x}_i,\mathbf{x}_j)=d(\mathbf{x}_j,\mathbf{x}_i)$, para cualquier $i$ y $j$.
+
+* cumplir la desigualdad triangular: $d(\mathbf{x}_i,\mathbf{x}_k)\leq d(\mathbf{x}_i,\mathbf{x}_j)+d(\mathbf{x}_j,\mathbf{x}_k)$, para cualquier $i,j,k$.
+
+La primera decisión a tomar cuando se quiere realizar un **clustering jerárquico** es elegir la **distancia** que se va a utilizar.
+
+Es una decisión muy importante ya que dicha decisión determinará el **árbol binario** que se obtendrá y dará un significado u otro a los clusters que se deriven del mismo.
+
+La **distancia** a elegir dependerá del tipo de datos con los que se trabaje. Más concretamente, se va a distinguir dos tipos de datos: **binarios** y **continuos**.
+
+El significado de las distancias dependerá del tipo de datos con los que se trabaje.
+
+### Datos binarios
+
+Suponiendo que las variables de la matriz de datos sólo contiene datos **binarios**, es decir, datos con sólo dos posibles valores: $1$/$0$, presencia/ausencia, éxito/fracaso, etc.
+
+Usar por ejemplo la distancia euclídea en este tipo de datos no tendría ningún sentido ya que los valores $0$ y $1$ no tienen ningún significado numérico. 
+
+Suponiendo que la tabla de datos tiene $n$ filas (objetos) y $m$ columnas (variables), donde los valores $x_{ij}$ valen $0$ o $1$, $i=1\ldots,n$, $j=1,\ldots,m$.
+
+Considerando los valores de dos objectos cualesquiera $\mathbf{x}_i =(x_{i1},\ldots,x_{im}),\ \mathbf{x}_j =(x_{j1},\ldots,x_{jm})$ y se quiere **medir** de alguna manera lo parecidos que son dichos objetos.
+
+Para ello, se define primero las siguientes cantidades:
+
+$$
+\begin{array}{l}
+a_0 = \left|\{k\mid x_{ik}=x_{jk}=0\}\right|\\
+a_1 =\left|\{k\mid x_{ik}=x_{jk}=1\}\right|\\
+a_2 = \left|\{k\mid x_{ik}\neq x_{jk}\}\right|
+\end{array}
+$$
+
+Es decir, $a_0$ sería el número de variables en los que los objetos $i$ y $j$ tienen el valor $0$, $a_1$, el número de variables en los que los objetos $i$ y $j$ tienen el valor $1$ y $a_2$, el número de variables en los que los objetos $i$ y $j$ difieren.
+
+Intuitivamente, cuanto mayores sean $a_0$ y $a_1$ y cuanto menor sea $a_2$, más parecidos deben ser los objetos $i$ y $j$.
+
+Basándose en la consideración anterior, se define el "parecido" o la **distancia** entre los objetos $i$ y $j$ como:
+
+$$\sigma_{ij}=\frac{a_1+\delta a_0}{\alpha a_1+\beta a_0+\lambda a_2}$$
+
+donde los parámetros $\alpha$, $\beta$, $\delta$ y $\lambda$ son valores a elegir que determinarán la distancia entre los objetos $i$ y $j$.
+
+Los valores más comunes de los parámetros anteriores junto con sus nombres se presentan en la siguiente tabla:
+
+<div class="center-all">
+|Nombre|$\delta$|$\lambda$| $\alpha$ | $\beta$ | Definición|
+|:---|:--:|:--:|:--:|:--:|:---:|
+|Hamming|$1$|$1$|$1$|$1$| $\dfrac{a_1 + a_0}{a_0+a_1+a_2}$|
+|Jaccard|$0$|$1$|$1$|$0$| $\dfrac{a_1}{a_1 + a_2}$ |
+|Tanimoto|$1$|$2$|$1$|$1$| $\dfrac{a_1+a_0}{a_1+2a_2+a_0}$|
+|Rusell--Rao|$0$|$1$|$1$|$1$| $\dfrac{a_1}{a_0+a_1+a_2}$|
+|Dice|$0$|$0.5$|$1$|$0$| $\dfrac{2a_1}{2a_1 + a_2}$ |
+|Kulczynski|$0$|$1$|$0$|$0$| $\dfrac{a_1}{a_2}$|
+</div>
+
+
+
+### Datos continuos
+
+Se supone ahora que la matriz de datos contiene datos continuos, es decir, los objectos a clasificar se pueden considerar elementos de $\mathbb{R}^m$, donde se tiene $n$ individuos u objetos y $m$ variables.
+
+El significado de **distancia** en este caso es el opuesto al significado de **distancia** en el caso de datos **binarios**. 
+
+Ahora en el caso de datos continuos, cuanto mayor sea la distancia entre dos objetos, más disimilares son y cuanto menor sea, más similares serán.
+
+En este caso, las **distancias** que se definen entre los objectos se basan en las llamadas **normas $L_r$**.
+
+Más concretamente, dados dos objectos $\mathbf{x}_i$ y $\mathbf{x}_j$ de componentes
+
+$$\mathbf{x}_i=(x_{i1},\ldots,x_{im}),\ \mathbf{x}_j=(x_{j1},\ldots,x_{jm})$$
+
+la **distancia $L_r$** entre dichos objetos se define como:
+
+$$d_{ij}=\|\mathbf{x_i} - \mathbf{x_j}\|_r = \left(\sum_{k=1}^m |x_{ik} - x_{jk}|^r\right)^{1/r}$$
+
+* Cuando $r=1$, la distancia $$d_{ij}= \sum\limits_{k=1}^m |x_{ik} - x_{jk}|$$ se  denomina **distancia de Manhattan**
+
+* Cuando $r=2$, la distancia $$d_{ij}= \sqrt{\sum\limits_{k=1}^m (x_{ik} - x_{jk})^2}$$ se denomina **distancia euclídea**.
+
+#### **Otras distancias**
+
+* Distancia del **máximo**, que vale: $$\max_{i=1,\ldots,m}|x_i-y_i|$$
+
+* Distancia de **Canberra**, que vale: $$\sum_{i=1}^{m}{\frac{|x_i-y_i|}{|x_i|+|y_i|}}$$
+
+### Cálculo de distancias en `R`
+
+La matriz de distancias $\mathbf{D}$  entre los objetos de la tabla de datos se puede calcular en `R` usando la función `dist` del paquete `stats`, cuya sintaxis básica es:
+
+```r
+dist(x, method="euclidean")
+```
+
+donde:
+
+* `x` es la tabla de datos (una matriz o un data frame de **variables cuantitativas**).
+
+* `method` sirve para indicar la distancia que se quiere usar, cuyo nombre se ha de entrar entrecomillado. Los valores admitidos para `method` son `euclidean`, `maximum`, `manhattan`, `canberra`, `binary` or `minkowski`. Donde, el método `minkowski` calcula la distancia $L_r$, pero depende del parámetro `p` en vez de $r$.<br>**Nota:** La distancia binaria, `binary`, que sirve para comparar vectores binarios (si los vectores no son binarios, `R` los entiende como binarios sustituyendo cada entrada diferente de $0$ por $1$). La distancia calculada con este método es: $$d_{ij}=\dfrac{a_2}{a_1+a_2}$$
+
+La salida de aplicar la función `dist` a la tabla de datos es un objeto `dist` de `R`, no es una matriz de distancias usual. Aunque este resultado puede convertirse en matriz de `R` usando la función `as.matrix(dist(...))` del paquete `base`.
+
+## Escalado de los datos
+
+En el caso de que no se quiera que la variación de las variables influya en el posterior análisis del cálculo del **árbol binario** debido a que los datos están en escalas diferentes o para que la contribución a la matriz de distancias de cada una de las variables sea parecida, es conveniente que los datos estén en la misma escala.
+
+En este caso, se escalan los datos de la siguiente forma: a los datos de la variable $k$ o columna $k$, $x_{ik}$, $i=1,\ldots,n$ se les resta la media de dicha variable ($\overline{x}_k$) y se dividen por su desviación estándar ($\tilde{s}_k$).
+
+$$\overline{x}_k =\frac{\sum\limits_{i=1}^n{x_{ik}}}{n},\qquad\tilde{s}_k=\sqrt{\frac{n}{n-1}\left(\frac{\sum\limits_{i=1}^n{x_{ik}^2}}{n}-\overline{x}_k^2\right)}$$
+
+entonces:
+
+$$\tilde{x}_{ik}=\frac{x_{ik}-\overline{x}_k}{\tilde{s}_k}$$
+
+donde $\tilde{x}_{ik}$ serían los nuevos valores de la tabla de datos escalada.
+
+De esta forma, todas las $m$ variables o columnas de la tabla de datos tendrán media $0$ y desviación estándar $1$.
+
+**Observación:** Cuando se usa la distancia euclídea, la distancia entre los objetos $i$ y $j$ escalados puede calcularse a partir de los valores iniciales $x_{ik}$ y $x_{jk}$, $k=1,\ldots,m$ de la siguiente forma:
+
+$$d_{ij}=\sqrt{\sum_{k=1}^n\frac{(x_{ik}-x_{jk})^2}{\tilde{s}^2_{k}}}$$
+
+### Escalado de los datos en `R`
+
+Para escalar los datos en `R` se puede utilizar la función `scale` del paquete `base`.
+
+```r
+scale(x, center=TRUE, scale=TRUE)
+```
+
+donde:
+
+* `x`: es la tabla de datos.
+
+* `center`: es un parámetro lógico o un vector numérico de longitud el número de columnas de `x` indicando la cantidad que se quiere restar a los valores de cada variable o columna. Si vale `TRUE` que es su valor por defecto, a cada columna se le resta la media de dicha columna.
+
+* `scale`: es un parámetro lógico o un vector numérico de longitud el número de columnas de `x` indicando la cantidad por la que se quiere dividir los valores de cada variable o columna. Si vale `TRUE` que es su valor por defecto, a los valores de cada columna se les divide por la desviación estándar de dicha columna.
+
+## Clustering jerárquico aglomerativo
+
+El resultado del **algoritmo del clustering jerárquico aglomerativo** es un árbol binario donde se va indicando cómo se van agrupando los clusters partiendo de una configuración inicial en la que cada objeto forma un cluster.
+
+Los pasos del algoritmo son los siguientes:
+
+* Suponiendo que se parte de $n$ objetos, y de una matriz de **distancias** $\mathbf{D}$ de dimensiones $n\times n$, es decir, $n$ filas y $n$ columnas.
+
+1. Suponer que cada objeto forma un cluster inicial.
+
+2. Hallar los dos clusters $C_1$ y $C_2$ cuya distancia sea la más pequeña de entre todos los pares de clusters. Si hay pares de clusters que empatan en la distancia mínima, se escoge un par al azar.<br>Seguidamente, se unen $C_1$ y $C_2$ en un cluster nuevo que se denota $C_1+C_2$. ¡Ojo, la suma no significa sumar en el sentido clásico sino unir!
+
+3. Los clusters $C_1$ y $C_2$ que se han unido en el paso $2$ ya no existen. Por tanto, se eliminan de la lista de clusters.
+
+4. Recalcular la distancia del nuevo cluster $C_1+C_2$ a los demás clusters. Se tendrá ahora una matriz de distancias $\mathbf{D'}$ con una fila menos y una columna menos.
+
+5. Repetir los pasos $2,\ 3$ y $4$ hasta que sólo queda un único cluster y una matriz de distancias que sea un único número.
+
+### Cálculo de distancias de nuevo cluster
+
+La distancia del nuevo cluster $C_1+C_2$ a los demás clusters se puede calcular de varias maneras, dando lugar a resultados diferentes o a tipos de clusters diferentes.
+
+* Por **enlace simple**: la distancia entre dos clusters $C$ y $C'$ cualquiera se calcula como: $$d(C,C')=\min\{d(a,b)\mid a\in C,b\in C'\}$$ Por tanto, la distancia del nuevo cluster $C_1+C_2$ a un cluster $C$ sería: $$d(C,C_1+ C_2)=\min\{d(C,C_1),d(C,C_2)\}$$
+
+* Por **enlace completo**: la distancia entre dos clusters $C$ y $C'$ cualquiera se calcula como: $$d(C,C')=\max\{d(a,b)\mid a\in C,b\in C'\}$$ Por tanto, la distancia del nuevo cluster $C_1+C_2$ a un cluster $C$ sería: $$d(C,C_1+ C_2)=\max\{d(C,C_1),d(C,C_2)\}$$
+
+* Por **enlace medio**: la distancia entre dos clusters $C$ y $C'$ cualquiera se calcula como: $$d(C,C')=\displaystyle\frac{\sum\limits_{a\in C, b\in C'} d(a,b)}{|C|\cdot |C'|}$$ donde $|C|$ indica el tamaño del cluster $C$ o el número de elementos del mismo. Por tanto, la distancia del nuevo cluster $C_1+C_2$ a un cluster $C$ sería: $$d(C,C_1+ C_2)=\frac{|C_1|}{|C_1|+|C_2|}d(C,C_1)+\frac{|C_2|}{|C_1|+|C_2|}d(C,C_2)$$
+
+Las expresiones anteriores son casos particulares de la siguiente regla general: suponiendo conocidas las distancias siguientes:
+
+$$d(C,C_1),\quad d(C,C_2),\quad d(C_1,C_2)$$
+
+la formula genérica para hallar $d(C,C_1+ C_2)$ es la siguiente:
+
+$$
+\begin{array}{rl}
+d(C,C_1+C_2)  = &  \delta_1 d(C,C_1)+\delta_2 d(C,C_2)+\delta_3 d(C_1,C_2) \\ &  + \delta_0 |d(C,C_1)-d(C,C_2)|
+\end{array}
+$$
+
+donde los $\delta_i$ son parámetros a elegir.  Cada elección da lugar a un algoritmo diferente, con resultados posiblemente diferentes como se muestra en la siguiente tabla:
+
+<div class="center-all">
+|Nombre|$\delta_1$|$\delta_2$|$\delta_3$|$\delta_0$|
+|:-----|:--:|:--:|:--:|:--|
+|Enlace simple|$1/2$|$1/2$|$0$|$-1/2$|
+|Enlace completo|$1/2$|$1/2$|$0$|$1/2$|
+|Enlace promedio|$\frac{|C_1|}{|C_1| + |C_2|}$|$\frac{|C_2|}{|C_1|+ |C_2|}$|$0$|$0$|
+|Centroide |$\frac{|C_1|}{|C_1| + |C_2|}$|$\frac{|C_2|}{|C_1| + |C_2|}$|$-\frac{|C_1| |C_2|}{(|C_1| + |C_2|)^2}$|$0$|
+|Mediana |$1/2$|$1/2$|$-1/4$|$0$|
+|Ward |$\frac{|C| + |C_1|}{|C| + |C_1| + |C_2|}$|$\frac{|C| + |C_2|}{|C| + |C_1|+ |C_2|}$|$-\frac{|C|}{|C| + |C_1| + |C_2|}$|$0$|
+</div>
+
+### Cálculo con `R`
+
+En `R` se puede realizar un clustering jerárquico aglomerativo usando la función `hclust` del paquete `stats`.
+
+```r
+hclust(d, method="complete")
+```
+
+donde:
+
+* `d` es la matriz de distancias calculada con la función `dist`.
+
+* `method` sirve para especificar cómo se define la distancia de la unión de dos clusters al resto de los clusters. El nombre del método se ha de entrar entrecomillado. Los métodos disponibles son los siguientes:
+
+  * Método de enlace simple, `single`
+  * Método de enlace completo, `complete`
+  * Método de enlace promedio, `average`
+  * Método de la mediana, `median`
+  * Método del centroide, `centroid`
+  * Método de Ward clásico, `ward.D`
+  * `ward.D2`
+  * `mcquitty`
+
+Para la interpretación de la salida, se pueden pedir algunos valores a la función.
+
+* `$merge` indica cómo ha ido agrupando los clusters. Es una matriz de $n-1$ filas y 2 columnas, donde $n$ es el número de objetos.<br>En esta matriz, los objetos originales se representan con números negativos, y los nuevos clusters con números positivos que indican el paso en el que se han creado. 
+
+* `$height` es un vector que contiene las distancias a las que se han ido agrupando los pares de clusters.
+
+### Gráfico del árbol binario o **dendrograma**
+
+La visualización de los pasos del **clustering aglomerativo** se realiza mediante un árbol binario denominado **dendrograma**. 
+
+Para visualizarlo en `R` basta usar la función `plot`:
+
+```r
+plot(hclust(...),hang=...,labels=...)
+```
+
+donde
+
+* `hang` es un parámetro que controla la situación de las hojas del dendrograma respecto del margen inferior.
+
+* `labels` es un vector de caracteres que permite poner nombres a los objetos; por defecto, se identifican en la representación gráfica por medio de sus números de fila en la matriz o el data frame que contiene los datos.
+
+### Cálculo de número de clusters
+
+Un **clustering jerárquico** puede usarse para definir un clustering ordinario, es decir, una clasificación de los objetos bajo estudio dando los clusters correspondientes.
+
+Dichos clusters se pueden hallar de dos maneras: indicando cuántos clusters se desean, o indicando a qué altura se quiere cortar el dendrograma, de manera que clusters que se unan a una distancia mayor que dicha altura queden separados.
+
+Este cálculo se puede hacer en `R` usando la función `cutree` del paquete `stats`.
+
+```r
+cutree(hclust(...), k=NULL, h=NULL)
+```
+
+donde:
+
+* `k` es un parámetro que indica el número de clusters deseado.
+* `h` es un parámetro que indica la altura a la que se quiere cortar. 
+
+Nota: debe usarse solo uno de los dos parámetros (`k` o `h`).
+
+Para visualizar los clusters en el **dendrograma** de `R`, se usa la función `rect.hclust` del paquete `stats`.
+
+```r
+plot(hclust(...), ...)
+rect.hclust(hclust(...), h=..., k=...)
+```
+
+Nota: Antes de llamar a la función `rect.hclust` se debe realizar el **dendrograma** usando la función `plot`.
+
+### Propiedades de los métodos en el clustering jerárquico
+
+* El método del **enlace simple** tiende a construir clusters grandes: clusters que tendrían que ser diferentes pero que tienen dos individuos próximos se unen en un único cluster.
+
+* El método del **enlace completo** se comporta de forma totalmente diferente agrupando  clusters solo cuando todos los puntos están próximos.
+
+* El método de **enlace promedio** se comportaría como una solución intermedia entre los dos métodos anteriores.<br>Dicho método es muy usado en la reconstrucción de árboles filogenéticos a partir de matrices de distancias (método *UPGMA*, *Unweighted Pair Group Method Using Arithmetic Averages*).
+
+* El método de **Ward** es de los más utilizados porque es el que minimiza la varianza del propio cluster, tiende a construir clusters donde los datos se encuentren con la mínima varianza posible.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
