@@ -837,6 +837,8 @@ Revisar referencias!!!
 
 ### Sound - Pops when starting and stopping playback
 
+#### Fedora < 33
+
 PulseAudio can suspend sinks after a period of inactivity. This can make an audible noise (like a crack/pop/scratch). Sometimes even when move the slider volume, or open and close windows (KDE4). This behavior is enabled in default configuration files:
 
 /etc/pulse/default.pa
@@ -863,6 +865,39 @@ then restart pulseaudio by executing
 * https://wiki.archlinux.org/index.php/PulseAudio/Troubleshooting#Pops_when_starting_and_stopping_playback
 * https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture/Troubleshooting
 * https://alsa.opensrc.org/Troubleshooting
+
+#### Fedora >= 34
+
+Copy `50-alsa-config.lua` to your config directory if it doesn't exist yet:
+
+```console
+$ cd /etc/wireplumber/main.lua.d
+$ sudo cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua 50-alsa-config.lua
+```
+
+Edit the file:
+
+```console
+$ sudo nano 50-alsa-config.lua
+```
+
+Under the `apply_properties` section near the bottom of the file, add `["session.suspend-timeout-seconds"] = 0`.
+
+The end of that file will now look like this
+
+```console
+apply_properties = {
+  --...
+  ["session.suspend-timeout-seconds"] = 0
+}
+```
+
+Save the file and exit the editor.
+
+Restart wireplumber: `systemctl --user restart wireplumber`.
+
+###### Reference:
+* https://ask.fedoraproject.org/t/how-do-i-disable-audio-sink-suspend-on-idle-using-wireplumber-and-pipewire-on-fedora-35-so-that-my-audio-isnt-delayed-when-playback-resumes/18076
 
 ### Display frozen
 
