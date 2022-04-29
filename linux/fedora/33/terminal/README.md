@@ -145,3 +145,131 @@ $ echo "source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestio
 
 
 * https://ubuntu.com/tutorials/command-line-for-beginners#1-overview
+
+
+
+
+
+
+## Compress and un-compress files
+
+### `tar`
+
+GNU  `tar`  is  an  archiving  program designed to store multiple files in a single file (an archive), and to manipulate such archives. The  archive can be either a regular file or a device (e.g. a tape drive, hence the name of the program, which stands for tape archiver), which can be located either on the local or on a remote machine.
+
+#### Basic options
+
+```console
+  -c, --create           create a new archive
+  -r, --append           append files to the end of an archive
+  -t, --list             list the contents of an archive
+  -u, --update           only append files newer than copy in archive
+  -x, --extract, --get   extract files from an archive
+  -v, --verbose          verbosely list files processed
+```
+
+#### Example
+
+```console
+$ ls -ltrh
+total 8,7G
+-rw-rw-r-- 1 andresaldana andresaldana 4,4G abr 27 15:01 CentOS-7-x86_64-DVD-2009.iso
+-rw-rw-r-- 1 andresaldana andresaldana 3,5G abr 27 15:01 ubuntu-22.04-desktop-amd64.iso
+-rw-r--r-- 1 andresaldana andresaldana 847M abr 27 15:02 archlinux-2021.10.01-x86_64.iso
+
+$ tar -cf os.tar .
+$ ls -ltrh
+total 18G
+-rw-rw-r-- 1 andresaldana andresaldana 4,4G abr 27 15:01 CentOS-7-x86_64-DVD-2009.iso
+-rw-rw-r-- 1 andresaldana andresaldana 3,5G abr 27 15:01 ubuntu-22.04-desktop-amd64.iso
+-rw-r--r-- 1 andresaldana andresaldana 847M abr 27 15:02 archlinux-2021.10.01-x86_64.iso
+-rw-rw-r-- 1 andresaldana andresaldana 8,7G abr 27 15:07 os.tar
+
+$ rm *.iso
+$ ls -ltrh
+total 8,7G
+-rw-rw-r-- 1 andresaldana andresaldana 8,7G abr 27 15:07 os.tar
+
+$ tar -tf os.tar
+archlinux-2021.10.01-x86_64.iso
+CentOS-7-x86_64-DVD-2009.iso
+ubuntu-22.04-desktop-amd64.iso
+
+$ tar -xf os.tar  
+$ ls -ltrh
+total 18G
+-rw-rw-r-- 1 andresaldana andresaldana 4,4G abr 27 15:01 CentOS-7-x86_64-DVD-2009.iso
+-rw-rw-r-- 1 andresaldana andresaldana 3,5G abr 27 15:01 ubuntu-22.04-desktop-amd64.iso
+-rw-r--r-- 1 andresaldana andresaldana 847M abr 27 15:02 archlinux-2021.10.01-x86_64.iso
+-rw-rw-r-- 1 andresaldana andresaldana 8,7G abr 27 15:07 os.tar
+```
+
+### `gzip`
+
+`gzip` reduces the size of the named files using Lempel-Ziv coding (LZ77). Whenever possible, each file is replaced by one with the extension .gz, while keeping the same ownership modes, access and modification times.
+
+If the compressed file name is too long for its file system, `gzip` truncates it. Gzip attempts to truncate only the parts of the file name longer than 3 characters. (A part is delimited by dots.) If the name consists of small parts only, the longest parts are truncated.
+
+By default, gzip keeps the original file name and timestamp in the compressed file. These are used when decompressing the file with the -N option.
+
+#### Basic options
+
+```console
+  -d, --decompress   decompress
+  -f, --force        force overwrite of output file and compress links
+  -k, --keep         keep (don't delete) input files
+  -l, --list         list compressed file contents
+  -v, --verbose      verbose mode
+```
+
+#### Example
+
+```console
+$ ls -ltrh
+total 18G
+-rw-rw-r-- 1 andresaldana andresaldana 4,4G abr 27 15:01 CentOS-7-x86_64-DVD-2009.iso
+-rw-rw-r-- 1 andresaldana andresaldana 3,5G abr 27 15:01 ubuntu-22.04-desktop-amd64.iso
+-rw-r--r-- 1 andresaldana andresaldana 847M abr 27 15:02 archlinux-2021.10.01-x86_64.iso
+-rw-rw-r-- 1 andresaldana andresaldana 8,7G abr 27 15:07 os.tar
+
+$ gzip -v os.tar    
+os.tar:	  2.6% -- replaced with os.tar.gz
+
+$ ls -ltrh          
+total 18G
+-rw-rw-r-- 1 andresaldana andresaldana 4,4G abr 27 15:01 CentOS-7-x86_64-DVD-2009.iso
+-rw-rw-r-- 1 andresaldana andresaldana 3,5G abr 27 15:01 ubuntu-22.04-desktop-amd64.iso
+-rw-r--r-- 1 andresaldana andresaldana 847M abr 27 15:02 archlinux-2021.10.01-x86_64.iso
+-rw-rw-r-- 1 andresaldana andresaldana 8,4G abr 27 15:07 os.tar.gz
+
+$ gzip -l os.tar.gz 
+         compressed        uncompressed  ratio uncompressed_name
+         9015902424           664762368 -1256.3% os.tar
+
+$ gzip -dv os.tar.gz
+os.tar.gz:	  2.6% -- replaced with os.tar
+
+$ ls -ltrh
+total 18G
+-rw-rw-r-- 1 andresaldana andresaldana 4,4G abr 27 15:01 CentOS-7-x86_64-DVD-2009.iso
+-rw-rw-r-- 1 andresaldana andresaldana 3,5G abr 27 15:01 ubuntu-22.04-desktop-amd64.iso
+-rw-r--r-- 1 andresaldana andresaldana 847M abr 27 15:02 archlinux-2021.10.01-x86_64.iso
+-rw-rw-r-- 1 andresaldana andresaldana 8,7G abr 27 15:07 os.tar
+```
+
+`$ tar -xf file.tar.gz`
+
+
+
+
+## asdasd
+
+### `curl`
+### `du`
+### `find`
+### `locate` - `updatedb`
+###
+###
+###
+###
+
