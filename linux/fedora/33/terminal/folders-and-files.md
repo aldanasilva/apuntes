@@ -52,21 +52,101 @@ When a path begin with `/` is an **absolute** path, otherwise is a **relative** 
 
 
 
+# File Permissions
 
+There are 3 type of permissions:
 
+* `r`: read
+* `w`: write
+* `x`: execute
 
+Each permission (`rwx`) can be controlled at three levels:
 
+* `u`: user (yourself)
+* `g`: group (can be people in the same project)
+* `o`: other (everyone on the system)
 
+File or Directory permission can be displayed by running `ls -l` command:
 
+* `-rwxrwxrwx`
 
+Command to change permission:
 
+* `chmod`
 
+Example of use
 
+```console
+$ ls -l bart
+-rw-r--r--. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
 
+$ chmod o-r bart   
+$ ls -l bart
+-rw-r-----. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
 
+$ chmod a-r bart
+$ ls -l bart
+--w-------. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
 
+$ chmod ug+rw bart
+$ ls -l bart
+-rw-rw----. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
+```
 
+Assign permissions with numerical syntax
 
+| Number | Permisson          | Symbol |
+| :----: | ------------------ | :----: |
+| `0`    | No permisson       | `---`  |
+| `1`    | Execute            | `--x`  |
+| `2`    | Write              | `-w-`  |
+| `3`    | Write-Execute      | `-wx`  |
+| `4`    | Read               | `r--`  |
+| `5`    | Read-Execute       | `r-x`  |
+| `6`    | Read-Write         | `rw-`  |
+| `7`    | Read-Write-Execute | `rwx`  |
+
+```console
+$ ls -l bart
+-rw-rw----. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
+
+$ chmod 764 bart   
+$ ls -l bart    
+-rwxrw-r--. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
+
+$ chmod 000 bart
+$ ls -l bart    
+----------. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
+
+$ chmod 777 bart   
+$ ls -l bart    
+-rwxrwxrwx. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
+```
+
+# File Ownership
+
+Every file, directory, link, etc. has an owner and a group, you can change that owner and/or group using `chown` and `chgrp`.
+
+```console
+$ ls -l bart
+-rw-rw-rw-. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
+
+$ sudo chown root bart                                                                1 ↵
+$ ls -l bart
+-rw-rw-rw-. 1 root andresaldana 0 Apr 15 23:49 bart
+
+$ sudo chgrp root bart
+$ ls -l bart
+-rw-rw-rw-. 1 root root 0 Apr 15 23:49 bart
+
+$ sudo chown :andresaldana bart                   
+$ ls -l bart
+-rw-rw-rw-. 1 root andresaldana 0 Apr 15 23:49 bart
+
+$ sudo chown andresaldana:andresaldana bart       
+$ ls -l bart
+-rw-rw-rw-. 1 andresaldana andresaldana 0 Apr 15 23:49 bart
+```
 
 
 
