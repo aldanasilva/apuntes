@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  
+  postgres:
+    image: postgres:14.1-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+    networks:
+      my-network:
+        aliases:
+          - postgres
+          - db
+    ports:
+      - "5432:5432"
+    volumes:
+      - "~/docker/postgres/data:/var/lib/postgresql/data"
+    container_name: postgres
+
+  pgadmin:
+    image: dpage/pgadmin4:6.2
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=secret
+    networks:
+      my-network:
+        aliases:
+          - pgadmin
+    ports:
+      - "80:80"
+    volumes:
+      - "~/docker/pgadmin/data:/var/lib/pgadmin"
+    container_name: pgadmin
+    depends_on:
+      - postgres
+
+networks:
+  my-network:
+    name: my-network
