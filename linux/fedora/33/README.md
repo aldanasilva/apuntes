@@ -943,10 +943,17 @@ Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el
 
 Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca systemd-journal
 
+Este problema lo he encontrado también al momento de comenzar con la instalación de Ubuntu 22.04, Kubuntu 22.04, y Fedora 38 en PC HP Pavilion. La solución es, tan pronto aparezcan las opciones del grub, presionar la tecla **e** para editar la configuración de arranque y colocar **acpi=off** o **pci=nommconf** después de la palabra **quiet** y presionar la tecla **F10** para continuar con el arranque del instalador. Este paso está en validación.
+
+En la instalación de Kubuntu 22.04 usé **pci=nommconf** y salió todo bien.
+
+
+
 ###### Reference:
 * https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Troubleshooting  
 * https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp  
 * https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_the_GRUB_2_Boot_Loader/
+* https://askubuntu.com/questions/1434645/installing-kubuntu-22-04-on-hp-pavilion
 
 ### Unable to access location
 
