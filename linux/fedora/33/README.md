@@ -943,10 +943,48 @@ Si el problema no se ha arreglado aún, genere de nuevo el archivo ejecutando el
 
 Y reinicie el PC. Luego valide que en los procesos ejecutándose ya no aparezca systemd-journal
 
+#### Ubuntu (HP Pavilion)
+
+Este problema se presenta también al intentar instalar Ubuntu 22.04, Kubuntu 22.04, Fedora 38 en PC HP Pavilion. La solución se realiza en dos partes, la primera parte permite la instalación del sistema operativo en el PC, y la segunda parte hace que el proceso `systemd-journal` no se quede pegado en el sistema usando casi el 100% del procesador.
+
+**Primera parte**
+
+Tan pronto aparezcan las opciones del grub, presionar la tecla **e** para editar la configuración de arranque y colocar `acpi=off` o `pci=nommconf` después de la palabra **quiet** y presionar la tecla **F10** para continuar con el arranque del instalador. Este paso está en validación.
+
+En la instalación de Kubuntu 22.04 usé **pci=nommconf** y salió todo bien.
+
+**Segunda parte**
+
+Cuando el sistema operativo se ha instalado y se ha iniciado, agregue la opción `pci=nommconf` al kernel, esta opción se ediciona en el archivo `/etc/default/grub`, se agrega al final de la línea `GRUB_CMDLINE_LINUX`
+
+```console
+[username@localhost ~]$ sudo cat /etc/default/grub
+[sudo] password for username: 
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="resume=UUID=7a096366-bfc0-4ebd-a592-ba72625eebc6 rhgb quiet pci=nommconf"
+GRUB_DISABLE_RECOVERY="true"
+GRUB_ENABLE_BLSCFG=true
+```
+
+Luego se debe volver a generar el archivo `grub.cfg` ejecutando el siguiente comando
+
+```console
+$ sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+Después de esto, reinicie el PC y valide, con el comando `top -id 0.5`, que el proceso `systemd-journal` ya no esté pegado.
+
+
 ###### Reference:
 * https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#Troubleshooting  
 * https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp  
 * https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/kernel-module-driver-configuration/Working_with_the_GRUB_2_Boot_Loader/
+* https://askubuntu.com/questions/1434645/installing-kubuntu-22-04-on-hp-pavilion
+* https://wiki.archlinux.org/title/Kernel_parameters#GRUB
 
 ### Unable to access location
 
