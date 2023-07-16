@@ -62,3 +62,42 @@ $ sudo apt-get install -y ./slack-desktop-*-amd64.deb
 * https://packages.debian.org/stretch/amd64/libindicator3-7/download
 * https://packages.debian.org/buster/amd64/libappindicator3-1/download
 
+
+
+Download image and burn on usb flash drive
+
+```console
+# fdisk -l
+# fdisk -l /dev/sdX
+# dd if=debian-xxx.iso of=/dev/sdX conv=fsync bd=4M status=progress
+```
+
+Partitioning - Manual
+
+| # |  size  |  flags   |        use as        | mount point |
+|---|--------|----------|----------------------|-------------|
+| 1 | 512 MB | Bootable | EFI System Partition |             |
+| 2 | 512 MB |          | ext4                 | /boot       |
+| 3 | 126 GB |          | do not use           |             |
+
+-> Configure encrypted volumes
+-> Create encrypted volumes
+-> /dev/sda3 -> Continue
+-> Configure the Logical Volume Manager
+-> Create volume group -> crypto-debian
+-> /dev/sda3
+
+Create logical volumes
+
+| # | name |  size  | use as | mount point | label |
+|---|------|--------|--------|-------------|-------|
+| 1 | root |  30 GB | ext4   | /           | root  |
+| 2 | swap |  16 GB | swap   |             |       |
+| 3 | home | 126 GB | ext4   | /home       |       |
+
+-> Finish partitioning and write changes to disk
+
+
+
+
+

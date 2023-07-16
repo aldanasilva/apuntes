@@ -189,9 +189,184 @@ root@archiso ~ #
 
 
 
+Configure keyboard and timezone
+
+```console
+root@archiso ~ # loadkeys la-latin1
+root@archiso ~ # timedatectl set-timezone America/Bogota
+```
+
+Create partitions, use `lsblk` to see disk and `lsblk`
+
+|Mount point|Partition|Partition type|Suggested size|
+|---|---|---|---|
+|`/mnt/boot`|/dev/*efi_system_partition*|__EFI system partition__|1GiB|
+|`[SWAP]`|/dev/*swap_partition*|Linux swap|More than 512 MiB|
+|`/mnt`|/dev/*root_partition*|Linux x86-64 root (/)|At least 30 GiB|
+|`/mnt/home`|/dev/*home_partition*|Linux filesystem|Reminder of the device|
+
+Format partitions
+
+```console
+root@archiso ~ # mkfs.fat -F 32 /dev/efi_system_partition
+root@archiso ~ # mkswap /dev/swap_partition
+root@archiso ~ # mkfs.ext4 /dev/root_partition
+root@archiso ~ # mkfs.ext4 /dev/home_partition
+```
+
+Mount the file systems
+
+```console
+root@archiso ~ # mount --mkdir /dev/efi_system_partition /mnt/boot
+root@archiso ~ # swapon /dev/swap_partition
+root@archiso ~ # mount --mkdir /dev/root_partition /mnt
+root@archiso ~ # mount --mkdir /dev/root_partition /mnt/home
+```
+
+Select mirrors
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+Install essential packages
+
+```console
+root@archiso ~ # pacstrap -K /mnt base linux linux-firmware
+```
+
+Can add `nano`, `grub`, `networkmanager`, `dhcpcd`, `netctl`, `wpa_supplicant`, `dialog`. (Karla)
+
+```console
+root@archiso ~ # genfstab -U /mnt >> /mnt/etc/fstab
+root@archiso ~ # ln -sf /usr/share/zoneinfo/America/Bogota /etc/localtime
+root@archiso ~ # hwclock --systohc
+root@archiso ~ # sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+root@archiso ~ # locale-gen
+root@archiso ~ # echo "LANG=en_US.UTF-8" > /etc/locale.conf
+root@archiso ~ # echo "KEYMAP=la-latin1" > /etc/vconsole.conf
+root@archiso ~ # echo "arch" > /etc/hostname
+root@archiso ~ # echo "127.0.0.1 localhost" > /etc/host
+```
+
+
+
 
 
 ```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+
+
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+
+
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+
+
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+
+
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+
+
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+```
+
+
+
+```console
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
+root@archiso ~ # 
 root@archiso ~ # 
 ```
 
