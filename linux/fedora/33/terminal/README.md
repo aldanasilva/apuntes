@@ -262,14 +262,123 @@ total 18G
 
 
 
-## asdasd
+## Commands of course
 
 ### `curl`
 ### `du`
 ### `find`
 ### `locate` - `updatedb`
-###
-###
-###
-###
+### ``
 
+### `ps -ef`
+### `passwd`
+### `ln`
+### Wildcards (`*`, `?`, `^`, `[]`)
+### `chmod`
+### `chown`
+### `useradd`
+### `userdel`
+### `usermod`
+### `groupadd`
+### `groupmod`
+### `groupdel`
+### `chgrp`
+### Access Control List (ACL)
+### `cut`
+### `awk`
+### `sort|uniq`
+### `wc`
+### `tar`
+### `gzip`
+### `gunzip`
+### `head|tail`
+### `grep`
+### `vi`
+### `sed`
+```console
+$ sed 's/❯/#/g' config/p10k-lean-8colors.zsh | grep "❯"
+```
+### `chage`
+### `sudo|su`
+### `who|last|id`
+### `users|wall|write`
+### `date|uptime|hostname|uname|which`
+### `systemctl`
+### `ps|top|kill|pkill`
+### `crontab|at`
+### `ctrl-z|jobs|bg|fg|&`
+### `>/dev/null`
+### `nice` priority (-20 more important, 19 less important)
+### `ifconfig|ip addr`
+### `nohup|jobs|bg|fg|nice`
+### `df|dmesg|iostat 1|netstat|free`
+```console
+$ cat /proc/cpuinfo
+$ cat /proc/meminfo
+```
+### `/var/(log|boot|cron|maillog|secure|messages|httpd)`
+### `shutdown|init|reboot|halt`
+### `hostnamectl|dmidecode`
+### `arch`
+### Terminal control keys
+* ctrl + u = erase everything you've typed on the command line
+* ctrl + c = stop/kill a command
+* ctrl + z = suspend a command
+* ctrl + d = exit from an interactive program (signals end of data)
+### `clear|exit|script`
+### `env`
+Local variable
+```console
+$ echo "TEST='123'" >> .bashrc
+$ echo "export TEXT" >> .bashrc
+$ echo $TEST
+```
+
+Global variable
+```console
+$ echo "TEST='123'" >> /etc/profile
+$ echo "export TEST" >> /etc/profile
+$ echo $TEST
+```
+
+You can use `/etc/bashrc` instead of `/etc/profile`.
+### `detuid|setgid|`
+```console
+# find / -perm /6000 -type f
+$ chmod +t /folder
+```
+### Shell
+```console
+$ echo $0
+$ cat /etc/shells
+$ grep andresaldana /etc/passwd
+```
+### `read|echo`
+### `alias|unalias`
+User = `/home/user/.bashrc`
+Global = `/etc/bashrc`
+### `history`
+### Network files and commands
+Interface configuration files:
+* /etc/nsswitch.conf
+* /etc/hostname
+* /etc/sysconfig/network
+* /etc/sysconfig/network-script
+* /etc/resolv.conf
+Network commands: `ping`, `ifconfig`, `ifup|ifdown`, `netstat -rnv`, `tcpdump`.
+### Network Interface Card (NIC)
+```console
+# ifconfig
+# ethtool enp2s0
+```
+### ``
+### ``
+### ``
+### ``
+### ``
+### ``
+### ``
+### ``
+### ``
+### ``
+### ``
