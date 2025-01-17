@@ -13,6 +13,7 @@ services:
           - db
     ports:
       - "5432:5432"
+    restart: unless-stopped
     volumes:
       - "~/docker/postgres/data:/var/lib/postgresql/data"
     container_name: postgres
@@ -28,6 +29,7 @@ services:
           - pgadmin
     ports:
       - "80:80"
+    restart: unless-stopped
     volumes:
       - "~/docker/pgadmin/data:/var/lib/pgadmin"
     container_name: pgadmin
