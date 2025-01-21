@@ -12,17 +12,18 @@ Raw data -> Transform -> Meaningful insights (better decisions) entender mejor l
 ## ¿Qué es Data Lake?
 
 Riesgos
-    * Calidad de la información
+
+* Calidad de la información
 
 ## ¿Qué es Data Warehouse? (OLAP)
 
 Un Data Warehouse es una base de datos optimizada para propósitos de analítica
-    * Amigable para los usuarios, fácil de entender
-    * Rendimiento rápido de consultas
-    * Habilita el análisis de los datos
-    * Centralización de los datos en forma estructurada y consistente
-    * Se cargan los datos en forma consistente y de forma periódica (ETL)
-    * Se construyen reportes basados en estos datos
+* Amigable para los usuarios, fácil de entender
+* Rendimiento rápido de consultas
+* Habilita el análisis de los datos
+* Centralización de los datos en forma estructurada y consistente
+* Se cargan los datos en forma consistente y de forma periódica (ETL)
+* Se construyen reportes basados en estos datos
 
 OLTP = Online Transactional Processing
 OLAP = Online Analytical Processing
